@@ -294,12 +294,38 @@
         .progress-pct { font-size: 8px; color: var(--text-muted); width: 24px; text-align: right; }
 
         /* Project expand */
-        .project-card { cursor: pointer; padding: 4px 0; border-bottom: 1px solid var(--border); }
+        .project-card { cursor: pointer; padding: 4px 0; border-bottom: 1px solid var(--border); position: relative; }
         .project-card:last-child { border-bottom: none; }
         .expand-icon { font-size: 7px; color: var(--text-muted); transition: transform 0.2s; margin-left: 4px; }
         .project-card.expanded .expand-icon { transform: rotate(180deg); }
         .project-details { display: none; padding: 6px 0 4px 12px; }
         .project-card.expanded .project-details { display: block; }
+        @media (max-width: 600px) {
+            .project-card.expanded .project-details {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                background: var(--bg-card);
+                display: flex;
+                flex-direction: column;
+                padding: 20px;
+                overflow-y: auto;
+                border-radius: 0;
+                border: none;
+            }
+            .project-card.expanded .project-details::before {
+                content: '✕ Zamknij';
+                display: block;
+                text-align: right;
+                color: var(--purple-300);
+                font-size: 14px;
+                font-weight: 700;
+                padding-bottom: 12px;
+                border-bottom: 1px solid var(--border);
+                margin-bottom: 12px;
+                cursor: pointer;
+            }
+        }
         .project-tasks-title { font-size: 9px; color: var(--text-secondary); margin-bottom: 3px; }
         .project-task-item { display: flex; align-items: center; gap: 4px; padding: 2px 0; font-size: 10px; }
         .project-task-item input[type="checkbox"] { width: 12px; height: 12px; accent-color: var(--purple-500); }
