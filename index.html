@@ -1096,7 +1096,10 @@
                             <button onclick="addProjectTask('${p.id}', '${category}', event)">+</button>
                         </div>
                         <div class="project-notes"><div class="project-notes-label">📝 Notatki:</div><textarea placeholder="Dodaj notatki..." onchange="updateProjectNotes('${p.id}', '${category}', this.value)" onclick="event.stopPropagation()">${p.notes || ''}</textarea></div>
-                        ${p.driveLink ? `<a class="drive-link-btn" href="${p.driveLink}" target="_blank" onclick="event.stopPropagation()">📁 Otwórz folder na Drive</a>` : ''}
+                        <div style="margin-top:8px;display:flex;gap:4px;align-items:center;">
+                            <input type="text" placeholder="Link do Google Drive..." value="${p.driveLink||''}" onchange="updateProjectDrive('${p.id}','${category}',this.value)" onclick="event.stopPropagation()" style="flex:1;background:var(--bg-body);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:10px;">
+                            ${p.driveLink ? `<a href="${p.driveLink}" target="_blank" onclick="event.stopPropagation()" style="background:linear-gradient(135deg,#3b82f6,#10b981);color:white;border:none;border-radius:6px;padding:6px 12px;font-size:10px;font-weight:600;text-decoration:none;white-space:nowrap;">📁 Drive</a>` : ''}
+                        </div>
                         <!-- docs list removed - Drive link is enough -->
                     </div>
                 </div>
@@ -1191,6 +1194,12 @@
             project.tasks.splice(taskIndex, 1);
             saveProjectData(); renderProjects();
             setTimeout(() => { const card = document.querySelector(`[data-project="${projectId}"]`); if (card) card.classList.add('expanded'); }, 10);
+        }
+
+        function updateProjectDrive(projectId, category, link) {
+            const projects = getProjectArray(category);
+            const project = projects.find(p => p.id === projectId);
+            if (project) { project.driveLink = link.trim(); saveProjectData(); renderProjects(); reopenProjectPopup(projectId); }
         }
 
         function renameProjectFromPopup(projectId, category, newName) {
