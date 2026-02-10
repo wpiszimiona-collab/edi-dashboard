@@ -130,7 +130,7 @@
             transition: all 0.3s;
         }
         .tile::before {
-            content: '';
+            content: none; /* disabled - was causing visible gradient squares */
             position: absolute;
             top: -50%; left: -50%;
             width: 200%; height: 200%;
@@ -277,7 +277,7 @@
         .notes-saved.show { opacity: 1; }
 
         /* ═══════════════ PROJECT TILES ═══════════════ */
-        .tile-project { grid-column: span 3; grid-row: span 2; display: flex; flex-direction: column; overflow: visible; }
+        .tile-project { grid-column: span 3; grid-row: span 2; display: flex; flex-direction: column; }
         .project-tile-title { font-size: 11px; font-weight: 700; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; color: var(--text-primary); }
         .project-tile-subtitle { font-size: 8px; color: var(--purple-400); margin-bottom: 8px; }
 
