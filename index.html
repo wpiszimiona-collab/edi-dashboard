@@ -874,16 +874,25 @@
                     if (!content) return false;
                     const data = JSON.parse(content);
                     if (!data || !data.version) return false;
-                    if (data.tasks) localStorage.setItem('ediTasks', JSON.stringify(data.tasks));
-                    if (data.projectsOnethree) localStorage.setItem('ediProjectsOnethree', JSON.stringify(data.projectsOnethree));
-                    if (data.projectsFirmy) localStorage.setItem('ediProjectsFirmy', JSON.stringify(data.projectsFirmy));
-                    if (data.projectsOwn) localStorage.setItem('ediProjectsOwn', JSON.stringify(data.projectsOwn));
-                    if (data.apps) localStorage.setItem('ediApps', JSON.stringify(data.apps));
-                    if (data.docs) localStorage.setItem('ediDocs', JSON.stringify(data.docs));
-                    if (data.quickNotes !== undefined) localStorage.setItem('ediQuickNotes', data.quickNotes);
-                    if (data.hiddenTiles) localStorage.setItem('dashboardHiddenTiles', JSON.stringify(data.hiddenTiles));
-                    if (data.tileColors) localStorage.setItem('dashboardTileColors', JSON.stringify(data.tileColors));
-                    if (data.tileOrder) localStorage.setItem('dashboardTileOrder', JSON.stringify(data.tileOrder));
+                    // Merge: only overwrite if cloud has data (non-empty arrays)
+                    function setIfHasData(key, val) {
+                        if (val === undefined || val === null) return;
+                        const str = typeof val === 'string' ? val : JSON.stringify(val);
+                        // Don't overwrite local with empty cloud data
+                        const local = localStorage.getItem(key);
+                        if (Array.isArray(val) && val.length === 0 && local && JSON.parse(local).length > 0) return;
+                        localStorage.setItem(key, str);
+                    }
+                    setIfHasData('ediTasks', data.tasks);
+                    setIfHasData('ediProjectsOnethree', data.projectsOnethree);
+                    setIfHasData('ediProjectsFirmy', data.projectsFirmy);
+                    setIfHasData('ediProjectsOwn', data.projectsOwn);
+                    setIfHasData('ediApps', data.apps);
+                    setIfHasData('ediDocs', data.docs);
+                    if (data.quickNotes) localStorage.setItem('ediQuickNotes', data.quickNotes);
+                    setIfHasData('dashboardHiddenTiles', data.hiddenTiles);
+                    if (data.tileColors && Object.keys(data.tileColors).length > 0) localStorage.setItem('dashboardTileColors', JSON.stringify(data.tileColors));
+                    if (data.tileOrder && data.tileOrder.length > 0) localStorage.setItem('dashboardTileOrder', JSON.stringify(data.tileOrder));
                     _cloudLoaded = true;
                     const indicator = document.getElementById('syncStatus');
                     if (indicator) { indicator.textContent = '☁️'; indicator.style.color = 'var(--green)'; setTimeout(() => { indicator.style.color = ''; }, 2000); }
