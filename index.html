@@ -14,13 +14,12 @@
         }
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#0D0D12;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;font-family:system-ui;';
-        overlay.innerHTML = '<div style="font-size:24px">🎯</div><div style="color:#a78bfa;font-size:14px;font-weight:700">1ts</div><input id="pinInput" type="password" placeholder="PIN" maxlength="20" style="padding:12px 20px;background:#1a1a2e;border:1px solid #2a2a3e;border-radius:8px;color:white;font-size:18px;text-align:center;width:200px;outline:none;" autofocus><div id="pinError" style="color:#ef4444;font-size:12px;height:16px;"></div>';
+        overlay.innerHTML = '<div style="font-size:24px">🎯</div><div style="color:#a78bfa;font-size:14px;font-weight:700">1ts</div><input id="pinInput" type="password" inputmode="numeric" placeholder="PIN" maxlength="20" style="padding:12px 20px;background:#1a1a2e;border:1px solid #2a2a3e;border-radius:8px;color:white;font-size:18px;text-align:center;width:200px;outline:none;" autofocus><button id="pinBtn" style="margin-top:8px;padding:10px 40px;background:#7C3AED;border:none;border-radius:8px;color:white;font-size:14px;font-weight:700;cursor:pointer;">Wejdź</button><div id="pinError" style="color:#ef4444;font-size:12px;height:16px;"></div>';
         document.documentElement.appendChild(overlay);
         setTimeout(() => {
             const input = document.getElementById('pinInput');
             input.focus();
-            input.addEventListener('keypress', async function(e) {
-                if (e.key !== 'Enter') return;
+            async function tryPin() {
                 const hash = await sha256(input.value);
                 if (hash === HASH) {
                     localStorage.setItem(KEY, HASH);
@@ -29,7 +28,9 @@
                     document.getElementById('pinError').textContent = 'Błędny PIN';
                     input.value = '';
                 }
-            });
+            }
+            input.addEventListener('keypress', function(e) { if (e.key === 'Enter') tryPin(); });
+            document.getElementById('pinBtn').addEventListener('click', tryPin);
         }, 100);
     })();
     </script>
