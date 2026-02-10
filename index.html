@@ -791,15 +791,37 @@
     </div>
 
     <script>
-        // ═══════════════ CLOUD SYNC (jsonblob.com) ═══════════════
-        const JSONBLOB_ID = '019c489c-fe9d-7f69-8bbf-67688bd22615';
-        const JSONBLOB_URL = `https://jsonblob.com/api/jsonBlob/${JSONBLOB_ID}`;
+        // ═══════════════ CLOUD SYNC (GitHub Gist) ═══════════════
+        const GIST_ID = '5ea142fdafd9f73cafd36ecd69cec9d2';
+        const GIST_FILE = 'dashboard-data.json';
+        const ENC_TOKEN = {"iv":"733B6NLzzJmFZcOp","data":"eLbt3qyPpEiTc+a1n286Oeul4/3SQ3N0CIoE0BFpWOAVUVim3WpEwA==","tag":"SiRwLGUWYvSURm16hgR5Rw=="};
         let _syncTimer = null;
         let _cloudLoaded = false;
+        let _ghToken = null;
+
+        async function getToken() {
+            if (_ghToken) return _ghToken;
+            const pin = localStorage.getItem('ediDashAuth') ? '2452' : null;
+            if (!pin) return null;
+            try {
+                const keyData = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pin));
+                const key = await crypto.subtle.importKey('raw', keyData, 'AES-GCM', false, ['decrypt']);
+                const iv = Uint8Array.from(atob(ENC_TOKEN.iv), c => c.charCodeAt(0));
+                const data = Uint8Array.from(atob(ENC_TOKEN.data), c => c.charCodeAt(0));
+                const tag = Uint8Array.from(atob(ENC_TOKEN.tag), c => c.charCodeAt(0));
+                const combined = new Uint8Array(data.length + tag.length);
+                combined.set(data); combined.set(tag, data.length);
+                const dec = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, combined);
+                _ghToken = new TextDecoder().decode(dec);
+                return _ghToken;
+            } catch(e) { console.warn('Token decrypt failed:', e); return null; }
+        }
 
         function saveToCloud() {
             if (_syncTimer) clearTimeout(_syncTimer);
-            _syncTimer = setTimeout(() => {
+            _syncTimer = setTimeout(async () => {
+                const token = await getToken();
+                if (!token) { console.warn('No token'); return; }
                 const data = {
                     version: 2,
                     lastSync: new Date().toISOString(),
@@ -815,10 +837,10 @@
                     tileOrder: JSON.parse(localStorage.getItem('dashboardTileOrder') || '[]'),
                     editMode: JSON.parse(localStorage.getItem('dashboardEditMode') || '{}'),
                 };
-                fetch(JSONBLOB_URL, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify(data)
+                fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ files: { [GIST_FILE]: { content: JSON.stringify(data) } } })
                 }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r; }).then(() => {
                     const indicator = document.getElementById('syncStatus');
                     if (indicator) { indicator.textContent = '☁️ Zapisano'; indicator.style.color = 'var(--green)'; setTimeout(() => { indicator.textContent = '☁️'; indicator.style.color = ''; }, 2000); }
@@ -827,7 +849,7 @@
                     const indicator = document.getElementById('syncStatus');
                     if (indicator) { indicator.textContent = '⚠️ Offline'; indicator.style.color = 'var(--red)'; }
                 });
-            }, 1500); // debounce 1.5s
+            }, 1500);
         }
 
         // Auto-refresh from cloud every 30s
@@ -845,12 +867,13 @@
         }, 30000);
 
         function loadFromCloud() {
-            return fetch(JSONBLOB_URL)
+            return fetch(`https://api.github.com/gists/${GIST_ID}`, { headers: { 'Accept': 'application/vnd.github+json' } })
                 .then(r => r.json())
-                .then(data => {
+                .then(gist => {
+                    const content = gist.files && gist.files[GIST_FILE] && gist.files[GIST_FILE].content;
+                    if (!content) return false;
+                    const data = JSON.parse(content);
                     if (!data || !data.version) return false;
-                    // Only overwrite if cloud is newer or localStorage is empty
-                    const localTasks = localStorage.getItem('ediTasks');
                     if (data.tasks) localStorage.setItem('ediTasks', JSON.stringify(data.tasks));
                     if (data.projectsOnethree) localStorage.setItem('ediProjectsOnethree', JSON.stringify(data.projectsOnethree));
                     if (data.projectsFirmy) localStorage.setItem('ediProjectsFirmy', JSON.stringify(data.projectsFirmy));
@@ -862,7 +885,8 @@
                     if (data.tileColors) localStorage.setItem('dashboardTileColors', JSON.stringify(data.tileColors));
                     if (data.tileOrder) localStorage.setItem('dashboardTileOrder', JSON.stringify(data.tileOrder));
                     _cloudLoaded = true;
-                    console.log('☁️ Cloud data loaded:', data.lastSync);
+                    const indicator = document.getElementById('syncStatus');
+                    if (indicator) { indicator.textContent = '☁️'; indicator.style.color = 'var(--green)'; setTimeout(() => { indicator.style.color = ''; }, 2000); }
                     return true;
                 })
                 .catch(err => { console.warn('Cloud load failed, using localStorage:', err); return false; });
