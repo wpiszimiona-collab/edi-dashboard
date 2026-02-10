@@ -305,7 +305,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 9999;
+            z-index: 99999;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
@@ -316,9 +316,8 @@
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0,0,0,0.8);
         }
-        .project-card.expanded .project-details::before {
-            content: '✕ Zamknij';
-            display: block;
+        .project-close-btn {
+            display: none;
             text-align: right;
             color: var(--purple-300);
             font-size: 12px;
@@ -327,8 +326,12 @@
             border-bottom: 1px solid var(--border);
             margin-bottom: 10px;
             cursor: pointer;
+            background: none;
+            border: none;
+            width: 100%;
         }
-        .project-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; }
+        .project-card.expanded .project-close-btn { display: block; }
+        .project-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99998; }
         .project-overlay.active { display: block; }
         @media (max-width: 600px) {
             .project-card.expanded .project-details {
@@ -1075,6 +1078,7 @@
                         <span class="expand-icon">▼</span>
                     </div>
                     <div class="project-details">
+                        <button class="project-close-btn" onclick="event.stopPropagation(); this.closest('.project-card').classList.remove('expanded'); var o=document.getElementById('projectOverlay'); if(o) o.classList.remove('active');">✕ Zamknij</button>
                         <div class="project-tasks-title">📋 Zadania:</div>
                         <div class="project-tasks-list" id="tasks-${p.id}">
                             ${p.tasks.map((t, i) => `<div class="project-task-item ${t.done ? 'done' : ''}" style="display:flex;align-items:center;gap:4px;"><input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleProjectTask('${p.id}', ${i}, '${category}', event)"><span onclick="editProjectTask('${p.id}', ${i}, '${category}', event)" style="cursor:pointer;flex:1;" title="Kliknij by edytować">${t.text}</span><span onclick="deleteProjectTask('${p.id}', ${i}, '${category}', event)" style="cursor:pointer;opacity:0.4;font-size:9px;flex-shrink:0;" title="Usuń">✕</span></div>`).join('') || '<div style="color:var(--text-secondary);font-size:9px">Brak zadań</div>'}
