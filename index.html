@@ -3,6 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    (function() {
+        const HASH = 'bba1dc9846ddd9a44c3d3b736faa5bdb6673b8d0fe1b0dd445c9f9adfda2ff72'; // sha256 of PIN
+        const KEY = 'ediDashAuth';
+        if (localStorage.getItem(KEY) === HASH) return;
+        async function sha256(text) {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+        }
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#0D0D12;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;font-family:system-ui;';
+        overlay.innerHTML = '<div style="font-size:24px">🎯</div><div style="color:#a78bfa;font-size:14px;font-weight:700">EDI COMMAND CENTER</div><input id="pinInput" type="password" placeholder="PIN" maxlength="20" style="padding:12px 20px;background:#1a1a2e;border:1px solid #2a2a3e;border-radius:8px;color:white;font-size:18px;text-align:center;width:200px;outline:none;" autofocus><div id="pinError" style="color:#ef4444;font-size:12px;height:16px;"></div>';
+        document.documentElement.appendChild(overlay);
+        setTimeout(() => {
+            const input = document.getElementById('pinInput');
+            input.focus();
+            input.addEventListener('keypress', async function(e) {
+                if (e.key !== 'Enter') return;
+                const hash = await sha256(input.value);
+                if (hash === HASH) {
+                    localStorage.setItem(KEY, HASH);
+                    overlay.remove();
+                } else {
+                    document.getElementById('pinError').textContent = 'Błędny PIN';
+                    input.value = '';
+                }
+            });
+        }, 100);
+    })();
+    </script>
     <title>COMMAND CENTER</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
