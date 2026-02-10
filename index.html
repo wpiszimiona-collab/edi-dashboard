@@ -276,7 +276,7 @@
         .notes-saved.show { opacity: 1; }
 
         /* ═══════════════ PROJECT TILES ═══════════════ */
-        .tile-project { grid-column: span 3; grid-row: span 2; display: flex; flex-direction: column; }
+        .tile-project { grid-column: span 3; grid-row: span 2; display: flex; flex-direction: column; overflow: visible; }
         .project-tile-title { font-size: 11px; font-weight: 700; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; color: var(--text-primary); }
         .project-tile-subtitle { font-size: 8px; color: var(--purple-400); margin-bottom: 8px; }
 
@@ -299,31 +299,41 @@
         .expand-icon { font-size: 7px; color: var(--text-muted); transition: transform 0.2s; margin-left: 4px; }
         .project-card.expanded .expand-icon { transform: rotate(180deg); }
         .project-details { display: none; padding: 6px 0 4px 12px; }
-        .project-card.expanded .project-details { display: block; }
+        .project-card.expanded .project-details {
+            display: block;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .project-card.expanded .project-details::before {
+            content: '✕ Zamknij';
+            display: block;
+            text-align: right;
+            color: var(--purple-300);
+            font-size: 12px;
+            font-weight: 700;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .project-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; }
+        .project-overlay.active { display: block; }
         @media (max-width: 600px) {
             .project-card.expanded .project-details {
-                position: fixed;
-                inset: 0;
-                z-index: 9999;
-                background: var(--bg-card);
-                display: flex;
-                flex-direction: column;
-                padding: 20px;
-                overflow-y: auto;
-                border-radius: 0;
-                border: none;
-            }
-            .project-card.expanded .project-details::before {
-                content: '✕ Zamknij';
-                display: block;
-                text-align: right;
-                color: var(--purple-300);
-                font-size: 14px;
-                font-weight: 700;
-                padding-bottom: 12px;
-                border-bottom: 1px solid var(--border);
-                margin-bottom: 12px;
-                cursor: pointer;
+                width: 95%;
+                max-height: 85vh;
             }
         }
         .project-tasks-title { font-size: 9px; color: var(--text-secondary); margin-bottom: 3px; }
@@ -1081,7 +1091,15 @@
             document.getElementById('projectsOwn').innerHTML = renderCards(projectsOwn, 'own');
         }
 
-        function toggleProject(card) { if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'BUTTON') return; card.classList.toggle('expanded'); }
+        function toggleProject(card) {
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'BUTTON') return;
+            const wasExpanded = card.classList.contains('expanded');
+            // Close any other expanded cards
+            document.querySelectorAll('.project-card.expanded').forEach(c => c.classList.remove('expanded'));
+            let overlay = document.getElementById('projectOverlay');
+            if (!overlay) { overlay = document.createElement('div'); overlay.id = 'projectOverlay'; overlay.className = 'project-overlay'; overlay.onclick = () => { document.querySelectorAll('.project-card.expanded').forEach(c => c.classList.remove('expanded')); overlay.classList.remove('active'); }; document.body.appendChild(overlay); }
+            if (!wasExpanded) { card.classList.add('expanded'); overlay.classList.add('active'); } else { overlay.classList.remove('active'); }
+        }
         function getProjectArray(category) { if (category === 'onethree') return projectsOnethree; if (category === 'firmy') return projectsFirmy; if (category === 'own') return projectsOwn; }
 
         function toggleProjectTask(projectId, taskIndex, category, event) {
