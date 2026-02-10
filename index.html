@@ -1145,16 +1145,27 @@
             event.stopPropagation();
             const projects = getProjectArray(category);
             const project = projects.find(p => p.id === projectId);
-            if (project && project.tasks[taskIndex]) { project.tasks[taskIndex].done = !project.tasks[taskIndex].done; saveProjectData(); renderProjects(); setTimeout(() => { document.querySelector(`[data-project="${projectId}"]`).classList.add('expanded'); }, 10); }
+            if (project && project.tasks[taskIndex]) { project.tasks[taskIndex].done = !project.tasks[taskIndex].done; saveProjectData(); renderProjects(); reopenProjectPopup(projectId); }
         }
 
         function addProjectTask(projectId, category, event) {
             event.stopPropagation();
-            const input = document.getElementById(`newTask-${projectId}`);
+            // Try popup input first, then fall back to card input
+            const popup = document.getElementById('projectPopup');
+            let input = popup && popup.style.display !== 'none' ? popup.querySelector(`#newTask-${projectId}`) : null;
+            if (!input) input = document.getElementById(`newTask-${projectId}`);
             const text = input.value.trim(); if (!text) return;
+            input.value = '';
             const projects = getProjectArray(category);
             const project = projects.find(p => p.id === projectId);
-            if (project) { project.tasks.push({ text, done: false }); saveProjectData(); renderProjects(); setTimeout(() => { document.querySelector(`[data-project="${projectId}"]`).classList.add('expanded'); }, 10); }
+            if (project) { project.tasks.push({ text, done: false }); saveProjectData(); renderProjects(); reopenProjectPopup(projectId); }
+        }
+
+        function reopenProjectPopup(projectId) {
+            setTimeout(() => {
+                const card = document.querySelector(`[data-project="${projectId}"]`);
+                if (card) { card.classList.add('expanded'); toggleProject(card); }
+            }, 50);
         }
 
         function updateProjectNotes(projectId, category, notes) { const projects = getProjectArray(category); const project = projects.find(p => p.id === projectId); if (project) { project.notes = notes; saveProjectData(); } }
