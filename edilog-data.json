@@ -1,0 +1,47 @@
+{
+  "days": [
+    {
+      "date": "2026-02-10",
+      "summary": null,
+      "entries": [
+        { "time": "14:42", "icon": "🎨", "title": "Dashboard — wolny układ naprawiony", "detail": "Toggle ON/OFF zachowuje pozycje kafelków", "tag": "DASHBOARD" },
+        { "time": "14:00", "icon": "🎨", "title": "Dashboard — liquid glass z 1three.studio", "detail": "Shimmer animation, conic-gradient, bento grid redesign", "tag": "DASHBOARD" },
+        { "time": "13:51", "icon": "🎨", "title": "Dashboard — bento grid + kafelki puzzle", "detail": "Kalendarz, progress ring, quick notes, eksport ustawień", "tag": "DASHBOARD" },
+        { "time": "12:58", "icon": "🎨", "title": "Dashboard — redesign marathon", "detail": "Glassmorphism → Apexify → bento grid (wiele iteracji)", "tag": "DASHBOARD" },
+        { "time": "12:54", "icon": "📊", "title": "Weekly priority tracker", "detail": "projekty/dashboard/weekly.html — dark mode, checkboxy", "tag": "DASHBOARD" },
+        { "time": "12:50", "icon": "🎯", "title": "Accountability mode ON", "detail": "NOW.md + HEARTBEAT.md zaktualizowane, TOP 3 na tydzień", "tag": "SYSTEM" },
+        { "time": "12:30", "icon": "🖼️", "title": "Landing page — poprawki wizualne", "detail": "Gradienty, dot patterns, trust marquee, tighter padding", "tag": "AIPRACUJE" },
+        { "time": "11:50", "icon": "🔄", "title": "Landing page — headline fix", "detail": "\"AI pracuje, Ty odpoczywasz\" w index.html", "tag": "AIPRACUJE" },
+        { "time": "11:20", "icon": "✨", "title": "Google Stitch test", "detail": "Wygenerowany prompt, Piotr testował w Stitch i Lovable", "tag": "AIPRACUJE" },
+        { "time": "11:00", "icon": "📝", "title": "Rebrand aipracuje.pl", "detail": "Empowerment messaging, BRANDING-NOTES.md, research", "tag": "AIPRACUJE" },
+        { "time": "10:56", "icon": "📞", "title": "Twilio Regulatory Bundle #2 złożony", "detail": "Poland Mobile Individual, sent for review", "tag": "VOICE" },
+        { "time": "10:53", "icon": "📞", "title": "Twilio Regulatory Bundle #1 złożony", "detail": "Poland Mobile Individual, sent for review", "tag": "VOICE" },
+        { "time": "10:30", "icon": "🔄", "title": "OpenClaw update 2026.2.6-3 → 2026.2.9", "detail": "Nowe features: VirusTotal, skill scanner", "tag": "SYSTEM" },
+        { "time": "10:00", "icon": "🔍", "title": "Ocena 5 skilli ClawHub", "detail": "Wszystkie odrzucone — istniejące narzędzia wystarczą", "tag": "SYSTEM" },
+        { "time": "09:53", "icon": "⚠️", "title": "Telegram globalny outage", "detail": "Problemy z ładowaniem, trwa drugi dzień", "tag": "SYSTEM" },
+        { "time": "09:30", "icon": "🤖", "title": "Analiza Kie.ai", "detail": "Decyzja: zostajemy na Kie.ai, wewnętrzny router później", "tag": "RESEARCH" },
+        { "time": "09:00", "icon": "📚", "title": "Bazy wiedzy AI modeli", "detail": "ai-video-models.md + ai-image-models.md stworzone", "tag": "RESEARCH" },
+        { "time": "08:30", "icon": "🔍", "title": "Seedance 2.0 research", "detail": "NIEDOSTĘPNY z Europy, ETA koniec lutego", "tag": "RESEARCH" }
+      ]
+    },
+    {
+      "date": "2026-02-09",
+      "summary": "Security audit, API keys przeniesione, ClawHavoc alert, Opus 4.6 upgrade",
+      "entries": [
+        { "time": "22:00", "icon": "🔒", "title": "API keys przeniesione do .env", "detail": "Z .zshrc do ~/.openclaw/.env — bezpieczniej", "tag": "SECURITY" },
+        { "time": "20:00", "icon": "⚠️", "title": "ClawHavoc — 341 malicious skilli", "detail": "Kampania Jan-Feb 2026 na ClawHub, nasz workspace czysty", "tag": "SECURITY" },
+        { "time": "18:00", "icon": "🚀", "title": "aipracuje.pl koncept", "detail": "\"Urząd Pracy AI\", domeny kupione, landing page v2", "tag": "AIPRACUJE" },
+        { "time": "15:00", "icon": "⬆️", "title": "Opus 4.5 → 4.6 upgrade", "detail": "Subagenci na Sonnet 4", "tag": "SYSTEM" }
+      ]
+    },
+    {
+      "date": "2026-02-08",
+      "summary": "Trello integracja, HubSpot email sync, NotebookLM setup",
+      "entries": [
+        { "time": "20:00", "icon": "📋", "title": "Trello podpięty", "detail": "Boardy widoczne, skill zainstalowany", "tag": "SYSTEM" },
+        { "time": "16:00", "icon": "📧", "title": "HubSpot email sync", "detail": "aleksandra@1three.studio zsynchronizowany", "tag": "1THREE" },
+        { "time": "12:00", "icon": "📓", "title": "NotebookLM zintegrowane", "detail": "13 knowledge notes, CLI workflow", "tag": "SYSTEM" }
+      ]
+    }
+  ]
+}
