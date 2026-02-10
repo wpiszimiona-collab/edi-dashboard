@@ -817,9 +817,9 @@
                 };
                 fetch(JSONBLOB_URL, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify(data)
-                }).then(() => {
+                }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r; }).then(() => {
                     const indicator = document.getElementById('syncStatus');
                     if (indicator) { indicator.textContent = '☁️ Zapisano'; indicator.style.color = 'var(--green)'; setTimeout(() => { indicator.textContent = '☁️'; indicator.style.color = ''; }, 2000); }
                 }).catch(err => {
@@ -830,8 +830,22 @@
             }, 1500); // debounce 1.5s
         }
 
+        // Auto-refresh from cloud every 30s
+        setInterval(() => {
+            if (document.hidden) return;
+            loadFromCloud().then(loaded => {
+                if (!loaded) return;
+                tasks = JSON.parse(localStorage.getItem('ediTasks') || '[]');
+                const s1 = localStorage.getItem('ediProjectsOnethree'); if (s1) projectsOnethree = JSON.parse(s1);
+                const s2 = localStorage.getItem('ediProjectsFirmy'); if (s2) projectsFirmy = JSON.parse(s2);
+                const s3 = localStorage.getItem('ediProjectsOwn'); if (s3) projectsOwn = JSON.parse(s3);
+                const sa = localStorage.getItem('ediApps'); if (sa) apps = JSON.parse(sa);
+                renderTasks(); renderProjects(); renderApps();
+            });
+        }, 30000);
+
         function loadFromCloud() {
-            return fetch(JSONBLOB_URL)
+            return fetch(JSONBLOB_URL, { headers: { 'Accept': 'application/json' } })
                 .then(r => r.json())
                 .then(data => {
                     if (!data || !data.version) return false;
