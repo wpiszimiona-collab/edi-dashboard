@@ -430,15 +430,36 @@
             .tile-apps, .tile-docs { grid-column: span 6; }
         }
         @media (max-width: 600px) {
-            .bento-grid { grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 4px; }
-            .tile-logo { grid-column: span 4; }
-            .tile-stat, .tile-stat-wide { grid-column: span 2; }
-            .tile-kanban, .tile-kanban-sm { grid-column: span 4; grid-row: span 1; }
-            .tile-calendar { grid-column: span 4; }
-            .tile-progress { grid-column: span 4; }
-            .tile-notes { grid-column: span 4; }
-            .tile-project { grid-column: span 4; grid-row: span 1; }
-            .tile-apps, .tile-docs { grid-column: span 4; }
+            .bento-grid { 
+                grid-template-columns: 1fr !important; 
+                gap: 6px; 
+                padding: 6px; 
+                display: grid !important;
+                position: relative !important;
+            }
+            .bento-grid > .tile {
+                grid-column: span 1 !important;
+                grid-row: span 1 !important;
+                position: relative !important;
+                top: auto !important;
+                left: auto !important;
+                width: auto !important;
+                height: auto !important;
+                min-height: auto;
+            }
+            .tile-logo { order: -10; }
+            .tile-stat, .tile-stat-wide { min-height: 50px; }
+            .tile-kanban, .tile-kanban-sm { min-height: 80px; }
+            .tile-calendar { min-height: 200px; }
+            .tile-progress { min-height: 120px; }
+            .tile-notes { min-height: 80px; }
+            .tile-project { min-height: 60px; }
+            .tile-apps, .tile-docs { min-height: 60px; }
+            .tile-settings { min-height: 60px; }
+            .tile-edilog { min-height: 100px; }
+            .tile { padding: 10px 12px !important; }
+            .bento-grid.free-layout { display: grid !important; }
+            .bento-grid.free-layout > .tile { position: relative !important; }
         }
 
         /* ═══════════════ ANIMATIONS ═══════════════ */
