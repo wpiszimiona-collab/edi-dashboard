@@ -724,18 +724,12 @@
                 </div>
             </label>
             <label class="toggle-row">
-                <span class="toggle-label">📐 Rozmiar</span>
-                <div class="toggle-switch">
-                    <input type="checkbox" id="toggleResize">
-                    <span class="toggle-slider"></span>
-                </div>
-            </label>
-            <label class="toggle-row">
-                <span class="toggle-label">🔓 Wolny układ</span>
+                <span class="toggle-label">✏️ Edycja układu</span>
                 <div class="toggle-switch">
                     <input type="checkbox" id="toggleFreeLayout">
                     <span class="toggle-slider"></span>
                 </div>
+                <input type="checkbox" id="toggleResize" style="display:none">
             </label>
             <label class="toggle-row">
                 <span class="toggle-label">🗂️ Schowaj elementy</span>
@@ -1969,11 +1963,15 @@
             }
 
             toggleFreeLayoutEl.addEventListener('change', () => {
+                const on = toggleFreeLayoutEl.checked;
+                toggleResizeEl.checked = on;
                 const mode = JSON.parse(localStorage.getItem('dashboardEditMode') || '{}');
-                mode.freeLayout = toggleFreeLayoutEl.checked;
+                mode.freeLayout = on;
+                mode.resize = on;
                 localStorage.setItem('dashboardEditMode', JSON.stringify(mode));
+                applyToggleStates();
 
-                if (toggleFreeLayoutEl.checked) {
+                if (on) {
                     enableFreeLayout(true);
                 } else {
                     disableFreeLayout();
