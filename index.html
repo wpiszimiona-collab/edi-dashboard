@@ -632,6 +632,8 @@
             <div class="statsbar-item"><span class="statsbar-dot yellow"></span><span class="statsbar-num" id="statWaiting">0</span><span class="statsbar-label">Czekam</span></div>
             <div class="statsbar-sep"></div>
             <div class="statsbar-item"><span class="statsbar-dot green"></span><span class="statsbar-num" id="statDone">0</span><span class="statsbar-label">Zrobione</span></div>
+            <div class="statsbar-sep"></div>
+            <div class="statsbar-item"><span class="statsbar-dot" style="background:#6b7280;"></span><span class="statsbar-num" id="statOnhold">0</span><span class="statsbar-label">On Hold</span></div>
         </div>
         <div class="tile tile-logo" id="tile-logo">
             <span style="font-size:16px">🎯</span>
@@ -1045,6 +1047,7 @@
             document.getElementById('countWaiting').textContent = stats.waiting;
             document.getElementById('countDone').textContent = stats.done;
             document.getElementById('countOnhold').textContent = stats.onhold;
+            document.getElementById('statOnhold').textContent = stats.onhold;
             renderProgressRing();
         }
 
