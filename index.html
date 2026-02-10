@@ -1114,10 +1114,11 @@
             }
             if (!popup) {
                 popup = document.createElement('div'); popup.id = 'projectPopup';
-                popup.style.cssText = 'display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.8);';
+                popup.style.cssText = 'display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;width:80%;max-width:420px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.8);';
                 document.body.appendChild(popup);
             }
-            popup.innerHTML = '<button onclick="closeProjectPopup()" style="display:block;text-align:right;color:var(--purple-300);font-size:12px;font-weight:700;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:10px;cursor:pointer;background:none;border:none;width:100%;">✕ Zamknij</button>' + details.innerHTML;
+            const projName = card.querySelector('.project-name')?.textContent || '';
+            popup.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid var(--border);margin-bottom:10px;"><span style="font-weight:700;font-size:13px;color:var(--text-primary);">' + projName + '</span><button onclick="closeProjectPopup()" style="color:var(--purple-300);font-size:12px;font-weight:700;cursor:pointer;background:none;border:none;">✕</button></div>' + details.innerHTML;
             popup.style.display = 'block';
             overlay.classList.add('active');
         }
