@@ -1100,12 +1100,33 @@
 
         function toggleProject(card) {
             if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA' || event.target.tagName === 'BUTTON') return;
-            const wasExpanded = card.classList.contains('expanded');
-            // Close any other expanded cards
-            document.querySelectorAll('.project-card.expanded').forEach(c => c.classList.remove('expanded'));
+            closeProjectPopup();
+            const details = card.querySelector('.project-details');
+            if (!details) return;
+            
+            // Clone details into a fixed popup outside grid
             let overlay = document.getElementById('projectOverlay');
-            if (!overlay) { overlay = document.createElement('div'); overlay.id = 'projectOverlay'; overlay.className = 'project-overlay'; overlay.onclick = () => { document.querySelectorAll('.project-card.expanded').forEach(c => c.classList.remove('expanded')); overlay.classList.remove('active'); }; document.body.appendChild(overlay); }
-            if (!wasExpanded) { card.classList.add('expanded'); overlay.classList.add('active'); } else { overlay.classList.remove('active'); }
+            let popup = document.getElementById('projectPopup');
+            if (!overlay) {
+                overlay = document.createElement('div'); overlay.id = 'projectOverlay'; overlay.className = 'project-overlay';
+                overlay.onclick = closeProjectPopup;
+                document.body.appendChild(overlay);
+            }
+            if (!popup) {
+                popup = document.createElement('div'); popup.id = 'projectPopup';
+                popup.style.cssText = 'display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;width:90%;max-width:500px;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.8);';
+                document.body.appendChild(popup);
+            }
+            popup.innerHTML = '<button onclick="closeProjectPopup()" style="display:block;text-align:right;color:var(--purple-300);font-size:12px;font-weight:700;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:10px;cursor:pointer;background:none;border:none;width:100%;">✕ Zamknij</button>' + details.innerHTML;
+            popup.style.display = 'block';
+            overlay.classList.add('active');
+        }
+        function closeProjectPopup() {
+            const overlay = document.getElementById('projectOverlay');
+            const popup = document.getElementById('projectPopup');
+            if (overlay) overlay.classList.remove('active');
+            if (popup) popup.style.display = 'none';
+            document.querySelectorAll('.project-card.expanded').forEach(c => c.classList.remove('expanded'));
         }
         function getProjectArray(category) { if (category === 'onethree') return projectsOnethree; if (category === 'firmy') return projectsFirmy; if (category === 'own') return projectsOwn; }
 
