@@ -1089,7 +1089,7 @@
                         </div>
                         <div class="project-notes"><div class="project-notes-label">📝 Notatki:</div><textarea placeholder="Dodaj notatki..." onchange="updateProjectNotes('${p.id}', '${category}', this.value)" onclick="event.stopPropagation()">${p.notes || ''}</textarea></div>
                         ${p.driveLink ? `<a class="drive-link-btn" href="${p.driveLink}" target="_blank" onclick="event.stopPropagation()">📁 Otwórz folder na Drive</a>` : ''}
-                        <div class="project-docs"><div class="project-docs-label">📄 Dokumenty:</div><div class="project-docs-list">${(p.docs && p.docs.length > 0) ? p.docs.map(d => `<a class="project-doc-link" href="file://${d.path}" target="_blank" onclick="event.stopPropagation()">📄 ${d.name}</a>`).join('') : '<div style="color:var(--text-secondary);font-size:9px">Brak dokumentów</div>'}</div></div>
+                        <!-- docs list removed - Drive link is enough -->
                     </div>
                 </div>
             `).join('');
