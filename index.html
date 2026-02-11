@@ -853,6 +853,7 @@
         const ENC_TOKEN = {"iv":"733B6NLzzJmFZcOp","data":"eLbt3qyPpEiTc+a1n286Oeul4/3SQ3N0CIoE0BFpWOAVUVim3WpEwA==","tag":"SiRwLGUWYvSURm16hgR5Rw=="};
         let _syncTimer = null;
         let _cloudLoaded = false;
+        const _pageLoadTime = Date.now();
         let _ghToken = null;
 
         async function getToken() {
@@ -875,7 +876,7 @@
 
         let _lastSaveTime = 0;
         function saveToCloud() {
-            if (!_cloudLoaded) { console.warn('Skip save — cloud not loaded yet'); return; }
+            if (!_cloudLoaded && Date.now() - _pageLoadTime < 5000) { console.warn('Skip save — cloud not loaded yet'); return; }
             _lastSaveTime = Date.now();
             if (_syncTimer) clearTimeout(_syncTimer);
             _syncTimer = setTimeout(async () => {
@@ -896,11 +897,14 @@
                     tileOrder: JSON.parse(localStorage.getItem('dashboardTileOrder') || '[]'),
                     editMode: JSON.parse(localStorage.getItem('dashboardEditMode') || '{}'),
                 };
+                const indicator = document.getElementById('syncStatus');
+                if (indicator) { indicator.textContent = '⏳'; indicator.style.color = 'orange'; }
                 fetch(`https://api.github.com/gists/${GIST_ID}`, {
                     method: 'PATCH',
                     headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ files: { [GIST_FILE]: { content: JSON.stringify(data) } } })
                 }).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r; }).then(() => {
+                    localStorage.setItem('_lastLocalSave', '0');
                     const indicator = document.getElementById('syncStatus');
                     if (indicator) { indicator.textContent = '☁️ Zapisano'; indicator.style.color = 'var(--green)'; setTimeout(() => { indicator.textContent = '☁️'; indicator.style.color = ''; }, 2000); }
                 }).catch(err => {
