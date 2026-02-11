@@ -874,6 +874,7 @@
         }
 
         function saveToCloud() {
+            if (!_cloudLoaded) { console.warn('Skip save — cloud not loaded yet'); return; }
             if (_syncTimer) clearTimeout(_syncTimer);
             _syncTimer = setTimeout(async () => {
                 const token = await getToken();
