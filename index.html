@@ -908,7 +908,7 @@
                     const indicator = document.getElementById('syncStatus');
                     if (indicator) { indicator.textContent = '⚠️ Offline'; indicator.style.color = 'var(--red)'; }
                 });
-            }, 1500);
+            }, 300);
         }
 
         // Auto-refresh from cloud every 30s (skip if recently saved locally)
