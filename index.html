@@ -934,11 +934,13 @@
                     if (!content) return false;
                     const data = JSON.parse(content);
                     if (!data || !data.version) return false;
-                    // Merge: only overwrite if cloud has data (non-empty arrays)
+                    // Skip cloud load if we have unsaved local changes
+                    const cloudTime = data.lastSync ? new Date(data.lastSync).getTime() : 0;
+                    const localSaveTime = parseInt(localStorage.getItem('_lastLocalSave') || '0');
+                    if (localSaveTime > cloudTime) { console.log('Skip cloud load — local is newer'); return false; }
                     function setIfHasData(key, val) {
                         if (val === undefined || val === null) return;
                         const str = typeof val === 'string' ? val : JSON.stringify(val);
-                        // Don't overwrite local with empty cloud data
                         const local = localStorage.getItem(key);
                         if (Array.isArray(val) && val.length === 0 && local && JSON.parse(local).length > 0) return;
                         localStorage.setItem(key, str);
@@ -1247,7 +1249,7 @@
             if (newDesc !== null) project.desc = newDesc.trim();
             saveProjectData(); renderProjects();
         }
-        function saveProjectData() { localStorage.setItem('ediProjectsOnethree', JSON.stringify(projectsOnethree)); localStorage.setItem('ediProjectsFirmy', JSON.stringify(projectsFirmy)); localStorage.setItem('ediProjectsOwn', JSON.stringify(projectsOwn)); saveToCloud(); }
+        function saveProjectData() { localStorage.setItem('ediProjectsOnethree', JSON.stringify(projectsOnethree)); localStorage.setItem('ediProjectsFirmy', JSON.stringify(projectsFirmy)); localStorage.setItem('ediProjectsOwn', JSON.stringify(projectsOwn)); localStorage.setItem('_lastLocalSave', Date.now().toString()); saveToCloud(); }
 
         const defaultDocs = {
             onethree: { driveLink: 'https://drive.google.com/open?id=1xejwSec3QdJ84kqj7uRHW2eDvLQdEsXF', docs: [{name:'1three-studio-kalendarz-luty-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/1three-studio-kalendarz-luty-2026.md'},{name:'RESEARCH-SZKOLENIA-AI-POLSKA-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/RESEARCH-SZKOLENIA-AI-POLSKA-2026.md'}] },
@@ -1301,7 +1303,7 @@
         });
 
         function deleteTask() { const id = document.getElementById('taskId').value; if (id && confirm('Na pewno usunąć ten task?')) { tasks = tasks.filter(t => t.id !== parseInt(id)); saveTasks(); renderTasks(); closeModal(); } }
-        function saveTasks() { localStorage.setItem('ediTasks', JSON.stringify(tasks)); saveToCloud(); }
+        function saveTasks() { localStorage.setItem('ediTasks', JSON.stringify(tasks)); localStorage.setItem('_lastLocalSave', Date.now().toString()); saveToCloud(); }
         document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
         document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeModal(); closeAppModal(); } });
@@ -1392,7 +1394,7 @@
             saveApps(); renderApps(); closeAppModal();
         });
         function deleteApp() { const id = document.getElementById('appId').value; if (id && confirm('Na pewno usunąć tę aplikację?')) { apps = apps.filter(a => a.id !== parseInt(id)); saveApps(); renderApps(); closeAppModal(); } }
-        function saveApps() { localStorage.setItem('ediApps', JSON.stringify(apps)); saveToCloud(); }
+        function saveApps() { localStorage.setItem('ediApps', JSON.stringify(apps)); localStorage.setItem('_lastLocalSave', Date.now().toString()); saveToCloud(); }
         document.getElementById('appModalOverlay').addEventListener('click', function(e) { if (e.target === this) closeAppModal(); });
 
         // ═══════════════ CALENDAR ═══════════════
