@@ -1308,9 +1308,15 @@
         let edilogData = null;
         async function loadEdiLogTile() {
             try {
-                const resp = await fetch('edilog-data.json');
-                if (resp.ok) edilogData = await resp.json();
-            } catch(e) {}
+                const gistResp = await fetch('https://api.github.com/gists/5ea142fdafd9f73cafd36ecd69cec9d2', { headers: { 'Accept': 'application/vnd.github+json' } });
+                if (gistResp.ok) {
+                    const gist = await gistResp.json();
+                    const file = gist.files['edilog-data.json'];
+                    if (file) edilogData = JSON.parse(file.content);
+                }
+            } catch(e) {
+                try { const resp = await fetch('edilog-data.json'); if (resp.ok) edilogData = await resp.json(); } catch(e2) {}
+            }
             renderEdiLogTile();
         }
         function renderEdiLogTile() {
