@@ -941,8 +941,6 @@
                     function setIfHasData(key, val) {
                         if (val === undefined || val === null) return;
                         const str = typeof val === 'string' ? val : JSON.stringify(val);
-                        const local = localStorage.getItem(key);
-                        if (Array.isArray(val) && val.length === 0 && local && JSON.parse(local).length > 0) return;
                         localStorage.setItem(key, str);
                     }
                     setIfHasData('ediTasks', data.tasks);
