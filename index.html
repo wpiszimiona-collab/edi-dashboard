@@ -873,8 +873,10 @@
             } catch(e) { console.warn('Token decrypt failed:', e); return null; }
         }
 
+        let _lastSaveTime = 0;
         function saveToCloud() {
             if (!_cloudLoaded) { console.warn('Skip save — cloud not loaded yet'); return; }
+            _lastSaveTime = Date.now();
             if (_syncTimer) clearTimeout(_syncTimer);
             _syncTimer = setTimeout(async () => {
                 const token = await getToken();
@@ -909,9 +911,10 @@
             }, 1500);
         }
 
-        // Auto-refresh from cloud every 30s
+        // Auto-refresh from cloud every 30s (skip if recently saved locally)
         setInterval(() => {
             if (document.hidden) return;
+            if (Date.now() - _lastSaveTime < 10000) return; // skip refresh for 10s after local save
             loadFromCloud().then(loaded => {
                 if (!loaded) return;
                 tasks = JSON.parse(localStorage.getItem('ediTasks') || '[]');
