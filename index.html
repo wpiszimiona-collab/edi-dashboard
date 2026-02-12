@@ -1185,14 +1185,18 @@
         document.addEventListener('dragend', function(e) { if (e.target.classList.contains('task-card')) e.target.style.opacity = '1'; document.querySelectorAll('[data-column]').forEach(col => col.classList.remove('drag-over')); });
 
         function renderProjects() {
-            const renderCards = (projects, category) => projects.map(p => `
+            const renderCards = (projects, category) => projects.map(p => {
+                const totalTasks = (p.tasks || []).length;
+                const doneTasks = (p.tasks || []).filter(t => t.done).length;
+                const autoProgress = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+                return `
                 <div class="project-card" data-project="${p.id}" data-category="${category}" onclick="toggleProject(this)">
                     <div class="project-item">
                         <span class="project-status ${p.status}"></span>
                         <span class="project-name" ondblclick="editProjectName('${p.id}', '${category}', event)" title="Dwuklik = edycja nazwy">${p.name}</span>
                         <div class="project-progress-wrap">
-                            <div class="progress-bar"><div class="progress-fill" style="width:${p.progress}%"></div></div>
-                            <span class="progress-pct">${p.progress}%</span>
+                            <div class="progress-bar"><div class="progress-fill" style="width:${autoProgress}%"></div></div>
+                            <span class="progress-pct">${doneTasks}/${totalTasks}</span>
                         </div>
                         <span onclick="deleteProject('${p.id}', '${category}', event)" style="cursor:pointer;opacity:0.3;font-size:9px;margin-left:2px;" title="Usuń projekt">✕</span>
                         <span class="expand-icon">▼</span>
@@ -1224,7 +1228,7 @@
                         <!-- docs list removed - Drive link is enough -->
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             document.getElementById('projectsOnethree').innerHTML = renderCards(projectsOnethree, 'onethree');
             document.getElementById('projectsFirmy').innerHTML = renderCards(projectsFirmy, 'firmy');
             document.getElementById('projectsOwn').innerHTML = renderCards(projectsOwn, 'own');
