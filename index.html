@@ -1286,10 +1286,12 @@
         }
 
         function reopenProjectPopup(projectId) {
-            // Use requestAnimationFrame for reliable DOM update after render
             requestAnimationFrame(() => {
-                const card = document.querySelector(`[data-project="${projectId}"]`);
-                if (card) { card.classList.add('expanded'); toggleProject(card); }
+                closeProjectPopup();
+                requestAnimationFrame(() => {
+                    const card = document.querySelector(`[data-project="${projectId}"]`);
+                    if (card) card.click();
+                });
             });
         }
 
