@@ -592,7 +592,8 @@
         .tile-color-swatch.active { border-color: white; }
 
         /* ═══════════════ SETTINGS TILE ═══════════════ */
-        .tile-settings { grid-column: span 3; grid-row: span 2; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 8px 10px; }
+        .tile-settings { grid-column: span 2; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 8px 10px; }
+        .tile-profiles { grid-column: span 2; display: flex; flex-direction: column; gap: 6px; padding: 8px 10px; }
         .tile-settings .settings-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-bottom: 2px; }
         .toggle-row { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 2px 0; }
         .toggle-label { font-size: 10px; font-weight: 500; color: var(--text-primary); }
@@ -762,13 +763,6 @@
             <div class="settings-title">⚙️ Ustawienia</div>
             <input type="checkbox" id="toggleDrag" style="display:none">
             <label class="toggle-row">
-                <span class="toggle-label">🎨 Kolory</span>
-                <div class="toggle-switch">
-                    <input type="checkbox" id="toggleColors">
-                    <span class="toggle-slider"></span>
-                </div>
-            </label>
-            <label class="toggle-row">
                 <span class="toggle-label">✏️ Edycja układu</span>
                 <div class="toggle-switch">
                     <input type="checkbox" id="toggleFreeLayout">
@@ -777,19 +771,26 @@
                 <input type="checkbox" id="toggleResize" style="display:none">
             </label>
             <label class="toggle-row">
+                <span class="toggle-label">🎨 Kolory</span>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="toggleColors">
+                    <span class="toggle-slider"></span>
+                </div>
+            </label>
+            <label class="toggle-row">
                 <span class="toggle-label">🗂️ Schowaj elementy</span>
                 <div class="toggle-switch">
                     <input type="checkbox" id="toggleStash">
                     <span class="toggle-slider"></span>
                 </div>
             </label>
-            <div class="profile-section">
-                <div class="settings-title">💾 Profile widoku</div>
-                <div class="profile-controls" id="profileControls"></div>
-                <div style="display:flex;gap:4px;margin-top:4px;">
-                    <input type="text" id="profileNameInput" placeholder="Nazwa profilu..." style="flex:1;padding:3px 6px;background:var(--bg-input);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-size:9px;outline:none;">
-                    <button onclick="saveProfile()" style="padding:3px 8px;background:var(--purple-500);border:none;border-radius:4px;color:white;font-size:8px;font-weight:600;cursor:pointer;">Zapisz</button>
-                </div>
+        </div>
+        <div class="tile tile-profiles" id="tile-profiles">
+            <div class="settings-title">💾 Profile widoku</div>
+            <div class="profile-controls" id="profileControls"></div>
+            <div style="display:flex;gap:4px;margin-top:4px;">
+                <input type="text" id="profileNameInput" placeholder="Nazwa profilu..." style="flex:1;padding:3px 6px;background:var(--bg-input);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-size:9px;outline:none;">
+                <button onclick="saveProfile()" style="padding:3px 8px;background:var(--purple-500);border:none;border-radius:4px;color:white;font-size:8px;font-weight:600;cursor:pointer;">Zapisz</button>
             </div>
         </div>
         <div class="tile tile-calendar" id="tile-calendar">
@@ -1711,6 +1712,7 @@
                 'tile-clock': '🕐 Zegar',
                 'tile-weather': '🌤️ Pogoda',
                 'tile-tokens': '🔥 Tokeny',
+                'tile-profiles': '💾 Profile',
             };
             return names[id] || id;
         }
