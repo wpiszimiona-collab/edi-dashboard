@@ -865,16 +865,13 @@
         <div class="tile tile-tokens" id="tile-tokens">
             <div class="tile-section-title">🔥 Tokeny</div>
             <div class="tile-section-subtitle">Dzisiejsze zużycie</div>
-            <div style="text-align:center;margin:4px 0;">
-                <div class="token-total" id="tokenTotal">—</div>
-                <div style="font-size:8px;color:var(--text-muted);">dziś łącznie</div>
-            </div>
             <div id="tokenRows">
                 <div class="token-row"><span class="token-label">Claude Opus</span><span class="token-value" id="tokenOpus">—</span></div>
                 <div class="token-row"><span class="token-label">Claude Sonnet</span><span class="token-value" id="tokenSonnet">—</span></div>
                 <div class="token-row"><span class="token-label">Inne</span><span class="token-value" id="tokenOther">—</span></div>
+                <div class="token-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:4px;"><span class="token-label" style="font-weight:700;">SUMA</span><span class="token-value" id="tokenTotal" style="font-weight:800;">—</span></div>
+                <div class="token-row"><span class="token-label" style="font-weight:700;">💰 Koszt</span><span class="token-value" id="tokenCost" style="color:var(--purple-300);">—</span></div>
             </div>
-            <div style="text-align:center;margin-top:4px;font-size:9px;color:var(--purple-300);font-weight:700;" id="tokenCost">—</div>
         </div>
 
         <!-- STASH TILE (always visible) -->
@@ -2392,7 +2389,7 @@
                 document.getElementById('tokenOpus').textContent = fmt(stats.opus);
                 document.getElementById('tokenSonnet').textContent = fmt(stats.sonnet);
                 document.getElementById('tokenOther').textContent = fmt(stats.other);
-                document.getElementById('tokenCost').textContent = '$' + stats.cost_usd.toFixed(2) + ' dziś';
+                document.getElementById('tokenCost').textContent = '$' + stats.cost_usd.toFixed(2);
             } catch(e) { console.warn('Token stats load failed:', e); }
         }
         loadTokenStats();
