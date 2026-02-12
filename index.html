@@ -464,6 +464,8 @@
         /* ═══════════════ RESPONSIVE ═══════════════ */
         @media (max-width: 900px) {
             .bento-grid { grid-template-columns: repeat(6, 1fr); }
+            .bento-grid.free-layout { display: grid !important; }
+            .bento-grid.free-layout > .tile { position: relative !important; top: auto !important; left: auto !important; width: auto !important; height: auto !important; }
             .tile-logo { grid-column: span 6; }
             .tile-stat { grid-column: span 3; }
             .tile-stat-wide { grid-column: span 3; }
@@ -473,6 +475,8 @@
             .tile-notes { grid-column: span 3; }
             .tile-project { grid-column: span 6; grid-row: span 1; }
             .tile-apps, .tile-docs { grid-column: span 6; }
+            .tile-clock, .tile-weather, .tile-tokens { grid-column: span 3; }
+            .tile-edilog { grid-column: span 6; }
         }
         @media (max-width: 600px) {
             .bento-grid { 
@@ -502,9 +506,52 @@
             .tile-apps, .tile-docs { min-height: 60px; }
             .tile-settings { min-height: 60px; }
             .tile-edilog { min-height: 100px; }
+            .tile-clock, .tile-weather, .tile-tokens { min-height: 80px; }
+            .clock-time { font-size: 2rem; }
+            .weather-temp { font-size: 1.8rem; }
             .tile { padding: 10px 12px !important; }
             .bento-grid.free-layout { display: grid !important; }
             .bento-grid.free-layout > .tile { position: relative !important; }
+        }
+
+        /* ═══════════════ NEW PANELS ═══════════════ */
+        .tile-clock { grid-column: span 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+        .clock-time { font-size: 3rem; font-weight: 800; letter-spacing: 0.05em; background: linear-gradient(135deg, var(--purple-300), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+        .clock-date { font-size: 10px; color: var(--text-secondary); margin-top: 4px; }
+        .clock-seconds { font-size: 12px; color: var(--purple-400); font-weight: 300; }
+
+        .tile-weather { grid-column: span 3; display: flex; flex-direction: column; gap: 4px; }
+        .weather-temp { font-size: 2.5rem; font-weight: 800; line-height: 1; }
+        .weather-desc { font-size: 10px; color: var(--text-secondary); }
+        .weather-details { display: flex; gap: 12px; font-size: 9px; color: var(--text-muted); margin-top: 4px; }
+
+        .tile-tokens { grid-column: span 3; display: flex; flex-direction: column; gap: 6px; }
+        .token-row { display: flex; justify-content: space-between; align-items: center; padding: 3px 0; border-bottom: 1px solid var(--border); }
+        .token-row:last-child { border-bottom: none; }
+        .token-label { font-size: 10px; color: var(--text-secondary); }
+        .token-value { font-size: 12px; font-weight: 700; color: var(--purple-300); }
+        .token-total { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); }
+
+        /* Editable kanban title */
+        .kanban-title-text { cursor: pointer; border-bottom: 1px dashed transparent; transition: border-color 0.2s; }
+        .kanban-title-text:hover { border-bottom-color: var(--purple-400); color: var(--purple-300); }
+        .kanban-title-input { background: transparent; border: 1px solid var(--purple-500); border-radius: 4px; color: var(--text-primary); font-weight: 700; font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 4px; width: 100px; outline: none; }
+
+        /* Profile controls */
+        .profile-section { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+        .profile-controls { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+        .profile-chip { font-size: 8px; padding: 2px 6px; border-radius: 4px; cursor: pointer; background: rgba(124,58,237,0.12); color: var(--purple-300); border: 1px solid rgba(124,58,237,0.2); transition: all 0.2s; }
+        .profile-chip:hover { background: rgba(124,58,237,0.3); }
+        .profile-chip .del { margin-left: 3px; opacity: 0.5; }
+        .profile-chip .del:hover { opacity: 1; color: var(--red); }
+
+        /* Task time display */
+        .task-time-badge { font-size: 7px; color: var(--purple-400); background: rgba(124,58,237,0.1); padding: 1px 4px; border-radius: 3px; margin-left: 4px; }
+
+        /* ═══════════════ BETTER RESPONSIVE ═══════════════ */
+        @media (max-width: 1100px) {
+            .bento-grid.free-layout { display: grid !important; }
+            .bento-grid.free-layout > .tile { position: relative !important; top: auto !important; left: auto !important; width: auto !important; height: auto !important; }
         }
 
         /* ═══════════════ ANIMATIONS ═══════════════ */
@@ -735,6 +782,14 @@
                     <span class="toggle-slider"></span>
                 </div>
             </label>
+            <div class="profile-section">
+                <div class="settings-title">💾 Profile widoku</div>
+                <div class="profile-controls" id="profileControls"></div>
+                <div style="display:flex;gap:4px;margin-top:4px;">
+                    <input type="text" id="profileNameInput" placeholder="Nazwa profilu..." style="flex:1;padding:3px 6px;background:var(--bg-input);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-size:9px;outline:none;">
+                    <button onclick="saveProfile()" style="padding:3px 8px;background:var(--purple-500);border:none;border-radius:4px;color:white;font-size:8px;font-weight:600;cursor:pointer;">Zapisz</button>
+                </div>
+            </div>
         </div>
         <div class="tile tile-calendar" id="tile-calendar">
             <div class="cal-header">
@@ -772,6 +827,46 @@
             <div class="tile-section-title">📋 Edi Log</div>
             <div class="tile-section-subtitle">Co robiłem i kiedy</div>
             <div class="edilog-scroll" id="edilogContent"></div>
+        </div>
+
+        <!-- CLOCK TILE -->
+        <div class="tile tile-clock" id="tile-clock">
+            <div class="tile-section-title">🕐 Zegar</div>
+            <div class="clock-time" id="clockTime">00:00</div>
+            <div class="clock-seconds" id="clockSeconds">:00</div>
+            <div class="clock-date" id="clockDate"></div>
+        </div>
+
+        <!-- WEATHER TILE -->
+        <div class="tile tile-weather" id="tile-weather">
+            <div class="tile-section-title">🌤️ Pogoda — Kraków</div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span id="weatherIcon" style="font-size:2rem;">⏳</span>
+                <div>
+                    <div class="weather-temp" id="weatherTemp">--°C</div>
+                    <div class="weather-desc" id="weatherDesc">Ładowanie...</div>
+                </div>
+            </div>
+            <div class="weather-details">
+                <span id="weatherWind">💨 --</span>
+                <span id="weatherHumidity">💧 --</span>
+                <span id="weatherFeels">🌡️ --</span>
+            </div>
+        </div>
+
+        <!-- TOKENS TILE -->
+        <div class="tile tile-tokens" id="tile-tokens">
+            <div class="tile-section-title">🔥 Tokeny</div>
+            <div class="tile-section-subtitle">Spalane tokeny (mock)</div>
+            <div style="text-align:center;margin:4px 0;">
+                <div class="token-total" id="tokenTotal">127,430</div>
+                <div style="font-size:8px;color:var(--text-muted);">dziś łącznie</div>
+            </div>
+            <div id="tokenRows">
+                <div class="token-row"><span class="token-label">Claude Opus</span><span class="token-value">89,200</span></div>
+                <div class="token-row"><span class="token-label">Claude Sonnet</span><span class="token-value">31,450</span></div>
+                <div class="token-row"><span class="token-label">Gemini</span><span class="token-value">6,780</span></div>
+            </div>
         </div>
 
         <!-- STASH TILE (always visible) -->
@@ -828,6 +923,10 @@
                     <div class="form-group"><label for="taskDeadline">Deadline</label><select id="taskDeadline"><option value="now">Teraz!</option><option value="today">Dziś</option><option value="week">Ten tydzień</option><option value="later">Później</option></select></div>
                 </div>
                 <div class="form-group"><label for="taskNotes">Notatki</label><textarea id="taskNotes" placeholder="Dodatkowe informacje..."></textarea></div>
+                <div class="form-row">
+                    <div class="form-group"><label for="taskTime">⏱️ Czas (est.)</label><input type="text" id="taskTime" placeholder="np. 2h, 30min"></div>
+                    <div class="form-group"><label for="taskCalendar">📅 Zaplanuj w kalendarzu</label><select id="taskCalendar"><option value="">Nie planuj</option><option value="today">Dziś</option><option value="tomorrow">Jutro</option><option value="thisweek">Ten tydzień</option></select></div>
+                </div>
                 <div class="form-group">
                     <label for="taskAttachments">📎 Załączniki / Rezultaty</label>
                     <div id="attachmentsList"></div>
@@ -896,6 +995,7 @@
                     tileColors: JSON.parse(localStorage.getItem('dashboardTileColors') || '{}'),
                     tileOrder: JSON.parse(localStorage.getItem('dashboardTileOrder') || '[]'),
                     editMode: JSON.parse(localStorage.getItem('dashboardEditMode') || '{}'),
+                    kanbanNames: JSON.parse(localStorage.getItem('dashboardKanbanNames') || '{}'),
                 };
                 const indicator = document.getElementById('syncStatus');
                 if (indicator) { indicator.textContent = '⏳'; indicator.style.color = 'orange'; }
@@ -957,6 +1057,7 @@
                     setIfHasData('dashboardHiddenTiles', data.hiddenTiles);
                     if (data.tileColors && Object.keys(data.tileColors).length > 0) localStorage.setItem('dashboardTileColors', JSON.stringify(data.tileColors));
                     if (data.tileOrder && data.tileOrder.length > 0) localStorage.setItem('dashboardTileOrder', JSON.stringify(data.tileOrder));
+                    if (data.kanbanNames) localStorage.setItem('dashboardKanbanNames', JSON.stringify(data.kanbanNames));
                     _cloudLoaded = true;
                     const indicator = document.getElementById('syncStatus');
                     if (indicator) { indicator.textContent = '☁️'; indicator.style.color = 'var(--green)'; setTimeout(() => { indicator.style.color = ''; }, 2000); }
@@ -1032,7 +1133,7 @@
                             <span class="task-num">${String(idx + 1).padStart(2, '0')}</span>
                             <div class="task-card-content">
                                 <div class="task-row">
-                                    <span class="task-title">${task.title}</span>
+                                    <span class="task-title">${task.title}${task.estimatedTime ? '<span class="task-time-badge">⏱️ '+task.estimatedTime+'</span>' : ''}${task.calendarSlot ? '<span class="task-time-badge">📅</span>' : ''}</span>
                                     <span class="task-project ${task.project}">${getProjectLabel(task.project)}</span>
                                 </div>
                                 ${task.attachments && task.attachments.length > 0 ? `<div class="task-attachments">${task.attachments.map(att => `<a class="task-attachment-link" href="file://${att.path}" target="_blank" onclick="event.stopPropagation()">📎 ${att.name}</a>`).join('')}</div>` : ''}
@@ -1167,10 +1268,11 @@
         }
 
         function reopenProjectPopup(projectId) {
-            setTimeout(() => {
+            // Use requestAnimationFrame for reliable DOM update after render
+            requestAnimationFrame(() => {
                 const card = document.querySelector(`[data-project="${projectId}"]`);
                 if (card) { card.classList.add('expanded'); toggleProject(card); }
-            }, 50);
+            });
         }
 
         function updateProjectNotes(projectId, category, notes) { const projects = getProjectArray(category); const project = projects.find(p => p.id === projectId); if (project) { project.notes = notes; saveProjectData(); } }
@@ -1289,8 +1391,8 @@
             form.reset(); document.getElementById('taskColumn').value = column;
             if (taskId) {
                 const task = tasks.find(t => t.id === taskId);
-                if (task) { title.textContent = 'Edytuj task'; document.getElementById('taskId').value = task.id; document.getElementById('taskTitle').value = task.title; document.getElementById('taskProject').value = task.project; document.getElementById('taskDeadline').value = task.deadline; document.getElementById('taskNotes').value = task.notes || ''; document.getElementById('taskColumn').value = task.column; currentAttachments = task.attachments || []; renderAttachments(); deleteBtn.style.display = 'block'; }
-            } else { title.textContent = 'Nowy task'; document.getElementById('taskId').value = ''; currentAttachments = []; renderAttachments(); deleteBtn.style.display = 'none'; }
+                if (task) { title.textContent = 'Edytuj task'; document.getElementById('taskId').value = task.id; document.getElementById('taskTitle').value = task.title; document.getElementById('taskProject').value = task.project; document.getElementById('taskDeadline').value = task.deadline; document.getElementById('taskNotes').value = task.notes || ''; document.getElementById('taskColumn').value = task.column; document.getElementById('taskTime').value = task.estimatedTime || ''; document.getElementById('taskCalendar').value = task.calendarSlot || ''; currentAttachments = task.attachments || []; renderAttachments(); deleteBtn.style.display = 'block'; }
+            } else { title.textContent = 'Nowy task'; document.getElementById('taskId').value = ''; document.getElementById('taskTime').value = ''; document.getElementById('taskCalendar').value = ''; currentAttachments = []; renderAttachments(); deleteBtn.style.display = 'none'; }
             modal.classList.add('active'); document.getElementById('taskTitle').focus();
         }
         function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
@@ -1298,10 +1400,12 @@
         document.getElementById('taskForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const id = document.getElementById('taskId').value;
-            const taskData = { title: document.getElementById('taskTitle').value, project: document.getElementById('taskProject').value, column: document.getElementById('taskColumn').value, deadline: document.getElementById('taskDeadline').value, notes: document.getElementById('taskNotes').value, attachments: currentAttachments };
+            const taskData = { title: document.getElementById('taskTitle').value, project: document.getElementById('taskProject').value, column: document.getElementById('taskColumn').value, deadline: document.getElementById('taskDeadline').value, notes: document.getElementById('taskNotes').value, attachments: currentAttachments, estimatedTime: document.getElementById('taskTime').value.trim(), calendarSlot: document.getElementById('taskCalendar').value };
             if (id) { const index = tasks.findIndex(t => t.id === parseInt(id)); if (index !== -1) tasks[index] = { ...tasks[index], ...taskData }; }
             else { taskData.id = Date.now(); taskData.createdAt = Date.now(); tasks.push(taskData); }
-            saveTasks(); renderTasks(); closeModal();
+            saveTasks(); closeModal();
+            // Force immediate re-render (bugfix: task not appearing after add)
+            setTimeout(() => renderTasks(), 0);
         });
 
         function deleteTask() { const id = document.getElementById('taskId').value; if (id && confirm('Na pewno usunąć ten task?')) { tasks = tasks.filter(t => t.id !== parseInt(id)); saveTasks(); renderTasks(); closeModal(); } }
@@ -1562,6 +1666,9 @@
                 'tile-progress': '📈 Progress',
                 'tile-notes': '📝 Notes',
                 'tile-edilog': '📋 Edi Log',
+                'tile-clock': '🕐 Zegar',
+                'tile-weather': '🌤️ Pogoda',
+                'tile-tokens': '🔥 Tokeny',
             };
             return names[id] || id;
         }
@@ -2113,6 +2220,48 @@
                 });
             }
 
+            // ═══════════════ EDITABLE KANBAN LIST NAMES ═══════════════
+            function initEditableKanbanNames() {
+                const customNames = JSON.parse(localStorage.getItem('dashboardKanbanNames') || '{}');
+                document.querySelectorAll('.kanban-title').forEach(titleEl => {
+                    const column = titleEl.closest('[data-column]');
+                    if (!column) return;
+                    const colName = column.dataset.column;
+                    // Find the text node / first text content (skip emoji + count)
+                    const originalText = titleEl.childNodes[0];
+                    if (!originalText) return;
+                    const defaultText = originalText.textContent.trim();
+                    const span = document.createElement('span');
+                    span.className = 'kanban-title-text';
+                    span.textContent = customNames[colName] || defaultText;
+                    span.title = 'Kliknij by edytować nazwę';
+                    span.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const input = document.createElement('input');
+                        input.className = 'kanban-title-input';
+                        input.value = span.textContent;
+                        span.replaceWith(input);
+                        input.focus();
+                        input.select();
+                        function save() {
+                            const val = input.value.trim() || defaultText;
+                            span.textContent = val;
+                            input.replaceWith(span);
+                            const names = JSON.parse(localStorage.getItem('dashboardKanbanNames') || '{}');
+                            if (val === defaultText) delete names[colName]; else names[colName] = val;
+                            localStorage.setItem('dashboardKanbanNames', JSON.stringify(names));
+                            saveToCloud();
+                        }
+                        input.addEventListener('blur', save);
+                        input.addEventListener('keypress', function(ev) { if (ev.key === 'Enter') input.blur(); });
+                        input.addEventListener('keydown', function(ev) { if (ev.key === 'Escape') { input.value = customNames[colName] || defaultText; input.blur(); } });
+                    });
+                    originalText.textContent = '';
+                    titleEl.insertBefore(span, titleEl.firstChild);
+                });
+            }
+            initEditableKanbanNames();
+
             // Initialize
             restoreTileOrder();
             initTileUI();
@@ -2130,6 +2279,120 @@
             loadFreeLayoutState();
             initFreeResizeOverride();
         })();
+
+        // ═══════════════ LIVE CLOCK ═══════════════
+        function updateClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clockTime').textContent = h + ':' + m;
+            document.getElementById('clockSeconds').textContent = ':' + s;
+            const days = ['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
+            const months = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+            document.getElementById('clockDate').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // ═══════════════ WEATHER (wttr.in) ═══════════════
+        async function loadWeather() {
+            try {
+                const resp = await fetch('https://wttr.in/Krak%C3%B3w?format=j1');
+                const data = await resp.json();
+                const cur = data.current_condition[0];
+                const temp = cur.temp_C;
+                const feels = cur.FeelsLikeC;
+                const desc = cur.lang_pl && cur.lang_pl[0] ? cur.lang_pl[0].value : cur.weatherDesc[0].value;
+                const humidity = cur.humidity;
+                const wind = cur.windspeedKmph;
+                const code = parseInt(cur.weatherCode);
+                const icons = { 113: '☀️', 116: '⛅', 119: '☁️', 122: '☁️', 143: '🌫️', 176: '🌦️', 179: '🌨️', 182: '🌧️', 185: '🌧️', 200: '⛈️', 227: '🌨️', 230: '❄️', 248: '🌫️', 260: '🌫️', 263: '🌦️', 266: '🌧️', 281: '🌧️', 284: '🌧️', 293: '🌧️', 296: '🌧️', 299: '🌧️', 302: '🌧️', 305: '🌧️', 308: '🌧️', 311: '🌧️', 314: '🌧️', 317: '🌨️', 320: '🌨️', 323: '🌨️', 326: '🌨️', 329: '❄️', 332: '❄️', 335: '❄️', 338: '❄️', 350: '🌧️', 353: '🌦️', 356: '🌧️', 359: '🌧️', 362: '🌨️', 365: '🌨️', 368: '🌨️', 371: '❄️', 374: '🌨️', 377: '🌨️', 386: '⛈️', 389: '⛈️', 392: '⛈️', 395: '❄️' };
+                document.getElementById('weatherIcon').textContent = icons[code] || '🌤️';
+                document.getElementById('weatherTemp').textContent = temp + '°C';
+                document.getElementById('weatherDesc').textContent = desc;
+                document.getElementById('weatherWind').textContent = '💨 ' + wind + ' km/h';
+                document.getElementById('weatherHumidity').textContent = '💧 ' + humidity + '%';
+                document.getElementById('weatherFeels').textContent = '🌡️ Odczuw. ' + feels + '°C';
+            } catch(e) {
+                document.getElementById('weatherDesc').textContent = 'Błąd ładowania';
+                document.getElementById('weatherIcon').textContent = '⚠️';
+            }
+        }
+        loadWeather();
+        setInterval(loadWeather, 600000); // refresh every 10min
+
+        // ═══════════════ TOKENS (MOCK) ═══════════════
+        function updateTokensMock() {
+            const base = 127430;
+            const jitter = Math.floor(Math.random() * 2000) - 500;
+            const total = base + jitter;
+            const opus = Math.floor(total * 0.70);
+            const sonnet = Math.floor(total * 0.24);
+            const gemini = total - opus - sonnet;
+            document.getElementById('tokenTotal').textContent = total.toLocaleString('pl-PL');
+            const rows = document.getElementById('tokenRows');
+            rows.innerHTML = `
+                <div class="token-row"><span class="token-label">Claude Opus</span><span class="token-value">${opus.toLocaleString('pl-PL')}</span></div>
+                <div class="token-row"><span class="token-label">Claude Sonnet</span><span class="token-value">${sonnet.toLocaleString('pl-PL')}</span></div>
+                <div class="token-row"><span class="token-label">Gemini</span><span class="token-value">${gemini.toLocaleString('pl-PL')}</span></div>
+            `;
+        }
+        setInterval(updateTokensMock, 30000);
+
+        // ═══════════════ PROFILES ═══════════════
+        function getProfiles() { return JSON.parse(localStorage.getItem('dashboardProfiles') || '{}'); }
+        function saveProfile() {
+            const name = document.getElementById('profileNameInput').value.trim();
+            if (!name) return;
+            const profiles = getProfiles();
+            profiles[name] = {
+                hiddenTiles: JSON.parse(localStorage.getItem('dashboardHiddenTiles') || '[]'),
+                tileColors: JSON.parse(localStorage.getItem('dashboardTileColors') || '{}'),
+                tileOrder: JSON.parse(localStorage.getItem('dashboardTileOrder') || '[]'),
+                freePositions: JSON.parse(localStorage.getItem('dashboardFreePositions') || '{}'),
+                tileSizes: JSON.parse(localStorage.getItem('dashboardTileSizes') || '{}'),
+                editMode: JSON.parse(localStorage.getItem('dashboardEditMode') || '{}'),
+                kanbanNames: JSON.parse(localStorage.getItem('dashboardKanbanNames') || '{}'),
+            };
+            localStorage.setItem('dashboardProfiles', JSON.stringify(profiles));
+            document.getElementById('profileNameInput').value = '';
+            renderProfiles();
+        }
+        function loadProfile(name) {
+            const profiles = getProfiles();
+            const p = profiles[name];
+            if (!p) return;
+            if (p.hiddenTiles) localStorage.setItem('dashboardHiddenTiles', JSON.stringify(p.hiddenTiles));
+            if (p.tileColors) localStorage.setItem('dashboardTileColors', JSON.stringify(p.tileColors));
+            if (p.tileOrder) localStorage.setItem('dashboardTileOrder', JSON.stringify(p.tileOrder));
+            if (p.freePositions) localStorage.setItem('dashboardFreePositions', JSON.stringify(p.freePositions));
+            if (p.tileSizes) localStorage.setItem('dashboardTileSizes', JSON.stringify(p.tileSizes));
+            if (p.editMode) localStorage.setItem('dashboardEditMode', JSON.stringify(p.editMode));
+            if (p.kanbanNames) localStorage.setItem('dashboardKanbanNames', JSON.stringify(p.kanbanNames));
+            location.reload();
+        }
+        function deleteProfile(name, e) {
+            e.stopPropagation();
+            const profiles = getProfiles();
+            delete profiles[name];
+            localStorage.setItem('dashboardProfiles', JSON.stringify(profiles));
+            renderProfiles();
+        }
+        function renderProfiles() {
+            const container = document.getElementById('profileControls');
+            const profiles = getProfiles();
+            const names = Object.keys(profiles);
+            if (names.length === 0) { container.innerHTML = '<span style="font-size:8px;color:var(--text-muted);">Brak zapisanych profili</span>'; return; }
+            container.innerHTML = names.map(n => `<span class="profile-chip" onclick="loadProfile('${n.replace(/'/g,"\\'")}')">${n}<span class="del" onclick="deleteProfile('${n.replace(/'/g,"\\'")}', event)">✕</span></span>`).join('');
+        }
+        renderProfiles();
+
+        // ═══════════════ CLOUD SYNC: include new data ═══════════════
+        // Patch saveToCloud to include kanbanNames and profiles
+        const _origSaveToCloud = saveToCloud;
+        // (kanbanNames are already saved to localStorage, and saveToCloud reads from localStorage)
+
     </script>
 </body>
 </html>
