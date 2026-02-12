@@ -1031,7 +1031,7 @@
         }, 30000);
 
         async function loadFromCloud() {
-            const token = await getGhToken();
+            const token = await getToken();
             const headers = { 'Accept': 'application/vnd.github+json' };
             if (token) headers['Authorization'] = `token ${token}`;
             return fetch(`https://api.github.com/gists/${GIST_ID}`, { headers })
@@ -1423,7 +1423,7 @@
         let edilogData = null;
         async function loadEdiLogTile() {
             try {
-                const token = await getGhToken();
+                const token = await getToken();
                 const headers = { 'Accept': 'application/vnd.github+json' };
                 if (token) headers['Authorization'] = `token ${token}`;
                 const gistResp = await fetch('https://api.github.com/gists/5ea142fdafd9f73cafd36ecd69cec9d2', { headers });
