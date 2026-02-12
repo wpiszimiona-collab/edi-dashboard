@@ -1030,8 +1030,11 @@
             });
         }, 30000);
 
-        function loadFromCloud() {
-            return fetch(`https://api.github.com/gists/${GIST_ID}`, { headers: { 'Accept': 'application/vnd.github+json' } })
+        async function loadFromCloud() {
+            const token = await getGhToken();
+            const headers = { 'Accept': 'application/vnd.github+json' };
+            if (token) headers['Authorization'] = `token ${token}`;
+            return fetch(`https://api.github.com/gists/${GIST_ID}`, { headers })
                 .then(r => r.json())
                 .then(gist => {
                     const content = gist.files && gist.files[GIST_FILE] && gist.files[GIST_FILE].content;
@@ -1420,7 +1423,10 @@
         let edilogData = null;
         async function loadEdiLogTile() {
             try {
-                const gistResp = await fetch('https://api.github.com/gists/5ea142fdafd9f73cafd36ecd69cec9d2', { headers: { 'Accept': 'application/vnd.github+json' } });
+                const token = await getGhToken();
+                const headers = { 'Accept': 'application/vnd.github+json' };
+                if (token) headers['Authorization'] = `token ${token}`;
+                const gistResp = await fetch('https://api.github.com/gists/5ea142fdafd9f73cafd36ecd69cec9d2', { headers });
                 if (gistResp.ok) {
                     const gist = await gistResp.json();
                     const file = gist.files['edilog-data.json'];
