@@ -230,11 +230,12 @@
         .task-row { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
         .task-title { font-weight: 500; font-size: 10px; line-height: 1.3; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .task-project { font-size: 7px; padding: 1px 5px; border-radius: 4px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
-        .task-project.dom { background: rgba(16,185,129,0.15); color: var(--green); }
         .task-project.onethree { background: rgba(124,58,237,0.15); color: var(--purple-300); }
-        .task-project.kubus { background: rgba(239,68,68,0.15); color: var(--red); }
         .task-project.system { background: rgba(107,114,128,0.15); color: var(--gray); }
-        .task-project.especto { background: rgba(245,158,11,0.15); color: var(--yellow); }
+        .task-project.dom { background: rgba(16,185,129,0.15); color: var(--green); }
+        .task-project.osobiste { background: rgba(239,68,68,0.15); color: var(--red); }
+        .task-project.pomysl { background: rgba(245,158,11,0.15); color: var(--yellow); }
+        .task-project.research { background: rgba(59,130,246,0.15); color: #3B82F6; }
         .task-time { font-size: 7px; color: var(--text-muted); white-space: nowrap; }
 
         .task-attachments { margin-top: 3px; padding-top: 3px; border-top: 1px solid var(--border); }
@@ -919,7 +920,7 @@
                 <input type="hidden" id="taskColumn">
                 <div class="form-group"><label for="taskTitle">Tytuł *</label><input type="text" id="taskTitle" required placeholder="Co trzeba zrobić?"></div>
                 <div class="form-row">
-                    <div class="form-group"><label for="taskProject">Projekt</label><select id="taskProject"><option value="dom">🏠 DOM</option><option value="onethree">🎬 1THREE</option><option value="kubus">🧸 KUBUŚ</option><option value="especto">🎪 ESPECTO</option><option value="system">⚙️ SYSTEM</option></select></div>
+                    <div class="form-group"><label for="taskProject">Projekt</label><select id="taskProject"><option value="onethree">🎬 1THREE</option><option value="system">⚙️ SYSTEM</option><option value="dom">🏠 DOM</option><option value="osobiste">👤 OSOBISTE</option><option value="pomysl">💡 POMYSŁ</option><option value="research">🔍 RESEARCH</option></select></div>
                     <div class="form-group"><label for="taskDeadline">Deadline</label><select id="taskDeadline"><option value="now">Teraz!</option><option value="today">Dziś</option><option value="week">Ten tydzień</option><option value="later">Później</option></select></div>
                 </div>
                 <div class="form-group"><label for="taskNotes">Notatki</label><textarea id="taskNotes" placeholder="Dodatkowe informacje..."></textarea></div>
@@ -1391,7 +1392,7 @@
             saveProjectData();
         }
 
-        function getProjectLabel(project) { const labels = { dom: 'DOM', onethree: '1THREE', kubus: 'KUBUŚ', especto: 'ESPECTO', system: 'SYSTEM' }; return labels[project] || project.toUpperCase(); }
+        function getProjectLabel(project) { const labels = { onethree: '1THREE', system: 'SYSTEM', dom: 'DOM', osobiste: 'OSOBISTE', pomysl: 'POMYSŁ', research: 'RESEARCH' }; return labels[project] || project.toUpperCase(); }
         function getDeadlineLabel(deadline) { const labels = { now: '🔥 Teraz!', today: 'Dziś', week: 'Ten tydzień', later: 'Później' }; return labels[deadline] || deadline; }
 
         let currentAttachments = [];
