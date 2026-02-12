@@ -833,9 +833,7 @@
 
         <!-- CLOCK TILE -->
         <div class="tile tile-clock" id="tile-clock">
-            <div class="tile-section-title">🕐 Zegar</div>
             <div class="clock-time" id="clockTime">00:00</div>
-            <div class="clock-seconds" id="clockSeconds">:00</div>
             <div class="clock-date" id="clockDate"></div>
         </div>
 
@@ -2331,7 +2329,6 @@
             const m = String(now.getMinutes()).padStart(2, '0');
             const s = String(now.getSeconds()).padStart(2, '0');
             document.getElementById('clockTime').textContent = h + ':' + m;
-            document.getElementById('clockSeconds').textContent = ':' + s;
             const days = ['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'];
             const months = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
             document.getElementById('clockDate').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
