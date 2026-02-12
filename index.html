@@ -1336,8 +1336,7 @@
             const project = projects.find(p => p.id === projectId);
             if (!project) return;
             project.tasks.splice(taskIndex, 1);
-            saveProjectData(); renderProjects();
-            setTimeout(() => { const card = document.querySelector(`[data-project="${projectId}"]`); if (card) card.classList.add('expanded'); }, 10);
+            saveProjectData(); renderProjects(); reopenProjectPopup(projectId);
         }
 
         function updateProjectDrive(projectId, category, link) {
