@@ -728,6 +728,14 @@
             <div class="task-list" id="doneTasks"></div>
         </div>
 
+        <div class="tile tile-kanban" id="tile-kanban-backup" data-column="backup" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'backup')">
+            <div class="kanban-header waiting">
+                <div><span class="kanban-title">💾 Backup <span class="kanban-count" id="countBackup">0</span></span><div class="kanban-subtitle">Zapasowe</div></div>
+                <button class="add-task-btn" onclick="openModal('backup')">+</button>
+            </div>
+            <div class="task-list" id="backupTasks"></div>
+        </div>
+
         <!-- ROW 4-5: Projects (4 columns) -->
         <div class="tile tile-project" id="tile-proj-1three">
             <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;">🎬 1three.studio <button class="add-task-btn" onclick="openAddProjectModal('onethree')" title="Dodaj projekt">+</button></div>
@@ -1121,8 +1129,8 @@
         }
 
         function renderTasks() {
-            const columns = ['urgent', 'todo', 'waiting', 'done', 'onhold'];
-            const stats = { urgent: 0, todo: 0, waiting: 0, done: 0, onhold: 0 };
+            const columns = ['urgent', 'todo', 'waiting', 'done', 'onhold', 'backup'];
+            const stats = { urgent: 0, todo: 0, waiting: 0, done: 0, onhold: 0, backup: 0 };
             columns.forEach(col => {
                 const container = document.getElementById(col + 'Tasks');
                 const columnTasks = tasks.filter(t => t.column === col);
@@ -1155,6 +1163,7 @@
             document.getElementById('countDone').textContent = stats.done;
             document.getElementById('countOnhold').textContent = stats.onhold;
             document.getElementById('statOnhold').textContent = stats.onhold;
+            const backupEl = document.getElementById('countBackup'); if (backupEl) backupEl.textContent = stats.backup;
             renderProgressRing();
         }
 
@@ -1710,6 +1719,7 @@
                 'tile-weather': '🌤️ Pogoda',
                 'tile-tokens': '🔥 Tokeny',
                 'tile-profiles': '💾 Profile',
+                'tile-kanban-backup': '💾 Backup',
             };
             return names[id] || id;
         }
