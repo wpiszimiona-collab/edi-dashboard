@@ -1132,7 +1132,7 @@
                     container.innerHTML = '<div class="empty-state">Brak tasków</div>';
                 } else {
                     container.innerHTML = columnTasks.map((task, idx) => `
-                        <div class="task-card" draggable="true" ondragstart="dragStart(event, ${task.id})" onclick="openModal('${col}', ${task.id})">
+                        <div class="task-card" draggable="true" ondragstart="dragStart(event, ${task.id})" ondragover="taskDragOver(event)" ondrop="taskDrop(event, ${task.id}, '${col}')" onclick="openModal('${col}', ${task.id})">
                             <span class="task-num">${String(idx + 1).padStart(2, '0')}</span>
                             <div class="task-card-content">
                                 <div class="task-row">
@@ -1163,6 +1163,20 @@
         function dragStart(event, taskId) { draggedTaskId = taskId; event.dataTransfer.effectAllowed = 'move'; event.target.style.opacity = '0.5'; }
         function dragOver(event) { event.preventDefault(); event.dataTransfer.dropEffect = 'move'; event.currentTarget.classList.add('drag-over'); }
         function dragLeave(event) { event.currentTarget.classList.remove('drag-over'); }
+        function taskDragOver(event) { event.preventDefault(); event.stopPropagation(); event.dataTransfer.dropEffect = 'move'; }
+        function taskDrop(event, targetTaskId, column) {
+            event.preventDefault(); event.stopPropagation();
+            if (draggedTaskId === null || draggedTaskId === targetTaskId) return;
+            const draggedTask = tasks.find(t => t.id === draggedTaskId);
+            if (!draggedTask) return;
+            draggedTask.column = column;
+            const colTasks = tasks.filter(t => t.column === column && t.id !== draggedTaskId);
+            const targetIdx = colTasks.findIndex(t => t.id === targetTaskId);
+            const otherTasks = tasks.filter(t => t.column !== column && t.id !== draggedTaskId);
+            colTasks.splice(targetIdx, 0, draggedTask);
+            tasks = [...otherTasks, ...colTasks];
+            saveTasks(); renderTasks(); draggedTaskId = null;
+        }
         function drop(event, newColumn) {
             event.preventDefault(); event.currentTarget.classList.remove('drag-over');
             if (draggedTaskId !== null) { const task = tasks.find(t => t.id === draggedTaskId); if (task) { task.column = newColumn; saveTasks(); renderTasks(); } draggedTaskId = null; }
