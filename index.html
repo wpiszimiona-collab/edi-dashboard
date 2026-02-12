@@ -864,16 +864,17 @@
         <!-- TOKENS TILE -->
         <div class="tile tile-tokens" id="tile-tokens">
             <div class="tile-section-title">🔥 Tokeny</div>
-            <div class="tile-section-subtitle">Spalane tokeny (mock)</div>
+            <div class="tile-section-subtitle">Dzisiejsze zużycie</div>
             <div style="text-align:center;margin:4px 0;">
-                <div class="token-total" id="tokenTotal">127,430</div>
+                <div class="token-total" id="tokenTotal">—</div>
                 <div style="font-size:8px;color:var(--text-muted);">dziś łącznie</div>
             </div>
             <div id="tokenRows">
-                <div class="token-row"><span class="token-label">Claude Opus</span><span class="token-value">89,200</span></div>
-                <div class="token-row"><span class="token-label">Claude Sonnet</span><span class="token-value">31,450</span></div>
-                <div class="token-row"><span class="token-label">Gemini</span><span class="token-value">6,780</span></div>
+                <div class="token-row"><span class="token-label">Claude Opus</span><span class="token-value" id="tokenOpus">—</span></div>
+                <div class="token-row"><span class="token-label">Claude Sonnet</span><span class="token-value" id="tokenSonnet">—</span></div>
+                <div class="token-row"><span class="token-label">Inne</span><span class="token-value" id="tokenOther">—</span></div>
             </div>
+            <div style="text-align:center;margin-top:4px;font-size:9px;color:var(--purple-300);font-weight:700;" id="tokenCost">—</div>
         </div>
 
         <!-- STASH TILE (always visible) -->
@@ -2372,23 +2373,28 @@
         loadWeather();
         setInterval(loadWeather, 600000); // refresh every 10min
 
-        // ═══════════════ TOKENS (MOCK) ═══════════════
-        function updateTokensMock() {
-            const base = 127430;
-            const jitter = Math.floor(Math.random() * 2000) - 500;
-            const total = base + jitter;
-            const opus = Math.floor(total * 0.70);
-            const sonnet = Math.floor(total * 0.24);
-            const gemini = total - opus - sonnet;
-            document.getElementById('tokenTotal').textContent = total.toLocaleString('pl-PL');
-            const rows = document.getElementById('tokenRows');
-            rows.innerHTML = `
-                <div class="token-row"><span class="token-label">Claude Opus</span><span class="token-value">${opus.toLocaleString('pl-PL')}</span></div>
-                <div class="token-row"><span class="token-label">Claude Sonnet</span><span class="token-value">${sonnet.toLocaleString('pl-PL')}</span></div>
-                <div class="token-row"><span class="token-label">Gemini</span><span class="token-value">${gemini.toLocaleString('pl-PL')}</span></div>
-            `;
+        // ═══════════════ TOKENS (REAL) ═══════════════
+        async function loadTokenStats() {
+            try {
+                const token = await getToken();
+                const headers = { 'Accept': 'application/vnd.github+json' };
+                if (token) headers['Authorization'] = `token ${token}`;
+                const resp = await fetch('https://api.github.com/gists/5ea142fdafd9f73cafd36ecd69cec9d2', { headers });
+                if (!resp.ok) return;
+                const gist = await resp.json();
+                const file = gist.files['token-stats.json'];
+                if (!file) return;
+                const stats = JSON.parse(file.content);
+                const fmt = n => Number(n).toLocaleString('pl-PL');
+                document.getElementById('tokenTotal').textContent = fmt(stats.total);
+                document.getElementById('tokenOpus').textContent = fmt(stats.opus);
+                document.getElementById('tokenSonnet').textContent = fmt(stats.sonnet);
+                document.getElementById('tokenOther').textContent = fmt(stats.other);
+                document.getElementById('tokenCost').textContent = '$' + stats.cost_usd.toFixed(2) + ' dziś';
+            } catch(e) { console.warn('Token stats load failed:', e); }
         }
-        setInterval(updateTokensMock, 30000);
+        loadTokenStats();
+        setInterval(loadTokenStats, 300000); // refresh co 5 min
 
         // ═══════════════ PROFILES ═══════════════
         function getProfiles() { return JSON.parse(localStorage.getItem('dashboardProfiles') || '{}'); }
