@@ -1686,6 +1686,7 @@
             if (!hidden.includes(id)) hidden.push(id);
             localStorage.setItem('dashboardHiddenTiles', JSON.stringify(hidden));
             renderStash();
+            saveToCloud();
         }
 
         function showTile(id) {
@@ -1696,6 +1697,7 @@
             hidden = hidden.filter(h => h !== id);
             localStorage.setItem('dashboardHiddenTiles', JSON.stringify(hidden));
             renderStash();
+            saveToCloud();
         }
 
         function getTileName(id) {
