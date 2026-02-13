@@ -754,13 +754,13 @@
             <div class="apps-inline" id="appsInline"></div>
         </div>
         <div class="tile tile-project" id="tile-proj-dom">
-            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;">🏠 DOM <button class="add-task-btn" onclick="openAddProjectModal('dom')" title="Dodaj task">+</button></div>
-            <div class="project-tile-subtitle">Sprawy domowe</div>
+            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;"><span id="tileName-dom" onclick="editTileName('dom')" style="cursor:text;" title="Kliknij żeby edytować">🏠 DOM</span> <button class="add-task-btn" onclick="openAddProjectModal('dom')" title="Dodaj task">+</button></div>
+            <div class="project-tile-subtitle" id="tileSub-dom" onclick="editTileSub('dom')" style="cursor:text;" title="Kliknij żeby edytować">Sprawy domowe</div>
             <div id="projectsOwn"></div>
         </div>
         <div class="tile tile-project" id="tile-proj-kubus">
-            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;">👶 KUBUŚ <button class="add-task-btn" onclick="openAddProjectModal('kubus')" title="Dodaj task">+</button></div>
-            <div class="project-tile-subtitle">Projekt Maspex</div>
+            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;"><span id="tileName-kubus" onclick="editTileName('kubus')" style="cursor:text;" title="Kliknij żeby edytować">👶 KUBUŚ</span> <button class="add-task-btn" onclick="openAddProjectModal('kubus')" title="Dodaj task">+</button></div>
+            <div class="project-tile-subtitle" id="tileSub-kubus" onclick="editTileSub('kubus')" style="cursor:text;" title="Kliknij żeby edytować">Projekt Maspex</div>
             <div id="projectsKubus"></div>
         </div>
 
@@ -1410,6 +1410,35 @@
             saveProjectData(); renderProjects();
         }
         function saveProjectData() { localStorage.setItem('ediProjectsOnethree', JSON.stringify(projectsOnethree)); localStorage.setItem('ediProjectsFirmy', JSON.stringify(projectsFirmy)); localStorage.setItem('ediProjectsOwn', JSON.stringify(projectsOwn)); localStorage.setItem('ediProjectsKubus', JSON.stringify(projectsKubus)); localStorage.setItem('_lastLocalSave', Date.now().toString()); saveToCloud(); }
+
+        // Editable tile names
+        function editTileName(tileId) {
+            const el = document.getElementById('tileName-' + tileId);
+            const current = el.textContent;
+            const input = document.createElement('input');
+            input.type = 'text'; input.value = current;
+            input.style.cssText = 'background:var(--bg-input);border:1px solid var(--purple-500);border-radius:4px;color:white;font-size:11px;font-weight:700;padding:2px 6px;width:120px;outline:none;';
+            el.replaceWith(input); input.focus(); input.select();
+            function save() { const val = input.value.trim() || current; const span = document.createElement('span'); span.id = 'tileName-' + tileId; span.onclick = function(){editTileName(tileId)}; span.style.cssText = 'cursor:text;'; span.title = 'Kliknij żeby edytować'; span.textContent = val; input.replaceWith(span); localStorage.setItem('tileName-' + tileId, val); }
+            input.onblur = save; input.onkeydown = function(e) { if(e.key==='Enter') save(); if(e.key==='Escape'){input.value=current;save();} };
+        }
+        function editTileSub(tileId) {
+            const el = document.getElementById('tileSub-' + tileId);
+            const current = el.textContent;
+            const input = document.createElement('input');
+            input.type = 'text'; input.value = current;
+            input.style.cssText = 'background:var(--bg-input);border:1px solid var(--purple-500);border-radius:4px;color:var(--purple-400);font-size:8px;padding:2px 6px;width:120px;outline:none;';
+            el.replaceWith(input); input.focus(); input.select();
+            function save() { const val = input.value.trim() || current; const div = document.createElement('div'); div.className = 'project-tile-subtitle'; div.id = 'tileSub-' + tileId; div.onclick = function(){editTileSub(tileId)}; div.style.cssText = 'cursor:text;'; div.title = 'Kliknij żeby edytować'; div.textContent = val; input.replaceWith(div); localStorage.setItem('tileSub-' + tileId, val); }
+            input.onblur = save; input.onkeydown = function(e) { if(e.key==='Enter') save(); if(e.key==='Escape'){input.value=current;save();} };
+        }
+        // Restore saved tile names on load
+        ['dom','kubus'].forEach(function(id) {
+            const savedName = localStorage.getItem('tileName-' + id);
+            const savedSub = localStorage.getItem('tileSub-' + id);
+            if (savedName) { const el = document.getElementById('tileName-' + id); if(el) el.textContent = savedName; }
+            if (savedSub) { const el = document.getElementById('tileSub-' + id); if(el) el.textContent = savedSub; }
+        });
 
         /* --- Project card drag-reorder within tiles --- */
         let projDragEl = null;
