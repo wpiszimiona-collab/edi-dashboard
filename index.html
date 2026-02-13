@@ -2770,7 +2770,7 @@
         // Load Research Items from Gist
         async function loadResearchItems() {
             try {
-                const r = await fetch('https://gist.githubusercontent.com/wpiszimiona/5ea142fdafd9f73cafd36ecd69cec9d2/raw/edilog-data.json?' + Date.now());
+                const r = await fetch('https://gist.githubusercontent.com/wpiszimiona-collab/5ea142fdafd9f73cafd36ecd69cec9d2/raw/edilog-data.json?' + Date.now());
                 const data = await r.json();
                 const items = data.researchItems || [];
                 const container = document.getElementById('researchCards');
