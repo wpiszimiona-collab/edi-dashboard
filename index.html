@@ -1265,8 +1265,8 @@
             `}).join('');
             document.getElementById('projectsOnethree').innerHTML = renderCards(projectsOnethree, 'onethree');
             document.getElementById('projectsFirmy').innerHTML = renderCards(projectsFirmy, 'firmy');
-            document.getElementById('projectsOwn').innerHTML = renderCards(projectsOwn, 'own');
-            document.getElementById('projectsKubus').innerHTML = renderCards(projectsKubus, 'kubus');
+            const ownEl = document.getElementById('projectsOwn'); if (ownEl) ownEl.innerHTML = renderCards(projectsOwn, 'own');
+            const kubEl = document.getElementById('projectsKubus'); if (kubEl) kubEl.innerHTML = renderCards(projectsKubus, 'kubus');
         }
 
         function toggleProject(card) {
