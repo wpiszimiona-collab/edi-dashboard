@@ -1163,7 +1163,7 @@
         }
 
         function renderTasks() {
-            const columns = ['urgent', 'todo', 'waiting', 'done', 'onhold', 'backup', 'domtodo', 'kubustodo', 'reko'];
+            const columns = ['urgent', 'todo', 'waiting', 'done', 'onhold', 'backup', 'domtodo', 'kubustodo'];
             const stats = { urgent: 0, todo: 0, waiting: 0, done: 0, onhold: 0, backup: 0 };
             columns.forEach(col => {
                 const container = document.getElementById(col + 'Tasks');
@@ -2581,6 +2581,7 @@
         // (kanbanNames are already saved to localStorage, and saveToCloud reads from localStorage)
 
         // ═══════════════ RADA REKOMENDACJE (from edilog Gist) ═══════════════
+        let radaData = { rekomendacje: [], rekoDate: '', radaRaport: '' };
         async function loadRadaReko() {
             try {
                 const token = await getToken();
@@ -2592,29 +2593,80 @@
                 const file = gist.files['edilog-data.json'];
                 if (!file) return;
                 const data = JSON.parse(file.content);
-                const reko = data.rekomendacje || [];
-                if (reko.length === 0) return;
-                const container = document.getElementById('rekoTasks');
-                if (!container) return;
-                const rekoEl = document.getElementById('countReko');
-                if (rekoEl) rekoEl.textContent = reko.length;
-                container.innerHTML = reko.map((r, i) => `
-                    <div class="task-card">
-                        <span class="task-num">${String(i+1).padStart(2,'0')}</span>
-                        <div class="task-card-content">
-                            <div class="task-row">
-                                <span class="task-title">${r.icon} ${r.title}</span>
-                                <span class="task-project research">${r.source}</span>
-                            </div>
-                            <div style="font-size:8px;color:var(--text-secondary);margin-top:2px;">${r.detail}</div>
+                radaData = data;
+                renderRadaReko();
+            } catch(e) { console.warn('Rada load failed:', e); }
+        }
+        function renderRadaReko() {
+            const reko = radaData.rekomendacje || [];
+            const container = document.getElementById('rekoTasks');
+            if (!container) return;
+            const rekoEl = document.getElementById('countReko');
+            if (rekoEl) rekoEl.textContent = reko.length;
+            if (reko.length === 0) {
+                container.innerHTML = '<div class="empty-state">Brak rekomendacji</div>';
+                return;
+            }
+            container.innerHTML = reko.map((r, i) => `
+                <div class="task-card" onclick="openRadaDetail(${i})" style="cursor:pointer;">
+                    <span class="task-num">${String(i+1).padStart(2,'0')}</span>
+                    <div class="task-card-content">
+                        <div class="task-row">
+                            <span class="task-title">${r.icon} ${r.title}</span>
+                            <span class="task-project research">${r.source}</span>
                         </div>
                     </div>
-                `).join('');
-                if (data.rekoDate) {
-                    const sub = document.getElementById('kanbanSub-reko');
-                    if (sub) sub.textContent = 'Aktualizacja: ' + data.rekoDate;
-                }
-            } catch(e) { console.warn('Rada load failed:', e); }
+                </div>
+            `).join('');
+            if (radaData.rekoDate) {
+                const sub = document.getElementById('kanbanSub-reko');
+                if (sub) sub.textContent = 'Raport: ' + radaData.rekoDate;
+            }
+        }
+        function openRadaDetail(index) {
+            const reko = radaData.rekomendacje || [];
+            const item = reko[index];
+            if (!item) return;
+            let overlay = document.getElementById('radaOverlay');
+            let popup = document.getElementById('radaPopup');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'radaOverlay';
+                overlay.style.cssText = 'display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99998;';
+                overlay.onclick = closeRadaDetail;
+                document.body.appendChild(overlay);
+            }
+            if (!popup) {
+                popup = document.createElement('div');
+                popup.id = 'radaPopup';
+                popup.style.cssText = 'display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px 28px;width:90%;max-width:500px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.8);line-height:1.8;color:var(--text-primary);font-size:12px;';
+                document.body.appendChild(popup);
+            }
+            const raport = radaData.radaRaport || '';
+            popup.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);">
+                    <span style="font-weight:700;font-size:14px;">${item.icon} ${item.title}</span>
+                    <button onclick="closeRadaDetail()" style="color:var(--purple-300);font-size:14px;font-weight:700;cursor:pointer;background:none;border:none;">✕</button>
+                </div>
+                <div style="margin-bottom:12px;">
+                    <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(59,130,246,0.15);color:#3b82f6;font-weight:600;">${item.source}</span>
+                    ${radaData.rekoDate ? '<span style="font-size:9px;color:var(--text-muted);margin-left:8px;">'+radaData.rekoDate+'</span>' : ''}
+                </div>
+                <div style="font-size:12px;line-height:1.8;color:var(--text-secondary);margin-bottom:16px;">${item.detail}</div>
+                ${item.actions ? '<div style="font-weight:700;font-size:10px;color:var(--purple-400);margin-bottom:6px;text-transform:uppercase;">Akcje:</div><div style="font-size:11px;line-height:1.8;margin-bottom:16px;">'+item.actions+'</div>' : ''}
+                ${raport ? '<div style="border-top:1px solid var(--border);padding-top:12px;margin-top:8px;"><div style="font-weight:700;font-size:10px;color:var(--purple-400);margin-bottom:8px;text-transform:uppercase;">Pełny raport Rady</div><div style="font-size:11px;line-height:1.8;color:var(--text-secondary);white-space:pre-wrap;">'+raport+'</div></div>' : ''}
+                <div style="display:flex;gap:8px;margin-top:16px;">
+                    <button onclick="closeRadaDetail()" class="btn btn-secondary" style="flex:1;">Zamknij</button>
+                </div>
+            `;
+            overlay.style.display = 'block';
+            popup.style.display = 'block';
+        }
+        function closeRadaDetail() {
+            const overlay = document.getElementById('radaOverlay');
+            const popup = document.getElementById('radaPopup');
+            if (overlay) overlay.style.display = 'none';
+            if (popup) popup.style.display = 'none';
         }
         loadRadaReko();
 
