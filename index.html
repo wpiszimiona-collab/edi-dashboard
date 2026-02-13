@@ -297,8 +297,8 @@
         /* ═══════════════ QUICK NOTES ═══════════════ */
         .tile-notes { grid-column: span 4; display: flex; flex-direction: column; }
         .notes-title { font-size: 10px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
-        .notes-textarea { flex: 1; width: 100%; padding: 8px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text-primary); font-size: 10px; resize: none; font-family: inherit; line-height: 1.5; }
-        .notes-textarea:focus { outline: none; border-color: var(--purple-500); }
+        .notes-textarea { flex: 1; width: 100%; padding: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: var(--text-primary); font-size: 10px; resize: none; font-family: inherit; line-height: 1.5; }
+        .notes-textarea:focus { outline: none; border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); }
         .notes-saved { font-size: 8px; color: var(--green); margin-top: 4px; opacity: 0; transition: opacity 0.3s; }
         .notes-saved.show { opacity: 1; }
 
@@ -436,8 +436,8 @@
         .edilog-entries.collapsed { display: none; }
 
         .apps-inline { display: flex; flex-wrap: wrap; gap: 4px; }
-        .app-pill { display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; font-size: 9px; cursor: pointer; transition: all 0.15s; }
-        .app-pill:hover { border-color: var(--border-hover); }
+        .app-pill { display: flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; font-size: 9px; cursor: pointer; transition: all 0.2s; backdrop-filter: blur(10px); }
+        .app-pill:hover { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.07); }
         .app-pill.high { border-left: 2px solid var(--red); }
         .app-pill.medium { border-left: 2px solid var(--yellow); }
         .app-pill.low { border-left: 2px solid var(--green); }
@@ -451,8 +451,8 @@
         .add-app-inline:hover { border-color: var(--purple-500); }
 
         .docs-pills { display: flex; flex-wrap: wrap; gap: 4px; }
-        .doc-pill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 6px; color: var(--purple-300); text-decoration: none; font-size: 9px; transition: all 0.15s; }
-        .doc-pill:hover { border-color: var(--border-hover); }
+        .doc-pill { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: var(--purple-300); text-decoration: none; font-size: 9px; transition: all 0.2s; }
+        .doc-pill:hover { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.07); }
         .doc-type { font-size: 7px; padding: 1px 4px; border-radius: 3px; font-weight: 600; }
         .doc-type.research { background: rgba(245,158,11,0.15); color: var(--yellow); }
         .doc-type.raport { background: rgba(124,58,237,0.15); color: var(--purple-300); }
@@ -2616,6 +2616,17 @@
                 const file = gist.files['edilog-data.json'];
                 if (!file) return;
                 const data = JSON.parse(file.content);
+                // Map radaReko array to rekomendacje format
+                if (data.radaReko && !data.rekomendacje) {
+                    data.rekomendacje = data.radaReko.map(r => ({
+                        icon: r.priority === 'PILNE' ? '🔴' : r.priority === 'TEN TYDZIEŃ' ? '🟡' : '💡',
+                        title: r.text,
+                        source: r.priority,
+                        detail: r.text,
+                        actions: r.owner ? 'Odpowiedzialny: ' + r.owner : '',
+                        reply: r.reply || ''
+                    }));
+                }
                 radaData = data;
                 renderRadaReko();
             } catch(e) { console.warn('Rada load failed:', e); }
