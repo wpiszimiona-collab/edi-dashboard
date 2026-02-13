@@ -228,6 +228,7 @@
         .task-status-circle.onhold { border-color: #6b7280; }
         .task-status-circle.domtodo { border-color: var(--yellow); }
         .task-status-circle.kubustodo { border-color: var(--blue); }
+        .task-status-circle.reko { border-color: var(--green); }
 
         .task-row { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
         .task-title { font-weight: 500; font-size: 10px; line-height: 1.3; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -762,6 +763,13 @@
             </div>
             <div class="task-list" id="domtodoTasks"></div>
         </div>
+        <div class="tile tile-kanban" id="tile-kanban-reko" data-column="reko" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'reko')">
+            <div class="kanban-header done">
+                <div><span class="kanban-title">🎯 RADA <span class="kanban-count done" id="countReko">0</span></span><div class="kanban-subtitle" id="kanbanSub-reko" onclick="editKanbanSub('reko')" style="cursor:text;" title="Kliknij żeby edytować">Rekomendacje</div></div>
+                <button class="add-task-btn" onclick="openModal('reko')">+</button>
+            </div>
+            <div class="task-list" id="rekoTasks"></div>
+        </div>
         <div class="tile tile-kanban" id="tile-kanban-kubustodo" data-column="kubustodo" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'kubustodo')">
             <div class="kanban-header week">
                 <div><span class="kanban-title">👶 KUBUŚ <span class="kanban-count week" id="countKubustodo">0</span></span><div class="kanban-subtitle" id="kanbanSub-kubustodo" onclick="editKanbanSub('kubustodo')" style="cursor:text;" title="Kliknij żeby edytować">TODO Kubuś</div></div>
@@ -1144,7 +1152,7 @@
         }
 
         function renderTasks() {
-            const columns = ['urgent', 'todo', 'waiting', 'done', 'onhold', 'backup', 'domtodo', 'kubustodo'];
+            const columns = ['urgent', 'todo', 'waiting', 'done', 'onhold', 'backup', 'domtodo', 'kubustodo', 'reko'];
             const stats = { urgent: 0, todo: 0, waiting: 0, done: 0, onhold: 0, backup: 0 };
             columns.forEach(col => {
                 const container = document.getElementById(col + 'Tasks');
@@ -1181,6 +1189,7 @@
             const backupEl = document.getElementById('countBackup'); if (backupEl) backupEl.textContent = stats.backup;
             const domtodoEl = document.getElementById('countDomtodo'); if (domtodoEl) domtodoEl.textContent = stats.domtodo || 0;
             const kubustodoEl = document.getElementById('countKubustodo'); if (kubustodoEl) kubustodoEl.textContent = stats.kubustodo || 0;
+            const rekoEl = document.getElementById('countReko'); if (rekoEl) rekoEl.textContent = stats.reko || 0;
             renderProgressRing();
         }
 
@@ -1451,7 +1460,7 @@
             input.onblur = save; input.onkeydown = function(e) { if(e.key==='Enter') save(); if(e.key==='Escape'){input.value=current;save();} };
         }
         // Restore saved tile names on load
-        ['domtodo','kubustodo'].forEach(function(id) {
+        ['domtodo','kubustodo','reko'].forEach(function(id) {
             const savedSub = localStorage.getItem('kanbanSub-' + id);
             if (savedSub) { const el = document.getElementById('kanbanSub-' + id); if(el) el.textContent = savedSub; }
         });
