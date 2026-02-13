@@ -818,13 +818,12 @@
             <div class="task-list" id="kubustodoTasks"></div>
         </div>
 
-        <!-- ROW 6-7: ON HOLD + Settings + Calendar -->
-        <div class="tile tile-kanban" id="tile-kanban-onhold" data-column="onhold" style="grid-column: span 6;" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'onhold')">
-            <div class="kanban-header onhold">
-                <div><span class="kanban-title"><i data-lucide="pause-circle" class="lucide-sm muted-icon"></i> ON HOLD <span class="kanban-count onhold" id="countOnhold">0</span></span><div class="kanban-subtitle">Wstrzymane</div></div>
-                <button class="add-task-btn" onclick="openModal('onhold')">+</button>
+        <!-- ROW 6-7: RESEARCH + Settings + Calendar -->
+        <div class="tile tile-kanban" id="tile-kanban-research" style="grid-column: span 6;">
+            <div class="kanban-header" style="border-bottom-color: #f59e0b;">
+                <div><span class="kanban-title"><i data-lucide="lightbulb" class="lucide-sm" style="color:#f59e0b;"></i> RESEARCH <span class="kanban-count" style="background:rgba(245,158,11,0.15);color:#f59e0b;" id="countResearch">0</span></span><div class="kanban-subtitle">Insighty z NotebookLM</div></div>
             </div>
-            <div class="task-list" id="onholdTasks"></div>
+            <div class="task-list" id="researchCards" style="max-height:400px;overflow-y:auto;"></div>
         </div>
         <div class="tile tile-settings" id="tile-settings">
             <div class="settings-title"><i data-lucide="settings" class="lucide-sm muted-icon"></i> Ustawienia</div>
@@ -2767,6 +2766,29 @@
             if (popup) popup.style.display = 'none';
         }
         loadRadaReko();
+
+        // Load Research Items from Gist
+        async function loadResearchItems() {
+            try {
+                const r = await fetch('https://gist.githubusercontent.com/wpiszimiona/5ea142fdafd9f73cafd36ecd69cec9d2/raw/edilog-data.json?' + Date.now());
+                const data = await r.json();
+                const items = data.researchItems || [];
+                const container = document.getElementById('researchCards');
+                if (!container || !items.length) return;
+                document.getElementById('countResearch').textContent = items.length;
+                container.innerHTML = items.map((item, i) => `
+                    <div class="task-card" style="cursor:default;">
+                        <div class="task-header">
+                            <span class="task-number">${String(i+1).padStart(2,'0')}</span>
+                            <span class="task-title">${item.title || ''}</span>
+                        </div>
+                        <div style="font-size:0.78rem;color:#9ca3af;margin-top:4px;">${item.detail || ''}</div>
+                        ${item.source ? `<div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">📎 ${item.source}</div>` : ''}
+                    </div>
+                `).join('');
+            } catch(e) { console.error('Research load error:', e); }
+        }
+        loadResearchItems();
 
         // Initialize Lucide icons (retry until loaded)
         function initLucide() {
