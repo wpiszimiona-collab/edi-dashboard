@@ -1,47 +1,374 @@
 {
   "days": [
     {
-      "date": "2026-02-10",
-      "summary": null,
+      "date": "2026-02-13",
+      "summary": "Telefon Edi podpięty! OpenClaw update 2.12, BUR pipeline, Rada, finanse",
       "entries": [
-        { "time": "14:42", "icon": "🎨", "title": "Dashboard — wolny układ naprawiony", "detail": "Toggle ON/OFF zachowuje pozycje kafelków", "tag": "DASHBOARD" },
-        { "time": "14:00", "icon": "🎨", "title": "Dashboard — liquid glass z 1three.studio", "detail": "Shimmer animation, conic-gradient, bento grid redesign", "tag": "DASHBOARD" },
-        { "time": "13:51", "icon": "🎨", "title": "Dashboard — bento grid + kafelki puzzle", "detail": "Kalendarz, progress ring, quick notes, eksport ustawień", "tag": "DASHBOARD" },
-        { "time": "12:58", "icon": "🎨", "title": "Dashboard — redesign marathon", "detail": "Glassmorphism → Apexify → bento grid (wiele iteracji)", "tag": "DASHBOARD" },
-        { "time": "12:54", "icon": "📊", "title": "Weekly priority tracker", "detail": "projekty/dashboard/weekly.html — dark mode, checkboxy", "tag": "DASHBOARD" },
-        { "time": "12:50", "icon": "🎯", "title": "Accountability mode ON", "detail": "NOW.md + HEARTBEAT.md zaktualizowane, TOP 3 na tydzień", "tag": "SYSTEM" },
-        { "time": "12:30", "icon": "🖼️", "title": "Landing page — poprawki wizualne", "detail": "Gradienty, dot patterns, trust marquee, tighter padding", "tag": "AIPRACUJE" },
-        { "time": "11:50", "icon": "🔄", "title": "Landing page — headline fix", "detail": "\"AI pracuje, Ty odpoczywasz\" w index.html", "tag": "AIPRACUJE" },
-        { "time": "11:20", "icon": "✨", "title": "Google Stitch test", "detail": "Wygenerowany prompt, Piotr testował w Stitch i Lovable", "tag": "AIPRACUJE" },
-        { "time": "11:00", "icon": "📝", "title": "Rebrand aipracuje.pl", "detail": "Empowerment messaging, BRANDING-NOTES.md, research", "tag": "AIPRACUJE" },
-        { "time": "10:56", "icon": "📞", "title": "Twilio Regulatory Bundle #2 złożony", "detail": "Poland Mobile Individual, sent for review", "tag": "VOICE" },
-        { "time": "10:53", "icon": "📞", "title": "Twilio Regulatory Bundle #1 złożony", "detail": "Poland Mobile Individual, sent for review", "tag": "VOICE" },
-        { "time": "10:30", "icon": "🔄", "title": "OpenClaw update 2026.2.6-3 → 2026.2.9", "detail": "Nowe features: VirusTotal, skill scanner", "tag": "SYSTEM" },
-        { "time": "10:00", "icon": "🔍", "title": "Ocena 5 skilli ClawHub", "detail": "Wszystkie odrzucone — istniejące narzędzia wystarczą", "tag": "SYSTEM" },
-        { "time": "09:53", "icon": "⚠️", "title": "Telegram globalny outage", "detail": "Problemy z ładowaniem, trwa drugi dzień", "tag": "SYSTEM" },
-        { "time": "09:30", "icon": "🤖", "title": "Analiza Kie.ai", "detail": "Decyzja: zostajemy na Kie.ai, wewnętrzny router później", "tag": "RESEARCH" },
-        { "time": "09:00", "icon": "📚", "title": "Bazy wiedzy AI modeli", "detail": "ai-video-models.md + ai-image-models.md stworzone", "tag": "RESEARCH" },
-        { "time": "08:30", "icon": "🔍", "title": "Seedance 2.0 research", "detail": "NIEDOSTĘPNY z Europy, ETA koniec lutego", "tag": "RESEARCH" }
+        {
+          "time": "14:15",
+          "icon": "🔒",
+          "title": "OpenClaw update 2026.2.9 → 2026.2.12",
+          "detail": "40 luk bezpieczeństwa załatanych (SSRF, prompt injection, sandbox isolation).",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "13:55",
+          "icon": "📞",
+          "title": "Telefon Edi — DZIAŁA!",
+          "detail": "+48 732 145 757 podpięty przez Twilio + ElevenLabs. Głos Kamil (PL), Multilingual, Gemini Flash. Następny krok: bridge do OpenClaw.",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "13:27",
+          "icon": "🔍",
+          "title": "ClawdTalk research — odrzucony",
+          "detail": "Telnyx produkt, 4 dni na rynku, beta, shared US number. Za świeży. Zostaliśmy przy ElevenLabs+Twilio.",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "11:30",
+          "icon": "💰",
+          "title": "Usługi Rozwojowe 4.0 — dofinansowanie licencji",
+          "detail": "Do 50k zwrotu (80%) na licencje AI. Warunek: 50 uczestników BUR. IPK złożone w grudniu, wyniki wkrótce.",
+          "tag": "1THREE"
+        },
+        {
+          "time": "11:14",
+          "icon": "🔍",
+          "title": "BUR Pipeline Research — gotowy",
+          "detail": "MBON nabór zamknięty, firmy mają bony TERAZ. Nisza pusta. Deadline UR 4.0: 31.08.2026. Plan outreach gotowy.",
+          "tag": "1THREE"
+        },
+        {
+          "time": "10:57",
+          "icon": "📋",
+          "title": "Rada Nadzorcza v2 — z twardymi danymi",
+          "detail": "BUR first, ciąć subskrypcje, cel 2 szkolenia/msc od marca. Pipeline BUR = 0 leadów!",
+          "tag": "1THREE"
+        },
+        {
+          "time": "09:45",
+          "icon": "💰",
+          "title": "Analiza finansów z Google Sheets",
+          "detail": "Koszty 15.3k/msc, mediana przychodów 36k, bez Maspexu 28.5k. ArtFM potwierdzone (21k)!",
+          "tag": "1THREE"
+        },
+        {
+          "time": "07:00",
+          "icon": "📋",
+          "title": "Rada Nadzorcza AI — uruchomiona!",
+          "detail": "Strateg + Finansowy + Sceptyk. Cron 2x/tyg (niedz+śr 21:00). Pierwszy raport gotowy.",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "06:55",
+          "icon": "🧠",
+          "title": "AI Coach — nowy produkt na Trello",
+          "detail": "HeyGen avatar Oli jako AI trener po szkoleniach BUR. Koszt ~155-322 USD/msc. Karta: VzKDbuqX + bkXydqqa",
+          "tag": "1THREE"
+        },
+        {
+          "time": "06:45",
+          "icon": "📊",
+          "title": "NotebookLM — raport z 2 filmów OpenClaw",
+          "detail": "Eric Siu + Matthew Berman. Top insight: AI Coach, Rada Ekspertów, Humanizer",
+          "tag": "RESEARCH"
+        },
+        {
+          "time": "06:30",
+          "icon": "🔬",
+          "title": "Benchmarki konkurencji aipracuje.pl",
+          "detail": "Bellagent, GodMode, Relay.app — analiza porównawcza. Relay lider, nasz wyróżnik: polski marketplace z ludzkimi profilami",
+          "tag": "RESEARCH"
+        }
+      ]
+    },
+    {
+      "date": "2026-02-12",
+      "summary": "Dashboard v3.1 — bugfixy, nowe panele, nocna sesja z Piotrem",
+      "entries": [
+        {
+          "time": "21:45",
+          "icon": "📋",
+          "title": "Nowa procedura: codzienny przegląd dashboardu",
+          "detail": "Edi sprawdza cały dashboard codziennie i robi co może sam",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "21:49",
+          "icon": "🚀",
+          "title": "Dashboard pushed to GitHub Pages",
+          "detail": "v3.1 live, backup zrobiony",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "21:40",
+          "icon": "🔧",
+          "title": "Dashboard poprawki — 9 punktów",
+          "detail": "Bugfix rendering, responsywność, edytowalne listy, profile widoku, zegar, pogoda, tokeny, czas w taskach",
+          "tag": "DASHBOARD"
+        }
+      ]
+    },
+    {
+      "date": "2026-02-11",
+      "summary": "Spawn Agent #2 — procedura, workflow, optymalizacja tokenów",
+      "entries": [
+        {
+          "time": "10:22",
+          "icon": "💰",
+          "title": "Token tracking uruchomiony",
+          "detail": "memory/token-usage.md, poranna rutyna okrojona (tylko taski, bez newsów/pogody)",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "10:25",
+          "icon": "🤖",
+          "title": "SPAWN-EDI-PROCEDURE.md — kompletna procedura",
+          "detail": "6 faz: infra, DNA, skille, onboarding, nadzór, skalowanie. Hierarchia: Piotr→Edi→Agenci",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "10:34",
+          "icon": "🔗",
+          "title": "Dashboard sync naprawiony — Gist live",
+          "detail": "Edi Log ładuje teraz z Gista, nie z lokalnego pliku. Sync natychmiastowy po każdej edycji.",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "10:25",
+          "icon": "🤖",
+          "title": "SPAWN-EDI-PROCEDURE.md — kompletna procedura",
+          "detail": "6 faz: infra, DNA, skille, onboarding, nadzór, skalowanie. Hierarchia: Piotr→Edi→Agenci",
+          "tag": "SYSTEM"
+        }
+      ]
+    },
+    {
+      "date": "2026-02-10",
+      "summary": "Dashboard online, cloud sync, failover, UI polish",
+      "entries": [
+        {
+          "time": "09:00",
+          "icon": "📚",
+          "title": "Bazy wiedzy AI modeli",
+          "detail": "video + image + LLM rankings stworzone",
+          "tag": "RESEARCH"
+        },
+        {
+          "time": "10:30",
+          "icon": "🔄",
+          "title": "OpenClaw update → 2026.2.9",
+          "detail": "VirusTotal, skill scanner",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "10:56",
+          "icon": "📞",
+          "title": "Twilio Regulatory Bundles złożone",
+          "detail": "2 bundles, Poland Mobile Individual, sent for review",
+          "tag": "VOICE"
+        },
+        {
+          "time": "11:00",
+          "icon": "📝",
+          "title": "Rebrand aipracuje.pl",
+          "detail": "Empowerment messaging, BRANDING-NOTES.md, research",
+          "tag": "AIPRACUJE"
+        },
+        {
+          "time": "12:30",
+          "icon": "🖼️",
+          "title": "Landing page — poprawki wizualne",
+          "detail": "Gradienty, dot patterns, trust marquee, tighter padding",
+          "tag": "AIPRACUJE"
+        },
+        {
+          "time": "12:50",
+          "icon": "🎯",
+          "title": "Accountability mode ON",
+          "detail": "NOW.md + HEARTBEAT.md zaktualizowane, TOP 3 na tydzień",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "12:58",
+          "icon": "🎨",
+          "title": "Dashboard — redesign marathon",
+          "detail": "Glassmorphism → Apexify → bento grid (wiele iteracji)",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "13:51",
+          "icon": "🎨",
+          "title": "Dashboard — bento grid + kafelki puzzle",
+          "detail": "Kalendarz, progress ring, quick notes, eksport ustawień",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "14:00",
+          "icon": "🎨",
+          "title": "Dashboard — liquid glass z 1three.studio",
+          "detail": "Shimmer animation, conic-gradient, bento grid redesign",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "14:42",
+          "icon": "🎨",
+          "title": "Dashboard — wolny układ naprawiony",
+          "detail": "Toggle ON/OFF zachowuje pozycje kafelków",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "15:30",
+          "icon": "🛡️",
+          "title": "Failover chain skonfigurowany",
+          "detail": "6 poziomów: Opus→Sonnet→Gemini 3/2.5 Pro→Flash",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "16:00",
+          "icon": "🚀",
+          "title": "Dashboard deployed to GitHub Pages",
+          "detail": "wpiszimiona-collab/edi-dashboard, public repo",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "17:00",
+          "icon": "🔐",
+          "title": "PIN protection + login screen",
+          "detail": "SHA-256 hash, branding '1ts', numeric keyboard",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "18:00",
+          "icon": "☁️",
+          "title": "Cloud sync via GitHub Gist",
+          "detail": "Gist 5ea142fd..., AES-256-GCM encrypted token, auto-refresh 30s",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "19:30",
+          "icon": "📱",
+          "title": "Mobile layout + PWA homescreen",
+          "detail": "Single column ≤600px, Piotr dodał jako '1ts' na iPhone",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "20:30",
+          "icon": "🔗",
+          "title": "Edi → Gist task management potwierdzone",
+          "detail": "Read/write do dashboard-data.json via GitHub API działa",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "21:29",
+          "icon": "🎨",
+          "title": "Dashboard — wider grid 1400px centered",
+          "detail": "Było 1200px, kafelki ucięte po bokach, teraz pełna szerokość",
+          "tag": "DASHBOARD"
+        },
+        {
+          "time": "21:35",
+          "icon": "✏️",
+          "title": "Dashboard — merged Resize+Free Layout toggle",
+          "detail": "Jeden przycisk 'Edycja układu' zamiast dwóch osobnych",
+          "tag": "DASHBOARD"
+        }
       ]
     },
     {
       "date": "2026-02-09",
       "summary": "Security audit, API keys przeniesione, ClawHavoc alert, Opus 4.6 upgrade",
       "entries": [
-        { "time": "22:00", "icon": "🔒", "title": "API keys przeniesione do .env", "detail": "Z .zshrc do ~/.openclaw/.env — bezpieczniej", "tag": "SECURITY" },
-        { "time": "20:00", "icon": "⚠️", "title": "ClawHavoc — 341 malicious skilli", "detail": "Kampania Jan-Feb 2026 na ClawHub, nasz workspace czysty", "tag": "SECURITY" },
-        { "time": "18:00", "icon": "🚀", "title": "aipracuje.pl koncept", "detail": "\"Urząd Pracy AI\", domeny kupione, landing page v2", "tag": "AIPRACUJE" },
-        { "time": "15:00", "icon": "⬆️", "title": "Opus 4.5 → 4.6 upgrade", "detail": "Subagenci na Sonnet 4", "tag": "SYSTEM" }
+        {
+          "time": "15:00",
+          "icon": "⬆️",
+          "title": "Opus 4.5 → 4.6 upgrade",
+          "detail": "Subagenci na Sonnet 4",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "18:00",
+          "icon": "🚀",
+          "title": "aipracuje.pl koncept",
+          "detail": "\"Urząd Pracy AI\", domeny kupione, landing page v2",
+          "tag": "AIPRACUJE"
+        },
+        {
+          "time": "20:00",
+          "icon": "⚠️",
+          "title": "ClawHavoc — 341 malicious skilli",
+          "detail": "Kampania Jan-Feb 2026 na ClawHub, nasz workspace czysty",
+          "tag": "SECURITY"
+        },
+        {
+          "time": "22:00",
+          "icon": "🔒",
+          "title": "API keys przeniesione do .env",
+          "detail": "Z .zshrc do ~/.openclaw/.env — bezpieczniej",
+          "tag": "SECURITY"
+        }
       ]
     },
     {
       "date": "2026-02-08",
       "summary": "Trello integracja, HubSpot email sync, NotebookLM setup",
       "entries": [
-        { "time": "20:00", "icon": "📋", "title": "Trello podpięty", "detail": "Boardy widoczne, skill zainstalowany", "tag": "SYSTEM" },
-        { "time": "16:00", "icon": "📧", "title": "HubSpot email sync", "detail": "aleksandra@1three.studio zsynchronizowany", "tag": "1THREE" },
-        { "time": "12:00", "icon": "📓", "title": "NotebookLM zintegrowane", "detail": "13 knowledge notes, CLI workflow", "tag": "SYSTEM" }
+        {
+          "time": "12:00",
+          "icon": "📓",
+          "title": "NotebookLM zintegrowane",
+          "detail": "13 knowledge notes, CLI workflow",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "16:00",
+          "icon": "📧",
+          "title": "HubSpot email sync",
+          "detail": "aleksandra@1three.studio zsynchronizowany",
+          "tag": "1THREE"
+        },
+        {
+          "time": "20:00",
+          "icon": "📋",
+          "title": "Trello podpięty",
+          "detail": "Boardy widoczne, skill zainstalowany",
+          "tag": "SYSTEM"
+        }
       ]
+    }
+  ],
+  "rekoDate": "13.02.2026",
+  "rekomendacje": [
+    {
+      "icon": "🔴",
+      "title": "BUR Pipeline: cel 2 szkolenia/msc od marca",
+      "detail": "Zero leadów poza ESPECTO i ART FM. Zbudować bazę 200 firm, outreach, MARR kontakt. Każde szkolenie = 15-25k.",
+      "source": "RADA"
+    },
+    {
+      "icon": "🔴",
+      "title": "Usługi Rozwojowe 4.0 — złożyć wniosek po 50 uczestnikach",
+      "detail": "Do 50k zwrotu na licencje AI (80%). Potrzeba 50 uczestników BUR. Plan: 4 szkolenia = 50 osób → wniosek VI/VII.",
+      "source": "FINANSE"
+    },
+    {
+      "icon": "🟠",
+      "title": "AI Coach jako upsell do BUR, nie osobny produkt",
+      "detail": "HeyGen avatar Oli. Koszt ~155-322 USD/msc. MVP po 20+ szkoleniach. Klient kupuje kurs → dostaje Coacha → sub 199 zł/msc.",
+      "source": "RADA"
+    },
+    {
+      "icon": "🟠",
+      "title": "Stabilizować przychody — nie polegać na wielorybach",
+      "detail": "Mediana 36k/msc, bez Maspexu 28.5k. Szkolenia BUR = powtarzalny przychód. Produkcja video = cash cow.",
+      "source": "FINANSE"
+    },
+    {
+      "icon": "🟡",
+      "title": "aipracuje.pl — lead magnet, nie startup",
+      "detail": "Odpalić w 2 dni, niech wisi jako ciekawostka. Pokazuje kompetencje AI. Nie inwestować czasu.",
+      "source": "STRATEGIA"
     }
   ]
 }

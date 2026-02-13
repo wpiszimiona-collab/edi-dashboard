@@ -388,6 +388,16 @@
         }
         .stash-chip:hover { background: rgba(124,58,237,0.3); color: #fff; }
 
+        /* ═══════════════ REKOMENDACJE TILE ═══════════════ */
+        #tile-reko-main { display: flex; flex-direction: column; }
+        .reko-item { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(124,58,237,0.1); align-items: flex-start; }
+        .reko-item:last-child { border-bottom: none; }
+        .reko-priority { font-size: 10px; min-width: 16px; }
+        .reko-text { color: var(--text-primary); font-size: 10px; flex: 1; line-height: 1.4; }
+        .reko-text .reko-detail { color: var(--text-secondary); font-size: 9px; display: block; margin-top: 2px; }
+        .reko-source { font-size: 7px; padding: 1px 4px; border-radius: 3px; font-weight: 600; background: rgba(124,58,237,0.15); color: var(--purple-300); white-space: nowrap; }
+        .reko-date { font-size: 8px; color: var(--text-secondary); margin-bottom: 6px; }
+
         /* ═══════════════ EDI LOG TILE ═══════════════ */
         .tile-edilog { grid-column: span 6; grid-row: span 3; display: flex; flex-direction: column; max-height: 400px; }
         .edilog-scroll { flex: 1; overflow-y: auto; padding-right: 4px; }
@@ -747,6 +757,16 @@
             <div class="project-tile-subtitle">Własne biznesy</div>
             <div id="projectsFirmy"></div>
         </div>
+        <div class="tile tile-project" id="tile-proj-dom">
+            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;">🏠 DOM <button class="add-task-btn" onclick="openAddProjectModal('dom')" title="Dodaj task">+</button></div>
+            <div class="project-tile-subtitle">Sprawy domowe</div>
+            <div id="projectsDom"></div>
+        </div>
+        <div class="tile tile-project" id="tile-proj-kubus">
+            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;">👶 KUBUŚ <button class="add-task-btn" onclick="openAddProjectModal('kubus')" title="Dodaj task">+</button></div>
+            <div class="project-tile-subtitle">Projekt Maspex</div>
+            <div id="projectsKubus"></div>
+        </div>
         <div class="tile tile-apps" id="tile-apps">
             <div class="tile-section-title">🚀 Aplikacje</div>
             <div class="tile-section-subtitle">Pomysły & projekty dev</div>
@@ -759,12 +779,10 @@
         </div>
 
         <!-- ROW 6-7: ON HOLD + Settings + Calendar -->
-        <div class="tile tile-kanban" id="tile-kanban-onhold" data-column="onhold" style="grid-column: span 6;" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'onhold')">
-            <div class="kanban-header onhold">
-                <div><span class="kanban-title">⏸️ ON HOLD <span class="kanban-count onhold" id="countOnhold">0</span></span><div class="kanban-subtitle">Wstrzymane</div></div>
-                <button class="add-task-btn" onclick="openModal('onhold')">+</button>
-            </div>
-            <div class="task-list" id="onholdTasks"></div>
+        <div class="tile" id="tile-reko-main" style="grid-column: span 6;">
+            <div class="tile-section-title">🎯 Rekomendacje</div>
+            <div class="tile-section-subtitle">Co robić żeby rosnąć</div>
+            <div class="edilog-scroll" id="rekoContentMain" style="max-height: 300px;"></div>
         </div>
         <div class="tile tile-settings" id="tile-settings">
             <div class="settings-title">⚙️ Ustawienia</div>
@@ -993,6 +1011,8 @@
                     projectsOnethree: JSON.parse(localStorage.getItem('ediProjectsOnethree') || '[]'),
                     projectsFirmy: JSON.parse(localStorage.getItem('ediProjectsFirmy') || '[]'),
                     projectsOwn: JSON.parse(localStorage.getItem('ediProjectsOwn') || '[]'),
+                    projectsDom: JSON.parse(localStorage.getItem('ediProjectsDom') || '[]'),
+                    projectsKubus: JSON.parse(localStorage.getItem('ediProjectsKubus') || '[]'),
                     apps: JSON.parse(localStorage.getItem('ediApps') || '[]'),
                     docs: JSON.parse(localStorage.getItem('ediDocs') || '[]'),
                     quickNotes: localStorage.getItem('ediQuickNotes') || '',
@@ -1030,6 +1050,8 @@
                 const s1 = localStorage.getItem('ediProjectsOnethree'); if (s1) projectsOnethree = JSON.parse(s1);
                 const s2 = localStorage.getItem('ediProjectsFirmy'); if (s2) projectsFirmy = JSON.parse(s2);
                 const s3 = localStorage.getItem('ediProjectsOwn'); if (s3) projectsOwn = JSON.parse(s3);
+                const s4 = localStorage.getItem('ediProjectsDom'); if (s4) projectsDom = JSON.parse(s4);
+                const s5 = localStorage.getItem('ediProjectsKubus'); if (s5) projectsKubus = JSON.parse(s5);
                 const sa = localStorage.getItem('ediApps'); if (sa) apps = JSON.parse(sa);
                 renderTasks(); renderProjects(); renderApps();
             });
@@ -1059,6 +1081,8 @@
                     setIfHasData('ediProjectsOnethree', data.projectsOnethree);
                     setIfHasData('ediProjectsFirmy', data.projectsFirmy);
                     setIfHasData('ediProjectsOwn', data.projectsOwn);
+                    setIfHasData('ediProjectsDom', data.projectsDom);
+                    setIfHasData('ediProjectsKubus', data.projectsKubus);
                     setIfHasData('ediApps', data.apps);
                     setIfHasData('ediDocs', data.docs);
                     if (data.quickNotes) localStorage.setItem('ediQuickNotes', data.quickNotes);
@@ -1079,8 +1103,6 @@
         let projectsOnethree = [
             { id: 'onethree', driveLink: 'https://drive.google.com/open?id=1xejwSec3QdJ84kqj7uRHW2eDvLQdEsXF', docs: [{name:'1three-studio-kalendarz-luty-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/1three-studio-kalendarz-luty-2026.md'},{name:'1three-studio-programy-szkoleniowe.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/1three-studio-programy-szkoleniowe.md'},{name:'RESEARCH-1THREE-02-02.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/RESEARCH-1THREE-02-02.md'},{name:'RESEARCH-DOFINANSOWANIA-1THREE.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/RESEARCH-DOFINANSOWANIA-1THREE.md'},{name:'RESEARCH-SZKOLENIA-AI-POLSKA-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/RESEARCH-SZKOLENIA-AI-POLSKA-2026.md'},{name:'RESEARCH-ZAROBKI-1THREE-2026-02.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/RESEARCH-ZAROBKI-1THREE-2026-02.md'}], name: '🎬 1three.studio', desc: 'Produkcja, szkolenia, klienci', progress: 65, status: 'active',
               tasks: [{text: 'HubSpot email sync fix', done: false}, {text: 'Szkolenia BUR - nowe programy', done: false}], notes: '' },
-            { id: 'kubus', driveLink: 'https://drive.google.com/open?id=1TBMMNr8d8ykIQ-vmQWF7Fu7myPr-6P8n', docs: [{name:'maspex-kubus-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/KUBUS/maspex-kubus-2026.md'},{name:'maspex-kubus-harmonogram.md',path:'/Users/t8/.openclaw/workspace/projekty/KUBUS/maspex-kubus-harmonogram.md'}], name: '🧸 Kubuś (Maspex)', desc: 'Spot reklamowy', progress: 40, status: 'urgent',
-              tasks: [{text: 'Prawa ElevenLabs - mail wysłany', done: true}, {text: 'Finalny render', done: false}], notes: '' },
             { id: 'especto', driveLink: 'https://drive.google.com/open?id=1yr_og1wvrhg8J050nAfuT10KZxjic4mY', docs: [{name:'BIBLIOTEKA-PROMPTOW-GOOGLE-AI-ESPECTO.md',path:'/Users/t8/.openclaw/workspace/projekty/ESPECTO/BIBLIOTEKA-PROMPTOW-GOOGLE-AI-ESPECTO.md'},{name:'PROCEDURY-OPERACYJNE-AI-ESPECTO.md',path:'/Users/t8/.openclaw/workspace/projekty/ESPECTO/PROCEDURY-OPERACYJNE-AI-ESPECTO.md'},{name:'RAPORT-ESPECTO-DRAFT.md',path:'/Users/t8/.openclaw/workspace/projekty/ESPECTO/RAPORT-ESPECTO-DRAFT.md'},{name:'RAPORT-ESPECTO-FINAL.md',path:'/Users/t8/.openclaw/workspace/projekty/ESPECTO/RAPORT-ESPECTO-FINAL.md'},{name:'RAPORT-ESPECTO-v2.md',path:'/Users/t8/.openclaw/workspace/projekty/ESPECTO/RAPORT-ESPECTO-v2.md'},{name:'RAPORT_ESPECTO_GOOGLE_AI.md',path:'/Users/t8/.openclaw/workspace/projekty/ESPECTO/RAPORT_ESPECTO_GOOGLE_AI.md'},{name:'RESEARCH-GOOGLE-AI-STACK-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/ESPECTO/RESEARCH-GOOGLE-AI-STACK-2026.md'},{name:'WORKFLOW-AI-ESPECTO-MAIN.md',path:'/Users/t8/.openclaw/workspace/projekty/ESPECTO/WORKFLOW-AI-ESPECTO-MAIN.md'},{name:'WORKFLOW-AI-GOOGLE-ESPECTO.md',path:'/Users/t8/.openclaw/workspace/projekty/ESPECTO/WORKFLOW-AI-GOOGLE-ESPECTO.md'}], name: '🎪 Especto', desc: 'Audyt AI dla firmy eventowej', progress: 95, status: 'active',
               tasks: [{text: 'Dokumenty na Drive', done: true}, {text: 'Protokół odbioru', done: false}], notes: 'Deadline: 04.02.2026' },
         ];
@@ -1089,9 +1111,14 @@
             { id: 'aiartists', docs: [], name: '🎨 AI Artists Agency', desc: 'Agencja artystów AI', progress: 30, status: 'warning', tasks: [{text: 'Strona www - prompt', done: false}], notes: '' },
             { id: 'safesenior', docs: [], name: '👴 SafeSenior.ai', desc: 'AI dla seniorów', progress: 20, status: 'active', tasks: [], notes: '' },
         ];
-        let projectsOwn = [
+        let projectsOwn = [];
+        let projectsDom = [
             { id: 'dom', driveLink: 'https://drive.google.com/open?id=1ehGwMnZhpFzLY3mY3DLaWGWpwhxA--ZQ', docs: [{name:'MPZP-INFO.md',path:'/Users/t8/.openclaw/workspace/projekty/DOM/MPZP-INFO.md'},{name:'PODSUMOWANIE-RESEARCH-03-02.md',path:'/Users/t8/.openclaw/workspace/projekty/DOM/PODSUMOWANIE-RESEARCH-03-02.md'},{name:'README.md',path:'/Users/t8/.openclaw/workspace/projekty/DOM/README.md'},{name:'RESEARCH-CENY-DZIALEK.md',path:'/Users/t8/.openclaw/workspace/projekty/DOM/RESEARCH-CENY-DZIALEK.md'},{name:'RESEARCH-GEODECI.md',path:'/Users/t8/.openclaw/workspace/projekty/DOM/RESEARCH-GEODECI.md'}], name: '🏠 DOM Czarnochowice', desc: 'Darowizna działki od Taty', progress: 15, status: 'active',
               tasks: [{text: 'Research geodetów', done: true}, {text: 'Research cen działek', done: true}, {text: 'Dane od Taty (KW, PESEL)', done: false}], notes: 'Czekam na spotkanie z Tatą' },
+        ];
+        let projectsKubus = [
+            { id: 'kubus', driveLink: 'https://drive.google.com/open?id=1TBMMNr8d8ykIQ-vmQWF7Fu7myPr-6P8n', docs: [{name:'maspex-kubus-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/KUBUS/maspex-kubus-2026.md'},{name:'maspex-kubus-harmonogram.md',path:'/Users/t8/.openclaw/workspace/projekty/KUBUS/maspex-kubus-harmonogram.md'}], name: '🧸 Kubuś (Maspex)', desc: 'Spot reklamowy', progress: 40, status: 'urgent',
+              tasks: [{text: 'Prawa ElevenLabs - mail wysłany', done: true}, {text: 'Finalny render', done: false}], notes: '' },
         ];
         let apps = JSON.parse(localStorage.getItem('ediApps')) || [
             { id: 1, name: '🎬 Operator Kamery', desc: 'Aplikacja do pisania promptów z integracją Nano Banana', stage: 'idea', priority: 'medium', notes: 'Pomysł z 03.02.2026' },
@@ -1236,6 +1263,8 @@
             `}).join('');
             document.getElementById('projectsOnethree').innerHTML = renderCards(projectsOnethree, 'onethree');
             document.getElementById('projectsFirmy').innerHTML = renderCards(projectsFirmy, 'firmy');
+            document.getElementById('projectsDom').innerHTML = renderCards(projectsDom, 'dom');
+            document.getElementById('projectsKubus').innerHTML = renderCards(projectsKubus, 'kubus');
             document.getElementById('projectsOwn').innerHTML = renderCards(projectsOwn, 'own');
         }
 
@@ -1272,7 +1301,7 @@
             if (popup) popup.style.display = 'none';
             document.querySelectorAll('.project-card.expanded').forEach(c => c.classList.remove('expanded'));
         }
-        function getProjectArray(category) { if (category === 'onethree') return projectsOnethree; if (category === 'firmy') return projectsFirmy; if (category === 'own') return projectsOwn; }
+        function getProjectArray(category) { if (category === 'onethree') return projectsOnethree; if (category === 'firmy') return projectsFirmy; if (category === 'own') return projectsOwn; if (category === 'dom') return projectsDom; if (category === 'kubus') return projectsKubus; }
 
         function toggleProjectTask(projectId, taskIndex, category, event) {
             event.stopPropagation();
@@ -1300,7 +1329,7 @@
                 if (!popup || popup.style.display === 'none') return;
                 // Find project in data (not DOM)
                 let project, category;
-                for (const [cat, arr] of [['onethree', projectsOnethree], ['firmy', projectsFirmy], ['own', projectsOwn]]) {
+                for (const [cat, arr] of [['onethree', projectsOnethree], ['firmy', projectsFirmy], ['dom', projectsDom], ['kubus', projectsKubus], ['own', projectsOwn]]) {
                     const found = arr.find(p => p.id === projectId);
                     if (found) { project = found; category = cat; break; }
                 }
@@ -1397,7 +1426,7 @@
             if (newDesc !== null) project.desc = newDesc.trim();
             saveProjectData(); renderProjects();
         }
-        function saveProjectData() { localStorage.setItem('ediProjectsOnethree', JSON.stringify(projectsOnethree)); localStorage.setItem('ediProjectsFirmy', JSON.stringify(projectsFirmy)); localStorage.setItem('ediProjectsOwn', JSON.stringify(projectsOwn)); localStorage.setItem('_lastLocalSave', Date.now().toString()); saveToCloud(); }
+        function saveProjectData() { localStorage.setItem('ediProjectsOnethree', JSON.stringify(projectsOnethree)); localStorage.setItem('ediProjectsFirmy', JSON.stringify(projectsFirmy)); localStorage.setItem('ediProjectsOwn', JSON.stringify(projectsOwn)); localStorage.setItem('ediProjectsDom', JSON.stringify(projectsDom)); localStorage.setItem('ediProjectsKubus', JSON.stringify(projectsKubus)); localStorage.setItem('_lastLocalSave', Date.now().toString()); saveToCloud(); }
 
         const defaultDocs = {
             onethree: { driveLink: 'https://drive.google.com/open?id=1xejwSec3QdJ84kqj7uRHW2eDvLQdEsXF', docs: [{name:'1three-studio-kalendarz-luty-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/1three-studio-kalendarz-luty-2026.md'},{name:'RESEARCH-SZKOLENIA-AI-POLSKA-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/RESEARCH-SZKOLENIA-AI-POLSKA-2026.md'}] },
@@ -1477,6 +1506,22 @@
                 try { const resp = await fetch('edilog-data.json'); if (resp.ok) edilogData = await resp.json(); } catch(e2) {}
             }
             renderEdiLogTile();
+            renderRekoTile();
+        }
+        function renderRekoTile() {
+            const container = document.getElementById('rekoContentMain');
+            if (!edilogData || !edilogData.rekomendacje || edilogData.rekomendacje.length === 0) {
+                container.innerHTML = '<div class="empty-state">Brak rekomendacji</div>';
+                return;
+            }
+            const r = edilogData.rekomendacje;
+            const dateStr = edilogData.rekoDate || '';
+            container.innerHTML = (dateStr ? '<div class="reko-date">Aktualizacja: ' + dateStr + '</div>' : '') +
+                r.map(item => `<div class="reko-item">
+                    <span class="reko-priority">${item.icon || '🎯'}</span>
+                    <span class="reko-text">${item.title}${item.detail ? '<span class=reko-detail>' + item.detail + '</span>' : ''}</span>
+                    ${item.source ? '<span class=reko-source>' + item.source + '</span>' : ''}
+                </div>`).join('');
         }
         function renderEdiLogTile() {
             const container = document.getElementById('edilogContent');
@@ -1495,7 +1540,7 @@
                         <span class="arrow ${collapsed ? 'collapsed' : ''}" id="logArrow${i}">▼</span>
                     </div>
                     <div class="edilog-entries ${collapsed ? 'collapsed' : ''}" id="logEntries${i}">
-                        ${day.entries.map(e => `<div class="edilog-entry">
+                        ${[...day.entries].reverse().map(e => `<div class="edilog-entry">
                             <span class="edilog-time">${e.time}</span>
                             <span class="edilog-icon">${e.icon || '📌'}</span>
                             <span class="edilog-text">${e.title}${e.detail ? '<br><span class=detail>' + e.detail + '</span>' : ''}</span>
@@ -1635,6 +1680,8 @@
                 const s1 = localStorage.getItem('ediProjectsOnethree'); if (s1) projectsOnethree = JSON.parse(s1);
                 const s2 = localStorage.getItem('ediProjectsFirmy'); if (s2) projectsFirmy = JSON.parse(s2);
                 const s3 = localStorage.getItem('ediProjectsOwn'); if (s3) projectsOwn = JSON.parse(s3);
+                const s4 = localStorage.getItem('ediProjectsDom'); if (s4) projectsDom = JSON.parse(s4);
+                const s5 = localStorage.getItem('ediProjectsKubus'); if (s5) projectsKubus = JSON.parse(s5);
                 const sa = localStorage.getItem('ediApps'); if (sa) apps = JSON.parse(sa);
                 const sd = localStorage.getItem('ediDocs'); if (sd) ediDocs = JSON.parse(sd);
             } catch(e) { console.warn('Cloud init failed, using local:', e); }
