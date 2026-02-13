@@ -300,7 +300,8 @@
         .progress-pct { font-size: 8px; color: var(--text-muted); width: 24px; text-align: right; }
 
         /* Project expand */
-        .project-card { cursor: pointer; padding: 4px 0; border-bottom: 1px solid var(--border); position: relative; }
+        .project-card { cursor: grab; padding: 4px 0; border-bottom: 1px solid var(--border); position: relative; transition: opacity 0.15s; }
+        .project-card:active { cursor: grabbing; }
         .project-card:last-child { border-bottom: none; }
         .expand-icon { font-size: 7px; color: var(--text-muted); transition: transform 0.2s; margin-left: 4px; }
         .project-card.expanded .expand-icon { transform: rotate(180deg); }
@@ -1205,7 +1206,7 @@
                 const doneTasks = (p.tasks || []).filter(t => t.done).length;
                 const autoProgress = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
                 return `
-                <div class="project-card" data-project="${p.id}" data-category="${category}" onclick="toggleProject(this)">
+                <div class="project-card" data-project="${p.id}" data-category="${category}" onclick="toggleProject(this)" draggable="true" ondragstart="projDragStart(event)" ondragover="projDragOver(event)" ondrop="projDrop(event)" ondragend="projDragEnd(event)">
                     <div class="project-item">
                         <span class="project-status ${p.status}"></span>
                         <span class="project-name" ondblclick="editProjectName('${p.id}', '${category}', event)" title="Dwuklik = edycja nazwy">${p.name}</span>
@@ -1409,6 +1410,50 @@
             saveProjectData(); renderProjects();
         }
         function saveProjectData() { localStorage.setItem('ediProjectsOnethree', JSON.stringify(projectsOnethree)); localStorage.setItem('ediProjectsFirmy', JSON.stringify(projectsFirmy)); localStorage.setItem('ediProjectsOwn', JSON.stringify(projectsOwn)); localStorage.setItem('ediProjectsKubus', JSON.stringify(projectsKubus)); localStorage.setItem('_lastLocalSave', Date.now().toString()); saveToCloud(); }
+
+        /* --- Project card drag-reorder within tiles --- */
+        let projDragEl = null;
+        function projDragStart(e) {
+            const card = e.target.closest('.project-card');
+            if (!card) return;
+            projDragEl = card;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', card.dataset.project);
+            requestAnimationFrame(() => { card.style.opacity = '0.4'; });
+        }
+        function projDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            const card = e.target.closest('.project-card');
+            if (!card || card === projDragEl) return;
+            if (card.dataset.category !== projDragEl.dataset.category) return;
+            const rect = card.getBoundingClientRect();
+            const after = e.clientY > rect.top + rect.height / 2;
+            card.style.borderTop = after ? '' : '2px solid var(--accent, #3b82f6)';
+            card.style.borderBottom = after ? '2px solid var(--accent, #3b82f6)' : '';
+        }
+        function projDrop(e) {
+            e.preventDefault(); e.stopPropagation();
+            const card = e.target.closest('.project-card');
+            if (!card || !projDragEl || card === projDragEl) return;
+            const cat = projDragEl.dataset.category;
+            if (card.dataset.category !== cat) return;
+            const arr = getProjectArray(cat);
+            const fromIdx = arr.findIndex(p => p.id === projDragEl.dataset.project);
+            const toIdx = arr.findIndex(p => p.id === card.dataset.project);
+            if (fromIdx < 0 || toIdx < 0) return;
+            const rect = card.getBoundingClientRect();
+            const after = e.clientY > rect.top + rect.height / 2;
+            const [moved] = arr.splice(fromIdx, 1);
+            const newIdx = arr.findIndex(p => p.id === card.dataset.project);
+            arr.splice(after ? newIdx + 1 : newIdx, 0, moved);
+            saveProjectData(); renderProjects();
+        }
+        function projDragEnd(e) {
+            if (projDragEl) projDragEl.style.opacity = '';
+            projDragEl = null;
+            document.querySelectorAll('.project-card').forEach(c => { c.style.borderTop = ''; c.style.borderBottom = ''; });
+        }
 
         const defaultDocs = {
             onethree: { driveLink: 'https://drive.google.com/open?id=1xejwSec3QdJ84kqj7uRHW2eDvLQdEsXF', docs: [{name:'1three-studio-kalendarz-luty-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/1three-studio-kalendarz-luty-2026.md'},{name:'RESEARCH-SZKOLENIA-AI-POLSKA-2026.md',path:'/Users/t8/.openclaw/workspace/projekty/1THREE/RESEARCH-SZKOLENIA-AI-POLSKA-2026.md'}] },
