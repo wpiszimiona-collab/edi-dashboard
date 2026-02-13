@@ -226,6 +226,8 @@
         .task-status-circle.waiting { border-color: var(--yellow); }
         .task-status-circle.done { border-color: var(--green); background: var(--green); }
         .task-status-circle.onhold { border-color: #6b7280; }
+        .task-status-circle.domtodo { border-color: var(--yellow); }
+        .task-status-circle.kubustodo { border-color: var(--blue); }
 
         .task-row { display: flex; justify-content: space-between; align-items: center; gap: 4px; }
         .task-title { font-weight: 500; font-size: 10px; line-height: 1.3; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -753,15 +755,19 @@
             <div class="tile-section-subtitle">Pomysły & projekty dev</div>
             <div class="apps-inline" id="appsInline"></div>
         </div>
-        <div class="tile tile-project" id="tile-proj-dom">
-            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;"><span id="tileName-dom" onclick="editTileName('dom')" style="cursor:text;" title="Kliknij żeby edytować">🏠 DOM</span> <button class="add-task-btn" onclick="openAddProjectModal('dom')" title="Dodaj task">+</button></div>
-            <div class="project-tile-subtitle" id="tileSub-dom" onclick="editTileSub('dom')" style="cursor:text;" title="Kliknij żeby edytować">Sprawy domowe</div>
-            <div id="projectsOwn"></div>
+        <div class="tile tile-kanban" id="tile-kanban-domtodo" data-column="domtodo" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'domtodo')">
+            <div class="kanban-header urgent">
+                <div><span class="kanban-title">🏠 DOM <span class="kanban-count urgent" id="countDomtodo">0</span></span><div class="kanban-subtitle">TODO domowe</div></div>
+                <button class="add-task-btn" onclick="openModal('domtodo')">+</button>
+            </div>
+            <div class="task-list" id="domtodoTasks"></div>
         </div>
-        <div class="tile tile-project" id="tile-proj-kubus">
-            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;"><span id="tileName-kubus" onclick="editTileName('kubus')" style="cursor:text;" title="Kliknij żeby edytować">👶 KUBUŚ</span> <button class="add-task-btn" onclick="openAddProjectModal('kubus')" title="Dodaj task">+</button></div>
-            <div class="project-tile-subtitle" id="tileSub-kubus" onclick="editTileSub('kubus')" style="cursor:text;" title="Kliknij żeby edytować">Projekt Maspex</div>
-            <div id="projectsKubus"></div>
+        <div class="tile tile-kanban" id="tile-kanban-kubustodo" data-column="kubustodo" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'kubustodo')">
+            <div class="kanban-header week">
+                <div><span class="kanban-title">👶 KUBUŚ <span class="kanban-count week" id="countKubustodo">0</span></span><div class="kanban-subtitle">TODO Kubuś</div></div>
+                <button class="add-task-btn" onclick="openModal('kubustodo')">+</button>
+            </div>
+            <div class="task-list" id="kubustodoTasks"></div>
         </div>
 
         <!-- ROW 6-7: ON HOLD + Settings + Calendar -->
@@ -930,7 +936,7 @@
                 <input type="hidden" id="taskColumn">
                 <div class="form-group"><label for="taskTitle">Tytuł *</label><input type="text" id="taskTitle" required placeholder="Co trzeba zrobić?"></div>
                 <div class="form-row">
-                    <div class="form-group"><label for="taskProject">Projekt</label><select id="taskProject"><option value="onethree">🎬 1THREE</option><option value="system">⚙️ SYSTEM</option><option value="dom">🏠 DOM</option><option value="osobiste">👤 OSOBISTE</option><option value="pomysl">💡 POMYSŁ</option><option value="research">🔍 RESEARCH</option></select></div>
+                    <div class="form-group"><label for="taskProject">Projekt</label><select id="taskProject"><option value="onethree">🎬 1THREE</option><option value="system">⚙️ SYSTEM</option><option value="dom">🏠 DOM</option><option value="kubus">👶 KUBUŚ</option><option value="osobiste">👤 OSOBISTE</option><option value="pomysl">💡 POMYSŁ</option><option value="research">🔍 RESEARCH</option></select></div>
                     <div class="form-group"><label for="taskDeadline">Deadline</label><select id="taskDeadline"><option value="now">Teraz!</option><option value="today">Dziś</option><option value="week">Ten tydzień</option><option value="later">Później</option></select></div>
                 </div>
                 <div class="form-group"><label for="taskNotes">Notatki</label><textarea id="taskNotes" placeholder="Dodatkowe informacje..."></textarea></div>
@@ -1138,7 +1144,7 @@
         }
 
         function renderTasks() {
-            const columns = ['urgent', 'todo', 'waiting', 'done', 'onhold', 'backup'];
+            const columns = ['urgent', 'todo', 'waiting', 'done', 'onhold', 'backup', 'domtodo', 'kubustodo'];
             const stats = { urgent: 0, todo: 0, waiting: 0, done: 0, onhold: 0, backup: 0 };
             columns.forEach(col => {
                 const container = document.getElementById(col + 'Tasks');
@@ -1173,6 +1179,8 @@
             document.getElementById('countOnhold').textContent = stats.onhold;
             document.getElementById('statOnhold').textContent = stats.onhold;
             const backupEl = document.getElementById('countBackup'); if (backupEl) backupEl.textContent = stats.backup;
+            const domtodoEl = document.getElementById('countDomtodo'); if (domtodoEl) domtodoEl.textContent = stats.domtodo || 0;
+            const kubustodoEl = document.getElementById('countKubustodo'); if (kubustodoEl) kubustodoEl.textContent = stats.kubustodo || 0;
             renderProgressRing();
         }
 
@@ -1503,7 +1511,7 @@
             saveProjectData();
         }
 
-        function getProjectLabel(project) { const labels = { onethree: '1THREE', system: 'SYSTEM', dom: 'DOM', osobiste: 'OSOBISTE', pomysl: 'POMYSŁ', research: 'RESEARCH' }; return labels[project] || project.toUpperCase(); }
+        function getProjectLabel(project) { const labels = { onethree: '1THREE', system: 'SYSTEM', dom: 'DOM', kubus: 'KUBUŚ', osobiste: 'OSOBISTE', pomysl: 'POMYSŁ', research: 'RESEARCH' }; return labels[project] || project.toUpperCase(); }
         function getDeadlineLabel(deadline) { const labels = { now: '🔥 Teraz!', today: 'Dziś', week: 'Ten tydzień', later: 'Później' }; return labels[deadline] || deadline; }
 
         let currentAttachments = [];
