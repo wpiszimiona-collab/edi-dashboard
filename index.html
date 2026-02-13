@@ -757,14 +757,14 @@
         </div>
         <div class="tile tile-kanban" id="tile-kanban-domtodo" data-column="domtodo" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'domtodo')">
             <div class="kanban-header urgent">
-                <div><span class="kanban-title">🏠 DOM <span class="kanban-count urgent" id="countDomtodo">0</span></span><div class="kanban-subtitle">TODO domowe</div></div>
+                <div><span class="kanban-title">🏠 DOM <span class="kanban-count urgent" id="countDomtodo">0</span></span><div class="kanban-subtitle" id="kanbanSub-domtodo" onclick="editKanbanSub('domtodo')" style="cursor:text;" title="Kliknij żeby edytować">TODO domowe</div></div>
                 <button class="add-task-btn" onclick="openModal('domtodo')">+</button>
             </div>
             <div class="task-list" id="domtodoTasks"></div>
         </div>
         <div class="tile tile-kanban" id="tile-kanban-kubustodo" data-column="kubustodo" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'kubustodo')">
             <div class="kanban-header week">
-                <div><span class="kanban-title">👶 KUBUŚ <span class="kanban-count week" id="countKubustodo">0</span></span><div class="kanban-subtitle">TODO Kubuś</div></div>
+                <div><span class="kanban-title">👶 KUBUŚ <span class="kanban-count week" id="countKubustodo">0</span></span><div class="kanban-subtitle" id="kanbanSub-kubustodo" onclick="editKanbanSub('kubustodo')" style="cursor:text;" title="Kliknij żeby edytować">TODO Kubuś</div></div>
                 <button class="add-task-btn" onclick="openModal('kubustodo')">+</button>
             </div>
             <div class="task-list" id="kubustodoTasks"></div>
@@ -1440,7 +1440,21 @@
             function save() { const val = input.value.trim() || current; const div = document.createElement('div'); div.className = 'project-tile-subtitle'; div.id = 'tileSub-' + tileId; div.onclick = function(){editTileSub(tileId)}; div.style.cssText = 'cursor:text;'; div.title = 'Kliknij żeby edytować'; div.textContent = val; input.replaceWith(div); localStorage.setItem('tileSub-' + tileId, val); }
             input.onblur = save; input.onkeydown = function(e) { if(e.key==='Enter') save(); if(e.key==='Escape'){input.value=current;save();} };
         }
+        function editKanbanSub(colId) {
+            const el = document.getElementById('kanbanSub-' + colId);
+            const current = el.textContent;
+            const input = document.createElement('input');
+            input.type = 'text'; input.value = current;
+            input.style.cssText = 'background:var(--bg-input);border:1px solid var(--purple-500);border-radius:4px;color:var(--purple-400);font-size:8px;padding:2px 6px;width:120px;outline:none;';
+            el.replaceWith(input); input.focus(); input.select();
+            function save() { const val = input.value.trim() || current; const div = document.createElement('div'); div.className = 'kanban-subtitle'; div.id = 'kanbanSub-' + colId; div.onclick = function(){editKanbanSub(colId)}; div.style.cssText = 'cursor:text;'; div.title = 'Kliknij żeby edytować'; div.textContent = val; input.replaceWith(div); localStorage.setItem('kanbanSub-' + colId, val); }
+            input.onblur = save; input.onkeydown = function(e) { if(e.key==='Enter') save(); if(e.key==='Escape'){input.value=current;save();} };
+        }
         // Restore saved tile names on load
+        ['domtodo','kubustodo'].forEach(function(id) {
+            const savedSub = localStorage.getItem('kanbanSub-' + id);
+            if (savedSub) { const el = document.getElementById('kanbanSub-' + id); if(el) el.textContent = savedSub; }
+        });
         ['dom','kubus'].forEach(function(id) {
             const savedName = localStorage.getItem('tileName-' + id);
             const savedSub = localStorage.getItem('tileSub-' + id);
