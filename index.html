@@ -38,6 +38,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -158,10 +159,10 @@
         .tile-statsbar { grid-column: span 8; display: flex; align-items: center; justify-content: space-around; gap: 0; padding: 8px 16px; }
         .statsbar-item { display: flex; align-items: center; gap: 6px; }
         .statsbar-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        .statsbar-dot.red { background: var(--red); box-shadow: 0 0 6px rgba(239,68,68,0.5); }
-        .statsbar-dot.purple { background: var(--purple-500); box-shadow: 0 0 6px rgba(124,58,237,0.5); }
-        .statsbar-dot.yellow { background: var(--yellow); box-shadow: 0 0 6px rgba(245,158,11,0.5); }
-        .statsbar-dot.green { background: var(--green); box-shadow: 0 0 6px rgba(16,185,129,0.5); }
+        .statsbar-dot.red { background: var(--red); box-shadow: 0 0 4px rgba(239,68,68,0.3); }
+        .statsbar-dot.purple { background: var(--purple-500); box-shadow: 0 0 4px rgba(124,58,237,0.3); }
+        .statsbar-dot.yellow { background: var(--yellow); box-shadow: 0 0 4px rgba(245,158,11,0.3); }
+        .statsbar-dot.green { background: var(--green); box-shadow: 0 0 4px rgba(16,185,129,0.3); }
         .statsbar-num { font-size: 1.3rem; font-weight: 800; color: #fff; }
         .statsbar-label { font-size: 0.75rem; color: var(--text-secondary); }
         .statsbar-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.1); margin: 0 8px; }
@@ -564,6 +565,15 @@
             from { stroke-dashoffset: 282.7; }
         }
 
+        /* ═══════════════ LUCIDE ICONS ═══════════════ */
+        .lucide-sm { width: 13px; height: 13px; stroke-width: 2; vertical-align: -2px; display: inline-block; }
+        .red-icon { color: var(--red); }
+        .purple-icon { color: var(--purple-400); }
+        .yellow-icon { color: var(--yellow); }
+        .green-icon { color: var(--green); }
+        .blue-icon { color: var(--blue); }
+        .muted-icon { color: var(--text-muted); }
+
         /* ═══════════════ TILE DRAG & DROP ═══════════════ */
         .tile-grip {
             position: absolute; top: 6px; left: 6px; z-index: 10;
@@ -697,7 +707,7 @@
             <div class="statsbar-item"><span class="statsbar-dot" style="background:#6b7280;"></span><span class="statsbar-num" id="statOnhold">0</span><span class="statsbar-label">On Hold</span></div>
         </div>
         <div class="tile tile-logo" id="tile-logo">
-            <span style="font-size:16px">🎯</span>
+            <i data-lucide="crosshair" style="width:16px;height:16px;color:var(--purple-400);"></i>
             <span class="logo-text">COMMAND CENTER</span>
             <span class="online-badge"><span class="online-dot"></span> Online</span>
             <span id="syncStatus" style="font-size:10px;margin-left:6px;opacity:0.6;cursor:pointer;" onclick="loadFromCloud().then(()=>location.reload())" title="Kliknij by pobrać z chmury">☁️</span>
@@ -706,28 +716,28 @@
         <!-- ROW 2-3: 4 Kanban columns -->
         <div class="tile tile-kanban" id="tile-kanban-urgent" data-column="urgent" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'urgent')">
             <div class="kanban-header urgent">
-                <div><span class="kanban-title">🔴 PILNE <span class="kanban-count urgent" id="countUrgent">0</span></span><div class="kanban-subtitle">Wymagają uwagi</div></div>
+                <div><span class="kanban-title"><i data-lucide="alert-triangle" class="lucide-sm red-icon"></i> PILNE <span class="kanban-count urgent" id="countUrgent">0</span></span><div class="kanban-subtitle">Wymagają uwagi</div></div>
                 <button class="add-task-btn" onclick="openModal('urgent')">+</button>
             </div>
             <div class="task-list" id="urgentTasks"></div>
         </div>
         <div class="tile tile-kanban" id="tile-kanban-todo" data-column="todo" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'todo')">
             <div class="kanban-header todo">
-                <div><span class="kanban-title">📋 TODO <span class="kanban-count todo" id="countTodo">0</span></span><div class="kanban-subtitle">Zadania do wykonania</div></div>
+                <div><span class="kanban-title"><i data-lucide="list-todo" class="lucide-sm purple-icon"></i> TODO <span class="kanban-count todo" id="countTodo">0</span></span><div class="kanban-subtitle">Zadania do wykonania</div></div>
                 <button class="add-task-btn" onclick="openModal('todo')">+</button>
             </div>
             <div class="task-list" id="todoTasks"></div>
         </div>
         <div class="tile tile-kanban" id="tile-kanban-waiting" data-column="waiting" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'waiting')">
             <div class="kanban-header waiting">
-                <div><span class="kanban-title">⏳ CZEKAM <span class="kanban-count waiting" id="countWaiting">0</span></span><div class="kanban-subtitle">Oczekujące</div></div>
+                <div><span class="kanban-title"><i data-lucide="clock" class="lucide-sm yellow-icon"></i> CZEKAM <span class="kanban-count waiting" id="countWaiting">0</span></span><div class="kanban-subtitle">Oczekujące</div></div>
                 <button class="add-task-btn" onclick="openModal('waiting')">+</button>
             </div>
             <div class="task-list" id="waitingTasks"></div>
         </div>
         <div class="tile tile-kanban" id="tile-kanban-done" data-column="done" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'done')">
             <div class="kanban-header done">
-                <div><span class="kanban-title">✅ DONE <span class="kanban-count done" id="countDone">0</span></span><div class="kanban-subtitle">Ukończone</div></div>
+                <div><span class="kanban-title"><i data-lucide="check-circle-2" class="lucide-sm green-icon"></i> DONE <span class="kanban-count done" id="countDone">0</span></span><div class="kanban-subtitle">Ukończone</div></div>
                 <button class="add-task-btn" onclick="openModal('done')">+</button>
             </div>
             <div class="task-list" id="doneTasks"></div>
@@ -735,7 +745,7 @@
 
         <div class="tile tile-kanban" id="tile-kanban-backup" data-column="backup" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'backup')">
             <div class="kanban-header waiting">
-                <div><span class="kanban-title">💾 Backup <span class="kanban-count" id="countBackup">0</span></span><div class="kanban-subtitle">Zapasowe</div></div>
+                <div><span class="kanban-title"><i data-lucide="archive" class="lucide-sm muted-icon"></i> Backup <span class="kanban-count" id="countBackup">0</span></span><div class="kanban-subtitle">Zapasowe</div></div>
                 <button class="add-task-btn" onclick="openModal('backup')">+</button>
             </div>
             <div class="task-list" id="backupTasks"></div>
@@ -743,37 +753,37 @@
 
         <!-- ROW 4-5: Projects (4 columns) -->
         <div class="tile tile-project" id="tile-proj-1three">
-            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;">🎬 1three.studio <button class="add-task-btn" onclick="openAddProjectModal('onethree')" title="Dodaj projekt">+</button></div>
+            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;"><i data-lucide="clapperboard" class="lucide-sm purple-icon"></i> 1three.studio <button class="add-task-btn" onclick="openAddProjectModal('onethree')" title="Dodaj projekt">+</button></div>
             <div class="project-tile-subtitle">Produkcja & szkolenia</div>
             <div id="projectsOnethree"></div>
         </div>
         <div class="tile tile-project" id="tile-proj-firmy">
-            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;">🏢 Firmy <button class="add-task-btn" onclick="openAddProjectModal('firmy')" title="Dodaj projekt">+</button></div>
+            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;"><i data-lucide="building-2" class="lucide-sm blue-icon"></i> Firmy <button class="add-task-btn" onclick="openAddProjectModal('firmy')" title="Dodaj projekt">+</button></div>
             <div class="project-tile-subtitle">Własne biznesy</div>
             <div id="projectsFirmy"></div>
         </div>
         <div class="tile tile-apps" id="tile-apps">
-            <div class="tile-section-title">🚀 Aplikacje</div>
+            <div class="tile-section-title"><i data-lucide="rocket" class="lucide-sm purple-icon"></i> Aplikacje</div>
             <div class="tile-section-subtitle">Pomysły & projekty dev</div>
             <div class="apps-inline" id="appsInline"></div>
         </div>
         <div class="tile tile-kanban" id="tile-kanban-domtodo" data-column="domtodo" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'domtodo')">
             <div class="kanban-header urgent">
-                <div><span class="kanban-title">🏠 DOM <span class="kanban-count urgent" id="countDomtodo">0</span></span><div class="kanban-subtitle" id="kanbanSub-domtodo" onclick="editKanbanSub('domtodo')" style="cursor:text;" title="Kliknij żeby edytować">TODO domowe</div></div>
+                <div><span class="kanban-title"><i data-lucide="home" class="lucide-sm yellow-icon"></i> DOM <span class="kanban-count urgent" id="countDomtodo">0</span></span><div class="kanban-subtitle" id="kanbanSub-domtodo" onclick="editKanbanSub('domtodo')" style="cursor:text;" title="Kliknij żeby edytować">TODO domowe</div></div>
                 <button class="add-task-btn" onclick="openModal('domtodo')">+</button>
             </div>
             <div class="task-list" id="domtodoTasks"></div>
         </div>
         <div class="tile tile-kanban" id="tile-kanban-reko" data-column="reko" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'reko')">
             <div class="kanban-header done">
-                <div><span class="kanban-title">🎯 RADA <span class="kanban-count done" id="countReko">0</span></span><div class="kanban-subtitle" id="kanbanSub-reko" onclick="editKanbanSub('reko')" style="cursor:text;" title="Kliknij żeby edytować">Rekomendacje</div></div>
+                <div><span class="kanban-title"><i data-lucide="target" class="lucide-sm green-icon"></i> RADA <span class="kanban-count done" id="countReko">0</span></span><div class="kanban-subtitle" id="kanbanSub-reko" onclick="editKanbanSub('reko')" style="cursor:text;" title="Kliknij żeby edytować">Rekomendacje</div></div>
                 <button class="add-task-btn" onclick="openModal('reko')">+</button>
             </div>
             <div class="task-list" id="rekoTasks"></div>
         </div>
         <div class="tile tile-kanban" id="tile-kanban-kubustodo" data-column="kubustodo" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'kubustodo')">
             <div class="kanban-header week">
-                <div><span class="kanban-title">👶 KUBUŚ <span class="kanban-count week" id="countKubustodo">0</span></span><div class="kanban-subtitle" id="kanbanSub-kubustodo" onclick="editKanbanSub('kubustodo')" style="cursor:text;" title="Kliknij żeby edytować">TODO Kubuś</div></div>
+                <div><span class="kanban-title"><i data-lucide="baby" class="lucide-sm blue-icon"></i> KUBUŚ <span class="kanban-count week" id="countKubustodo">0</span></span><div class="kanban-subtitle" id="kanbanSub-kubustodo" onclick="editKanbanSub('kubustodo')" style="cursor:text;" title="Kliknij żeby edytować">TODO Kubuś</div></div>
                 <button class="add-task-btn" onclick="openModal('kubustodo')">+</button>
             </div>
             <div class="task-list" id="kubustodoTasks"></div>
@@ -782,16 +792,16 @@
         <!-- ROW 6-7: ON HOLD + Settings + Calendar -->
         <div class="tile tile-kanban" id="tile-kanban-onhold" data-column="onhold" style="grid-column: span 6;" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'onhold')">
             <div class="kanban-header onhold">
-                <div><span class="kanban-title">⏸️ ON HOLD <span class="kanban-count onhold" id="countOnhold">0</span></span><div class="kanban-subtitle">Wstrzymane</div></div>
+                <div><span class="kanban-title"><i data-lucide="pause-circle" class="lucide-sm muted-icon"></i> ON HOLD <span class="kanban-count onhold" id="countOnhold">0</span></span><div class="kanban-subtitle">Wstrzymane</div></div>
                 <button class="add-task-btn" onclick="openModal('onhold')">+</button>
             </div>
             <div class="task-list" id="onholdTasks"></div>
         </div>
         <div class="tile tile-settings" id="tile-settings">
-            <div class="settings-title">⚙️ Ustawienia</div>
+            <div class="settings-title"><i data-lucide="settings" class="lucide-sm muted-icon"></i> Ustawienia</div>
             <input type="checkbox" id="toggleDrag" style="display:none">
             <label class="toggle-row">
-                <span class="toggle-label">✏️ Edycja układu</span>
+                <span class="toggle-label">Edycja układu</span>
                 <div class="toggle-switch">
                     <input type="checkbox" id="toggleFreeLayout">
                     <span class="toggle-slider"></span>
@@ -799,14 +809,14 @@
                 <input type="checkbox" id="toggleResize" style="display:none">
             </label>
             <label class="toggle-row">
-                <span class="toggle-label">🎨 Kolory</span>
+                <span class="toggle-label">Kolory</span>
                 <div class="toggle-switch">
                     <input type="checkbox" id="toggleColors">
                     <span class="toggle-slider"></span>
                 </div>
             </label>
             <label class="toggle-row">
-                <span class="toggle-label">🗂️ Schowaj elementy</span>
+                <span class="toggle-label">Schowaj elementy</span>
                 <div class="toggle-switch">
                     <input type="checkbox" id="toggleStash">
                     <span class="toggle-slider"></span>
@@ -814,7 +824,7 @@
             </label>
         </div>
         <div class="tile tile-profiles" id="tile-profiles">
-            <div class="settings-title">💾 Profile widoku</div>
+            <div class="settings-title"><i data-lucide="save" class="lucide-sm muted-icon"></i> Profile widoku</div>
             <div class="profile-controls" id="profileControls"></div>
             <div style="display:flex;gap:4px;margin-top:4px;">
                 <input type="text" id="profileNameInput" placeholder="Nazwa profilu..." style="flex:1;padding:3px 6px;background:var(--bg-input);border:1px solid var(--border);border-radius:4px;color:var(--text-primary);font-size:9px;outline:none;">
@@ -832,7 +842,7 @@
 
         <!-- ROW 8: Docs + Progress + Notes -->
         <div class="tile tile-docs" id="tile-docs">
-            <div class="tile-section-title">📄 Dokumenty</div>
+            <div class="tile-section-title"><i data-lucide="file-text" class="lucide-sm muted-icon"></i> Dokumenty</div>
             <div class="tile-section-subtitle">Raporty & research</div>
             <div class="docs-pills" id="ediDocs"></div>
         </div>
@@ -847,14 +857,14 @@
             <div class="progress-ring-label">Ukończone taski</div>
         </div>
         <div class="tile tile-notes" id="tile-notes">
-            <div class="notes-title">📝 Quick Notes</div>
+            <div class="notes-title"><i data-lucide="sticky-note" class="lucide-sm purple-icon"></i> Quick Notes</div>
             <textarea class="notes-textarea" id="quickNotes" placeholder="Szybkie notatki..." oninput="saveQuickNotes()"></textarea>
             <div class="notes-saved" id="notesSaved">✓ Zapisano</div>
         </div>
 
         <!-- EDI LOG TILE -->
         <div class="tile tile-edilog" id="tile-edilog">
-            <div class="tile-section-title">📋 Edi Log</div>
+            <div class="tile-section-title"><i data-lucide="scroll-text" class="lucide-sm purple-icon"></i> Edi Log</div>
             <div class="tile-section-subtitle">Co robiłem i kiedy</div>
             <div class="edilog-scroll" id="edilogContent"></div>
         </div>
@@ -867,7 +877,7 @@
 
         <!-- WEATHER TILE -->
         <div class="tile tile-weather" id="tile-weather">
-            <div class="tile-section-title">🌤️ Pogoda — Kraków</div>
+            <div class="tile-section-title"><i data-lucide="cloud-sun" class="lucide-sm yellow-icon"></i> Pogoda — Kraków</div>
             <div style="display:flex;align-items:center;gap:8px;">
                 <span id="weatherIcon" style="font-size:2rem;">⏳</span>
                 <div>
@@ -884,7 +894,7 @@
 
         <!-- TOKENS TILE -->
         <div class="tile tile-tokens" id="tile-tokens">
-            <div class="tile-section-title">🔥 Tokeny</div>
+            <div class="tile-section-title"><i data-lucide="flame" class="lucide-sm red-icon"></i> Tokeny</div>
             <div class="tile-section-subtitle">Dzisiejsze zużycie</div>
             <div id="tokenRows">
                 <div class="token-row"><span class="token-label">Claude Opus</span><span class="token-value" id="tokenOpus">—</span></div>
@@ -897,7 +907,7 @@
 
         <!-- STASH TILE (always visible) -->
         <div class="tile tile-stash" id="tile-stash">
-            <div class="tile-section-title">📦 Schowek</div>
+            <div class="tile-section-title"><i data-lucide="package" class="lucide-sm muted-icon"></i> Schowek</div>
             <div class="tile-section-subtitle">Schowane kafelki</div>
             <div class="stash-chips" id="stashChips">
                 <div class="empty-state">Pusto — schowaj kafelki przełącznikiem 🗂️</div>
@@ -945,7 +955,7 @@
                 <input type="hidden" id="taskColumn">
                 <div class="form-group"><label for="taskTitle">Tytuł *</label><input type="text" id="taskTitle" required placeholder="Co trzeba zrobić?"></div>
                 <div class="form-row">
-                    <div class="form-group"><label for="taskProject">Projekt</label><select id="taskProject"><option value="onethree">🎬 1THREE</option><option value="system">⚙️ SYSTEM</option><option value="dom">🏠 DOM</option><option value="kubus">👶 KUBUŚ</option><option value="osobiste">👤 OSOBISTE</option><option value="pomysl">💡 POMYSŁ</option><option value="research">🔍 RESEARCH</option></select></div>
+                    <div class="form-group"><label for="taskProject">Projekt</label><select id="taskProject"><option value="onethree">1THREE</option><option value="system">SYSTEM</option><option value="dom">DOM</option><option value="kubus">KUBUŚ</option><option value="osobiste">OSOBISTE</option><option value="pomysl">POMYSŁ</option><option value="research">RESEARCH</option></select></div>
                     <div class="form-group"><label for="taskDeadline">Deadline</label><select id="taskDeadline"><option value="now">Teraz!</option><option value="today">Dziś</option><option value="week">Ten tydzień</option><option value="later">Później</option></select></div>
                 </div>
                 <div class="form-group"><label for="taskNotes">Notatki</label><textarea id="taskNotes" placeholder="Dodatkowe informacje..."></textarea></div>
@@ -2568,6 +2578,9 @@
         // Patch saveToCloud to include kanbanNames and profiles
         const _origSaveToCloud = saveToCloud;
         // (kanbanNames are already saved to localStorage, and saveToCloud reads from localStorage)
+
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') lucide.createIcons();
 
     </script>
 </body>
