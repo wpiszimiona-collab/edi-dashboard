@@ -1843,6 +1843,7 @@
         }
 
         const toggleStashEl = document.getElementById('toggleStash');
+        if (toggleStashEl.checked) document.body.classList.add('stash-mode');
         toggleStashEl.addEventListener('change', () => {
             document.body.classList.toggle('stash-mode', toggleStashEl.checked);
         });
