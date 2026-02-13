@@ -342,33 +342,127 @@
   "rekomendacje": [
     {
       "icon": "🔴",
-      "title": "BUR Pipeline: cel 2 szkolenia/msc od marca",
-      "detail": "Zero leadów poza ESPECTO i ART FM. Zbudować bazę 200 firm, outreach, MARR kontakt. Każde szkolenie = 15-25k.",
-      "source": "RADA"
-    },
-    {
-      "icon": "🔴",
-      "title": "Usługi Rozwojowe 4.0 — złożyć wniosek po 50 uczestnikach",
-      "detail": "Do 50k zwrotu na licencje AI (80%). Potrzeba 50 uczestników BUR. Plan: 4 szkolenia = 50 osób → wniosek VI/VII.",
-      "source": "FINANSE"
+      "title": "BUR Pipeline: okno MBON się zamyka",
+      "detail": "Pipeline szkoleń BUR jest PUSTY. Firmy z MBON właśnie dostały vouchery i aktywnie szukają dostawców. Mamy 4-6 tygodni zanim wybiorą konkurencję.",
+      "source": "KONSENSUS",
+      "actions": "1. Karolina: lista firm z MBON do poniedziałku\n2. Piotr: pitch deck szkoleń AI pod UR 4.0\n3. Outreach: min 10 firm/tydzień\n4. Cel: 2 podpisane szkolenia do 15.03"
     },
     {
       "icon": "🟠",
-      "title": "AI Coach jako upsell do BUR, nie osobny produkt",
-      "detail": "HeyGen avatar Oli. Koszt ~155-322 USD/msc. MVP po 20+ szkoleniach. Klient kupuje kurs → dostaje Coacha → sub 199 zł/msc.",
-      "source": "RADA"
+      "title": "Priorytetyzacja: 11 projektów → max 6",
+      "detail": "11 projektów na 2.5 osoby = startup-killer. Trzeba zamrozić minimum 4-5 i skupić się na generujących przychód.",
+      "source": "KONSENSUS",
+      "actions": "1. Spisać 11 projektów: przychód / infrastruktura / nice-to-have\n2. Zamrozić nice-to-have na 3 tygodnie\n3. Strona: deadline assety Ola = 21.02 albo outsource"
     },
     {
       "icon": "🟠",
-      "title": "Stabilizować przychody — nie polegać na wielorybach",
-      "detail": "Mediana 36k/msc, bez Maspexu 28.5k. Szkolenia BUR = powtarzalny przychód. Produkcja video = cash cow.",
-      "source": "FINANSE"
+      "title": "Potwierdzić Kubuś Maspex + cashflow marzec",
+      "detail": "28k z Maspex wymaga potwierdzenia. Marzec niewiadomy — bez BUR przychód = 0. Runway OK ale nie na eksperymenty.",
+      "source": "FINANSE",
+      "actions": "1. Potwierdzić Kubuś status do poniedziałku\n2. Cashflow forecast marzec-maj\n3. Minimum przychodu marzec = 15.3k (break-even)"
     },
     {
       "icon": "🟡",
-      "title": "aipracuje.pl — lead magnet, nie startup",
-      "detail": "Odpalić w 2 dni, niech wisi jako ciekawostka. Pokazuje kompetencje AI. Nie inwestować czasu.",
-      "source": "STRATEGIA"
+      "title": "Audyt kosztów stosu AI",
+      "detail": "Twilio + ElevenLabs + OpenClaw + subskrypcje — ile to kosztuje? Edi Voice bridge niedokończony = koszt bez przychodu. Policzyć ROI.",
+      "source": "SCEPTYK",
+      "actions": "1. Zestawienie kosztów AI miesięcznie\n2. Estymata oszczędności czasu\n3. Decyzja: kontynuować/ciąć do końca lutego"
+    },
+    {
+      "icon": "🟡",
+      "title": "PYTANIA DO ZARZĄDU (deadline: pon 17.02)",
+      "detail": "1. Status Kubuś Maspex (~28k w lutym)?\n2. Karolina — lista firm MBON + pitch gotowy?\n3. Które 3 z 11 projektów zamrozić?\n4. Koszty stosu AI miesięcznie?\n5. Deadline assety od Oli do strony?",
+      "source": "PYTANIA",
+      "actions": "Odpowiedzi wchodzą do raportu Rady w niedzielę 16.02",
+      "reply": "1. Kubuś: jeden film gotowy 90%, kolejne 4 podobne w przyszłym tygodniu\n2. Lista MBON — sprawdzić dostępność. Dodać do karty \"szkolenie odblokowane\"\n3. Wymienić wszystkie 11 projektów — Piotr nie kojarzy\n4. Stack AI się zwraca, co chwilę nowy model do testowania — nie ciąć\n5. Assety Oli = strona Virface (nie 1three). Strona 1three.studio = pilny remont, budżet max 10k PLN, znaleźć studio"
+    }
+  ],
+  "radaRaport": "SYTUACJA: 50k na koncie (3.3x kosztów). Luty plan 49k brutto, ArtFM 21k potwierdzone. Bez Maspex = 28.5k vs 15.3k kosztów — margines minimalny. BUR pipeline: 2 klienci (ESPECTO, ARTFM). Usługi Rozwojowe 4.0 aktywne do 31.08.2026.\n\nDYSKUSJA: Strateg widzi otwarte okno — nisza BUR prawie pusta, firmy mają vouchery TERAZ. Finansowy liczy: jedno szkolenie 20-25k zmienia obraz, ale trzeba 6-8 leadów w pipeline. Sceptyk punktuje: BUR to priorytet od tygodnia, ale zero godzin poszło na prospecting. Dashboard pochłania czas, klienci czekają.\n\nDO ZROBIENIA:\n[PILNE] Potwierdzić status 1three jako podmiot BUR → Piotr + Karolina\n[PILNE] Opis szkolenia AI Creative Pipeline do publikacji → Edi\n[TEN TYDZIEŃ] Lista 20 firm z dofinansowaniem + cold maile → Edi\n[POMYSŁ] Zamrozić projekty poboczne do 2 szkoleń/mies\n[POMYSŁ] Voice bridge przesunąć na marzec",
+  "radaReko": [
+    {
+      "id": "rada-14-01",
+      "priority": "PILNE",
+      "text": "Potwierdzić status 1three jako podmiot BUR — czy jesteśmy wpisani?",
+      "owner": "Piotr + Karolina",
+      "status": "open"
+    },
+    {
+      "id": "rada-14-02",
+      "priority": "PILNE",
+      "text": "Przygotować opis szkolenia AI Creative Pipeline do publikacji na BUR",
+      "owner": "Edi",
+      "status": "open"
+    },
+    {
+      "id": "rada-14-03",
+      "priority": "TEN TYDZIEŃ",
+      "text": "Lista 20 firm z Małopolski z dofinansowaniem + cold maile",
+      "owner": "Edi",
+      "status": "open"
+    },
+    {
+      "id": "rada-14-04",
+      "priority": "POMYSŁ",
+      "text": "Zamrozić projekty poboczne do momentu 2 szkoleń BUR/mies",
+      "owner": "do dyskusji",
+      "status": "open"
+    },
+    {
+      "id": "rada-14-05",
+      "priority": "POMYSŁ",
+      "text": "Voice bridge przesunąć na marzec — Gemini wystarczy na demo",
+      "owner": "do dyskusji",
+      "status": "open"
+    }
+  ],
+  "researchItems": [
+    {
+      "id": "res-001",
+      "title": "Runway 3.3 mies — minimum OK, ale bez zapasu",
+      "source": "ProcessDriven",
+      "detail": "50k / 15.3k = 3.3 miesiące. Cel: min 3 mies. Musimy budować bufor."
+    },
+    {
+      "id": "res-002",
+      "title": "Zmapować proces sprzedaży BUR",
+      "source": "ProcessDriven",
+      "detail": "Lead → kontakt → szkolenie → rozliczenie. 4 symbole: prostokąt, diament, folder, strzałka. Mapuj stan faktyczny, nie ideał."
+    },
+    {
+      "id": "res-003",
+      "title": "Karolina = właściciel procesu BUR",
+      "source": "ProcessDriven",
+      "detail": "Ona tworzy SOP-y i ustala częstotliwość, nie Piotr. Lider przekazuje wiedzę, nie robi sam."
+    },
+    {
+      "id": "res-004",
+      "title": "Usunąć rolę Piotra jako fixera",
+      "source": "ProcessDriven",
+      "detail": "Jeśli właściciel ciągle naprawia błędy, nikt się nie uczy odpowiedzialności. Dashboard, voice, config = nie Twoja robota."
+    },
+    {
+      "id": "res-005",
+      "title": "11 projektów na 2.5 osoby = za dużo",
+      "source": "ProcessDriven",
+      "detail": "Prawdziwy rozwój przez usuwanie, nie dodawanie. Zamrozić projekty poboczne do stabilnego BUR."
+    },
+    {
+      "id": "res-006",
+      "title": "Komunikacja async zamiast spotkań",
+      "source": "ProcessDriven",
+      "detail": "Trello komentarze, Telegram. Zero przerw w pracy. E-maile wewnętrzne zastąpić zadaniami."
+    },
+    {
+      "id": "res-007",
+      "title": "Standard Opieki — zdefiniować idealną realizację",
+      "source": "ProcessDriven",
+      "detail": "Zmierz przepustowość zespołu. Wiesz kiedy zaczniesz tonąć przy nadmiarze klientów."
+    },
+    {
+      "id": "res-008",
+      "title": "Automatyzacja z głową — TYLKO sprawdzone kroki",
+      "source": "ProcessDriven",
+      "detail": "Nie buduj na wszelki wypadek. Automatyzuj to co już działa i oszczędza czas."
     }
   ]
 }
