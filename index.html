@@ -66,12 +66,13 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #0a0a0c;
+            background: #08080c;
             background-image: 
-                radial-gradient(ellipse at 15% 30%, rgba(124,58,237,0.12) 0%, transparent 50%),
-                radial-gradient(ellipse at 85% 20%, rgba(59,130,246,0.08) 0%, transparent 45%),
-                radial-gradient(ellipse at 50% 85%, rgba(16,185,129,0.06) 0%, transparent 45%),
-                radial-gradient(ellipse at 70% 60%, rgba(236,72,153,0.05) 0%, transparent 40%);
+                radial-gradient(ellipse 600px 400px at 10% 20%, rgba(124,58,237,0.18) 0%, transparent 70%),
+                radial-gradient(ellipse 500px 500px at 90% 15%, rgba(59,130,246,0.12) 0%, transparent 70%),
+                radial-gradient(ellipse 600px 300px at 40% 90%, rgba(16,185,129,0.10) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 400px at 75% 65%, rgba(236,72,153,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse 300px 300px at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 50%);
             min-height: 100vh;
             color: var(--text-primary);
             line-height: 1.4;
@@ -126,36 +127,41 @@
 
         .tile {
             position: relative;
-            background: linear-gradient(145deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.07) 100%);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.05) 100%);
+            backdrop-filter: blur(50px) saturate(1.2);
+            -webkit-backdrop-filter: blur(50px) saturate(1.2);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
             padding: 14px 16px;
             overflow: hidden;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.06);
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3), 
+                        inset 0 1px 0 rgba(255,255,255,0.1),
+                        inset 0 -1px 0 rgba(255,255,255,0.02);
             transition: all 0.3s;
         }
         .tile::before {
-            content: none; /* disabled - was causing visible gradient squares */
+            content: '';
             position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: conic-gradient(from 180deg at 50% 50%, transparent 0deg, rgba(255,100,200,0.03) 60deg, rgba(100,200,255,0.05) 120deg, rgba(200,255,100,0.02) 180deg, rgba(255,200,100,0.02) 240deg, rgba(200,100,255,0.05) 300deg, transparent 360deg);
+            top: 0; left: 0; right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
             pointer-events: none;
+            border-radius: 16px 16px 0 0;
         }
         .tile::after {
             content: '';
             position: absolute;
-            top: 0; left: 10%; right: 10%;
+            top: 0; left: 8%; right: 8%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25) 30%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0.25) 70%, transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3) 20%, rgba(255,255,255,0.5) 50%, rgba(255,255,255,0.3) 80%, transparent);
             pointer-events: none;
         }
         .tile:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.08);
-            border-color: rgba(255,255,255,0.18);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4), 
+                        inset 0 1px 0 rgba(255,255,255,0.14),
+                        inset 0 -1px 0 rgba(255,255,255,0.03);
+            border-color: rgba(255,255,255,0.22);
         }
 
         /* ═══════════════ ROW 1: HEADER TILES ═══════════════ */
