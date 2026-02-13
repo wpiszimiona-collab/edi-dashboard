@@ -2655,15 +2655,49 @@
                 <div style="font-size:12px;line-height:1.8;color:var(--text-secondary);margin-bottom:16px;">${item.detail}</div>
                 ${item.actions ? '<div style="font-weight:700;font-size:10px;color:var(--purple-400);margin-bottom:6px;text-transform:uppercase;">Akcje:</div><div style="font-size:11px;line-height:1.8;margin-bottom:16px;">'+item.actions+'</div>' : ''}
                 ${raport ? '<div style="border-top:1px solid var(--border);padding-top:12px;margin-top:8px;"><div style="font-weight:700;font-size:10px;color:var(--purple-400);margin-bottom:8px;text-transform:uppercase;">Pełny raport Rady</div><div style="font-size:11px;line-height:1.8;color:var(--text-secondary);white-space:pre-wrap;">'+raport+'</div></div>' : ''}
-                <div style="display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;">
-                    <button onclick="radaToTask(${index},'urgent')" class="btn btn-primary" style="flex:1;min-width:80px;background:var(--red);">Pilne</button>
-                    <button onclick="radaToTask(${index},'todo')" class="btn btn-primary" style="flex:1;min-width:80px;">TODO</button>
-                    <button onclick="radaToTask(${index},'waiting')" class="btn btn-primary" style="flex:1;min-width:80px;background:var(--yellow);color:#000;">Czekam</button>
-                    <button onclick="closeRadaDetail()" class="btn btn-secondary" style="flex:1;min-width:80px;">Zamknij</button>
+                <div style="margin-top:12px;">
+                    <div style="font-weight:700;font-size:10px;color:var(--purple-400);margin-bottom:6px;text-transform:uppercase;">Odpowiedź zarządu:</div>
+                    <textarea id="radaReply-${index}" style="width:100%;min-height:50px;padding:8px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:11px;resize:vertical;font-family:inherit;outline:none;" placeholder="Twoja odpowiedź / komentarz...">${item.reply||''}</textarea>
+                    <button onclick="saveRadaReply(${index})" class="btn btn-secondary" style="margin-top:4px;font-size:9px;">Zapisz odpowiedź</button>
+                </div>
+                <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;">
+                    <button onclick="radaToTask(${index},'urgent')" class="btn btn-primary" style="flex:1;min-width:70px;background:var(--red);">Pilne</button>
+                    <button onclick="radaToTask(${index},'todo')" class="btn btn-primary" style="flex:1;min-width:70px;">TODO</button>
+                    <button onclick="radaToTask(${index},'waiting')" class="btn btn-primary" style="flex:1;min-width:70px;background:var(--yellow);color:#000;">Czekam</button>
+                    <button onclick="deleteRadaItem(${index})" class="btn btn-danger" style="flex:1;min-width:70px;">Usuń</button>
+                    <button onclick="closeRadaDetail()" class="btn btn-secondary" style="flex:1;min-width:70px;">Zamknij</button>
                 </div>
             `;
             overlay.style.display = 'block';
             popup.style.display = 'block';
+        }
+        function deleteRadaItem(index) {
+            if (!confirm('Usunąć tę rekomendację?')) return;
+            radaData.rekomendacje.splice(index, 1);
+            saveRadaToGist();
+            renderRadaReko();
+            closeRadaDetail();
+        }
+        function saveRadaReply(index) {
+            const textarea = document.getElementById('radaReply-' + index);
+            if (!textarea) return;
+            radaData.rekomendacje[index].reply = textarea.value.trim();
+            saveRadaToGist();
+            const btn = textarea.nextElementSibling;
+            if (btn) { btn.textContent = '✓ Zapisano'; setTimeout(() => { btn.textContent = 'Zapisz odpowiedź'; }, 1500); }
+        }
+        async function saveRadaToGist() {
+            const token = await getToken();
+            if (!token) return;
+            const edilog = { ...radaData };
+            try {
+                const resp = await fetch('https://api.github.com/gists/5ea142fdafd9f73cafd36ecd69cec9d2', {
+                    method: 'PATCH',
+                    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ files: { 'edilog-data.json': { content: JSON.stringify(edilog, null, 2) } } })
+                });
+                if (!resp.ok) console.warn('Rada Gist save failed');
+            } catch(e) { console.warn('Rada save error:', e); }
         }
         function radaToTask(index, column) {
             const reko = radaData.rekomendacje || [];
