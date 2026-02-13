@@ -1843,9 +1843,11 @@
         }
 
         const toggleStashEl = document.getElementById('toggleStash');
-        if (toggleStashEl.checked) document.body.classList.add('stash-mode');
+        const savedStash = localStorage.getItem('dashboardStashMode');
+        if (savedStash === 'true') { toggleStashEl.checked = true; document.body.classList.add('stash-mode'); }
         toggleStashEl.addEventListener('change', () => {
             document.body.classList.toggle('stash-mode', toggleStashEl.checked);
+            localStorage.setItem('dashboardStashMode', toggleStashEl.checked);
         });
 
         function renderStash() {
