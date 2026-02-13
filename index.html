@@ -67,6 +67,9 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #0a0a0c;
+            background-image: radial-gradient(ellipse at 20% 50%, rgba(88,28,135,0.08) 0%, transparent 60%),
+                              radial-gradient(ellipse at 80% 20%, rgba(59,130,246,0.06) 0%, transparent 50%),
+                              radial-gradient(ellipse at 50% 80%, rgba(16,185,129,0.04) 0%, transparent 50%);
             min-height: 100vh;
             color: var(--text-primary);
             line-height: 1.4;
@@ -165,7 +168,7 @@
         .statsbar-dot.green { background: var(--green); box-shadow: 0 0 4px rgba(16,185,129,0.3); }
         .statsbar-num { font-size: 1.3rem; font-weight: 800; color: #fff; }
         .statsbar-label { font-size: 0.75rem; color: var(--text-secondary); }
-        .statsbar-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.1); margin: 0 8px; }
+        .statsbar-sep { width: 1px; height: 20px; background: rgba(255,255,255,0.06); margin: 0 8px; }
         .logo-text { font-size: 12px; font-weight: 800; letter-spacing: 0.04em; background: linear-gradient(135deg, var(--purple-300), var(--purple-500)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .online-badge { font-size: 8px; padding: 2px 6px; border-radius: 8px; background: rgba(16,185,129,0.15); color: var(--green); font-weight: 600; display: flex; align-items: center; gap: 3px; }
         .online-dot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 6px rgba(16,185,129,0.6); }
@@ -186,7 +189,7 @@
         /* ═══════════════ KANBAN TILES ═══════════════ */
         .tile-kanban { grid-column: span 3; grid-row: span 2; display: flex; flex-direction: column; }
         .tile-kanban-sm { grid-column: span 3; grid-row: span 2; display: flex; flex-direction: column; }
-        .kanban-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding-bottom: 5px; border-bottom: 2px solid var(--border); }
+        .kanban-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.08); }
         .kanban-header.urgent { border-bottom-color: var(--red); }
         .kanban-header.todo { border-bottom-color: var(--purple-500); }
         .kanban-header.waiting { border-bottom-color: var(--yellow); }
@@ -202,20 +205,37 @@
         .kanban-count.done { background: rgba(16,185,129,0.15); color: var(--green); }
 
         .add-task-btn {
-            background: rgba(124,58,237,0.12); border: none; color: var(--purple-400);
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);
             width: 18px; height: 18px; border-radius: 4px; cursor: pointer;
             font-size: 11px; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
         }
-        .add-task-btn:hover { background: var(--purple-500); color: white; }
+        .add-task-btn:hover { background: rgba(255,255,255,0.12); color: white; border-color: rgba(255,255,255,0.2); }
+
+        /* Holographic button (save, primary actions) */
+        .btn-holo {
+            background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(200,220,255,0.1), rgba(255,200,255,0.08));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.25);
+            color: white; font-weight: 600; border-radius: 8px; cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 12px rgba(255,255,255,0.06);
+        }
+        .btn-holo:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(180,200,255,0.15), rgba(255,180,255,0.12));
+            border-color: rgba(255,255,255,0.35);
+            box-shadow: 0 4px 20px rgba(255,255,255,0.1);
+        }
 
         .task-list { display: flex; flex-direction: column; gap: 3px; flex: 1; overflow-y: auto; }
 
         .task-card {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            border-radius: 6px; padding: 6px 8px; cursor: pointer; transition: all 0.15s;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; padding: 6px 8px; cursor: pointer; transition: all 0.2s;
             display: flex; align-items: center; gap: 6px;
+            backdrop-filter: blur(10px);
         }
-        .task-card:hover { border-color: var(--border-hover); background: rgba(124,58,237,0.05); }
+        .task-card:hover { border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.07); }
         .task-card[draggable="true"] { cursor: grab; }
         .task-card[draggable="true"]:active { cursor: grabbing; }
 
@@ -317,15 +337,17 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 99999;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            background: rgba(26,26,36,0.75);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 14px;
             padding: 20px;
             width: 90%;
             max-width: 500px;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.06);
         }
         .project-close-btn {
             display: none;
@@ -442,22 +464,23 @@
         /* ═══════════════ MODAL ═══════════════ */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10,8,20,0.8); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
         .modal-overlay.active { display: flex; }
-        .modal { background: rgba(26,26,36,0.95); backdrop-filter: blur(24px); border: 1px solid rgba(124,58,237,0.15); border-radius: 10px; padding: 16px; width: 90%; max-width: 420px; box-shadow: 0 32px 80px rgba(0,0,0,0.6); }
+        .modal { background: rgba(26,26,36,0.75); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 16px; width: 90%; max-width: 420px; box-shadow: 0 32px 80px rgba(0,0,0,0.6), inset 0 1px 1px rgba(255,255,255,0.06); }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .modal-title { font-size: 13px; font-weight: 700; }
         .modal-close { background: none; border: none; color: var(--text-muted); font-size: 16px; cursor: pointer; }
         .modal-close:hover { color: var(--red); }
         .form-group { margin-bottom: 8px; }
         .form-group label { display: block; margin-bottom: 3px; font-size: 10px; color: var(--text-secondary); font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 6px 8px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text-primary); font-size: 10px; font-family: inherit; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--purple-500); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 6px 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-primary); font-size: 10px; font-family: inherit; backdrop-filter: blur(10px); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); }
         .form-group textarea { resize: vertical; min-height: 50px; }
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .modal-actions { display: flex; gap: 8px; margin-top: 12px; }
         .btn { flex: 1; padding: 7px 10px; border: none; border-radius: 6px; font-size: 10px; font-weight: 600; cursor: pointer; font-family: inherit; }
-        .btn-primary { background: linear-gradient(135deg, var(--purple-500), var(--purple-400)); color: white; }
-        .btn-primary:hover { opacity: 0.9; }
-        .btn-secondary { background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border); }
+        .btn-primary { background: linear-gradient(135deg, rgba(255,255,255,0.15), rgba(200,220,255,0.12), rgba(255,200,255,0.1)); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); color: white; box-shadow: 0 2px 12px rgba(255,255,255,0.06); }
+        .btn-primary:hover { background: linear-gradient(135deg, rgba(255,255,255,0.22), rgba(180,200,255,0.18), rgba(255,180,255,0.14)); border-color: rgba(255,255,255,0.3); box-shadow: 0 4px 20px rgba(255,255,255,0.1); }
+        .btn-secondary { background: rgba(255,255,255,0.05); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.18); }
         .btn-danger { background: var(--red); color: white; }
         .btn-small { padding: 4px 8px; font-size: 10px; }
         .attachment-input { display: flex; gap: 4px; margin-top: 4px; }
