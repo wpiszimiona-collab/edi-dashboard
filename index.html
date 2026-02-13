@@ -2580,6 +2580,44 @@
         const _origSaveToCloud = saveToCloud;
         // (kanbanNames are already saved to localStorage, and saveToCloud reads from localStorage)
 
+        // ═══════════════ RADA REKOMENDACJE (from edilog Gist) ═══════════════
+        async function loadRadaReko() {
+            try {
+                const token = await getToken();
+                const headers = { 'Accept': 'application/vnd.github+json' };
+                if (token) headers['Authorization'] = `token ${token}`;
+                const resp = await fetch('https://api.github.com/gists/5ea142fdafd9f73cafd36ecd69cec9d2', { headers });
+                if (!resp.ok) return;
+                const gist = await resp.json();
+                const file = gist.files['edilog-data.json'];
+                if (!file) return;
+                const data = JSON.parse(file.content);
+                const reko = data.rekomendacje || [];
+                if (reko.length === 0) return;
+                const container = document.getElementById('rekoTasks');
+                if (!container) return;
+                const rekoEl = document.getElementById('countReko');
+                if (rekoEl) rekoEl.textContent = reko.length;
+                container.innerHTML = reko.map((r, i) => `
+                    <div class="task-card">
+                        <span class="task-num">${String(i+1).padStart(2,'0')}</span>
+                        <div class="task-card-content">
+                            <div class="task-row">
+                                <span class="task-title">${r.icon} ${r.title}</span>
+                                <span class="task-project research">${r.source}</span>
+                            </div>
+                            <div style="font-size:8px;color:var(--text-secondary);margin-top:2px;">${r.detail}</div>
+                        </div>
+                    </div>
+                `).join('');
+                if (data.rekoDate) {
+                    const sub = document.getElementById('kanbanSub-reko');
+                    if (sub) sub.textContent = 'Aktualizacja: ' + data.rekoDate;
+                }
+            } catch(e) { console.warn('Rada load failed:', e); }
+        }
+        loadRadaReko();
+
         // Initialize Lucide icons (retry until loaded)
         function initLucide() {
             if (typeof lucide !== 'undefined') { lucide.createIcons(); }
