@@ -2784,14 +2784,11 @@
                 const container = document.getElementById('researchCards');
                 if (!container || !items.length) return;
                 document.getElementById('countOnhold').textContent = items.length;
+                document.getElementById('countOnhold').textContent = items.length;
                 container.innerHTML = items.map((item, i) => `
-                    <div class="task-card" style="cursor:default;">
-                        <div class="task-header">
-                            <span class="task-number">${String(i+1).padStart(2,'0')}</span>
-                            <span class="task-title">${item.title || ''}</span>
-                        </div>
-                        <div style="font-size:0.78rem;color:#9ca3af;margin-top:4px;">${item.detail || ''}</div>
-                        ${item.source ? `<div style="font-size:0.7rem;color:#6b7280;margin-top:4px;">📎 ${item.source}</div>` : ''}
+                    <div style="padding:8px 10px;margin:4px 0;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:8px;cursor:default;" title="${(item.detail || '').replace(/"/g, '&quot;')}">
+                        <span style="color:#f59e0b;font-size:0.75rem;font-weight:600;margin-right:6px;">${String(i+1).padStart(2,'0')}</span>
+                        <span style="font-size:0.82rem;color:#e5e7eb;">${item.title || ''}</span>
                     </div>
                 `).join('');
             } catch(e) { console.error('Research load error:', e); }
