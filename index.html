@@ -374,14 +374,14 @@
 
         /* ═══════════════ TILE HIDE/STASH ═══════════════ */
         .tile-close-btn {
-            position: absolute; top: 6px; right: 24px; z-index: 10;
+            position: relative; z-index: 10;
             width: 16px; height: 16px; border-radius: 50%;
             background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
             color: rgba(255,255,255,0.25); font-size: 9px; cursor: pointer;
             display: none; align-items: center; justify-content: center; line-height: 1;
+            margin-left: auto; flex-shrink: 0;
         }
-        .stash-mode .tile { overflow: visible !important; }
-        .stash-mode .tile:hover .tile-close-btn { display: flex; }
+        .stash-mode .tile-close-btn { display: flex; }
         .tile-close-btn:hover { background: rgba(239,68,68,0.2); color: var(--red); border-color: rgba(239,68,68,0.3); }
         .tile.hidden-tile { display: none !important; }
         .tile-stash { grid-column: span 6; display: flex; flex-direction: column; }
@@ -1782,7 +1782,7 @@
                 btn.innerHTML = '✕';
                 btn.title = 'Schowaj';
                 btn.onclick = (e) => { e.stopPropagation(); hideTile(tile.id); };
-                tile.appendChild(btn);
+                tile.prepend(btn);
             });
 
             // Restore hidden state
