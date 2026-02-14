@@ -793,10 +793,10 @@
             <div class="project-tile-subtitle">Własne biznesy</div>
             <div id="projectsFirmy"></div>
         </div>
-        <div class="tile tile-apps" id="tile-apps">
-            <div class="tile-section-title"><i data-lucide="rocket" class="lucide-sm purple-icon"></i> Aplikacje</div>
-            <div class="tile-section-subtitle">Pomysły & projekty dev</div>
-            <div class="apps-inline" id="appsInline"></div>
+        <div class="tile tile-project" id="tile-apps">
+            <div class="project-tile-title" style="display:flex;justify-content:space-between;align-items:center;"><i data-lucide="rocket" class="lucide-sm purple-icon"></i> APLIKACJE <button class="add-task-btn" onclick="openAddAppModal()" title="Dodaj aplikację">+</button></div>
+            <div class="project-tile-subtitle">Pomysły & projekty dev</div>
+            <div id="appsInline"></div>
         </div>
         <div class="tile tile-kanban" id="tile-kanban-domtodo" data-column="domtodo" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'domtodo')">
             <div class="kanban-header urgent">
@@ -1707,8 +1707,10 @@
         function renderApps() {
             const container = document.getElementById('appsInline');
             const stageLabels = { idea: 'POMYSŁ', planned: 'PLAN', progress: 'WIP', done: 'DONE' };
-            container.innerHTML = apps.map(app => `<div class="app-pill ${app.priority}" onclick="openAppModal(${app.id})"><span style="font-size:10px;font-weight:600">${app.name}</span><span class="app-stage ${app.stage}">${stageLabels[app.stage]}</span></div>`).join('') + `<div class="add-app-inline" onclick="openAppModal()">+ Dodaj</div>`;
+            const stageColors = { idea: 'var(--gray)', planned: 'var(--yellow)', progress: 'var(--blue)', done: 'var(--green)' };
+            container.innerHTML = apps.map(app => `<div class="project-item" onclick="openAppModal(${app.id})"><span class="project-status" style="background:${stageColors[app.stage]||'var(--gray)'};box-shadow:0 0 4px ${stageColors[app.stage]||'var(--gray)'}40;"></span><span class="project-name">${app.name}</span><span class="app-stage ${app.stage}" style="margin-left:auto;">${stageLabels[app.stage]}</span></div>`).join('');
         }
+        function openAddAppModal() { openAppModal(); }
 
         function openAppModal(appId = null) {
             const modal = document.getElementById('appModalOverlay'); const form = document.getElementById('appForm'); const title = document.getElementById('appModalTitle'); const deleteBtn = document.getElementById('deleteAppBtn');
