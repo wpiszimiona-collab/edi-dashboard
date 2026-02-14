@@ -830,6 +830,18 @@
             <div id="agentsBoardColumns" style="display:flex; gap:8px; padding:8px 12px 12px; flex:1; overflow-x:auto; min-height:0;"></div>
         </div>
 
+        <!-- POMYSŁY TRELLO BOARD -->
+        <div class="tile" id="tile-ideas-board" style="grid-column: span 9; grid-row: span 2; display:flex; flex-direction:column; padding:0; overflow:hidden;">
+            <div style="padding:12px 16px 8px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+                <span style="font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:#f59e0b; display:flex; align-items:center; gap:6px;">
+                    <i data-lucide="lightbulb" class="lucide-sm" style="color:#f59e0b;"></i> POMYSŁY
+                    <span style="background:rgba(245,158,11,0.15); color:#f59e0b; font-size:9px; padding:1px 7px; border-radius:6px; font-weight:700;" id="countIdeasTotal">0</span>
+                </span>
+                <span style="font-size:9px; color:var(--text-muted);">Tablica pomysłów — drag & drop</span>
+            </div>
+            <div id="ideasBoardColumns" style="display:flex; gap:8px; padding:8px 12px 12px; flex:1; overflow-x:auto; min-height:0;"></div>
+        </div>
+
         <!-- ROW 6-7: RESEARCH + Settings + Calendar -->
         <div class="tile tile-kanban" id="tile-kanban-onhold" data-column="onhold" style="grid-column: span 6;" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'onhold')">
             <div class="kanban-header" style="border-bottom-color: #f59e0b;">
@@ -3238,6 +3250,185 @@
 
         loadAgents();
         renderAgentsBoard();
+
+        // ═══════════════ POMYSŁY TRELLO BOARD ═══════════════
+        const IDEAS_LS_KEY = 'ediIdeasBoard';
+        const IDEA_COLUMNS = [
+            { id: 'idea', label: '💡 POMYSŁ', color: '#f59e0b' },
+            { id: 'evaluate', label: '🔍 DO OCENY', color: '#8b5cf6' },
+            { id: 'approved', label: '✅ ZATWIERDZONE', color: '#22c55e' },
+            { id: 'rejected', label: '❌ ODRZUCONE', color: '#ef4444' }
+        ];
+        const DEFAULT_IDEAS = [
+            { id:'i1', col:'idea', title:'HubSpot + ElevenLabs outbound calls', desc:'Agent dzwoni do byłych kursantów — wywiad jakościowy + upsell nowych szkoleń + referrale. HubSpot integracja natywna.', tags:['BUR','voice','HubSpot'], priority:'wysoki', comments:[] },
+            { id:'i2', col:'idea', title:'Asystent Osobisty jako produkt po szkoleniu', desc:'Klient kupuje szkolenie BUR → na koniec dostaje swojego AI asystenta. Recurring revenue.', tags:['produkt','revenue','BUR'], priority:'wysoki', comments:[] },
+            { id:'i3', col:'idea', title:'aipracuje.pl — Urząd Pracy AI', desc:'Portal pracy gdzie kandydaci to AI. Etaty, fuchy, korepetycje.', tags:['startup','SaaS'], priority:'średni', comments:[] },
+            { id:'i4', col:'evaluate', title:'OpenClaw na RTX/DGX Spark', desc:'Nvidia guide — local-first AI. Argument sprzedażowy: dane u klienta.', tags:['szkolenia','security'], priority:'średni', comments:[] },
+            { id:'i5', col:'idea', title:'Voice agent do cold callów BUR', desc:'Agent dzwoni do firm z MBON, prezentuje szkolenia, zbiera leady.', tags:['BUR','voice','leady'], priority:'wysoki', comments:[] }
+        ];
+
+        let ideasState = null;
+        let ideaIdCounter = 200;
+        let dragIdeaId = null;
+
+        function loadIdeas() {
+            try {
+                const raw = localStorage.getItem(IDEAS_LS_KEY);
+                if (raw) { ideasState = JSON.parse(raw); return; }
+            } catch(e) {}
+            ideasState = JSON.parse(JSON.stringify(DEFAULT_IDEAS));
+            saveIdeas();
+        }
+        function saveIdeas() { localStorage.setItem(IDEAS_LS_KEY, JSON.stringify(ideasState)); }
+        function nextIdeaId() { return 'i' + (++ideaIdCounter); }
+
+        function renderIdeasBoard() {
+            const wrap = document.getElementById('ideasBoardColumns');
+            if (!wrap) return;
+            const total = document.getElementById('countIdeasTotal');
+            if (total) total.textContent = ideasState.length;
+
+            wrap.innerHTML = IDEA_COLUMNS.map(col => {
+                const cards = ideasState.filter(a => a.col === col.id);
+                return `
+                <div class="idea-col" data-icol="${col.id}"
+                     ondragover="ideaDragOver(event)" ondragleave="ideaDragLeave(event)" ondrop="ideaDrop(event,'${col.id}')"
+                     style="flex:1;min-width:180px;display:flex;flex-direction:column;background:var(--bg-input);border-radius:8px;border:1px solid var(--border);overflow:hidden;">
+                    <div style="padding:8px 10px 6px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid ${col.color};">
+                        <span style="font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:${col.color};">${col.label} <span style="opacity:0.6;">(${cards.length})</span></span>
+                        <button onclick="addIdeaToCol('${col.id}')" title="Dodaj pomysł" style="background:none;border:none;color:${col.color};cursor:pointer;font-size:16px;line-height:1;font-weight:700;">+</button>
+                    </div>
+                    <div class="idea-col-cards" data-icol="${col.id}" style="flex:1;overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:4px;min-height:60px;"
+                         ondragover="ideaDragOver(event)" ondragleave="ideaDragLeave(event)" ondrop="ideaDrop(event,'${col.id}')">
+                        ${cards.map(idea => {
+                            const pColor = idea.priority === 'wysoki' ? '#ef4444' : idea.priority === 'średni' ? '#f59e0b' : '#6b7280';
+                            return `
+                            <div class="task-card" draggable="true" data-idea-id="${idea.id}"
+                                 ondragstart="ideaDragStart(event,'${idea.id}')" ondragend="ideaDragEnd(event)"
+                                 onclick="openIdeaDetail('${idea.id}')" style="cursor:pointer;margin:0;">
+                                <div class="task-card-content">
+                                    <div class="task-row">
+                                        <span class="task-title" style="font-size:10px;">${idea.title}</span>
+                                    </div>
+                                    <div style="font-size:9px;color:var(--text-muted);margin-top:1px;">${idea.desc.length>70?idea.desc.slice(0,70)+'…':idea.desc}</div>
+                                    <div style="margin-top:4px;display:flex;gap:3px;flex-wrap:wrap;">
+                                        <span style="font-size:7px;padding:1px 5px;border-radius:3px;background:${pColor}22;color:${pColor};font-weight:700;">${idea.priority}</span>
+                                        ${idea.tags.map(t => '<span style="font-size:7px;padding:1px 5px;border-radius:3px;background:rgba(139,92,246,0.1);color:#8b5cf6;">'+t+'</span>').join('')}
+                                    </div>
+                                </div>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        function ideaDragStart(e, id) { dragIdeaId=id; e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',id); setTimeout(()=>{if(e.target)e.target.style.opacity='0.4';},0); }
+        function ideaDragEnd(e) { e.target.style.opacity='1'; dragIdeaId=null; }
+        function ideaDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect='move'; const c=e.currentTarget.closest('.idea-col'); if(c)c.style.background='rgba(245,158,11,0.08)'; }
+        function ideaDragLeave(e) { const c=e.currentTarget.closest('.idea-col'); if(c)c.style.background=''; }
+        function ideaDrop(e, colId) {
+            e.preventDefault();
+            const c=e.currentTarget.closest('.idea-col'); if(c)c.style.background='';
+            const id=e.dataTransfer.getData('text/plain')||dragIdeaId;
+            if(!id) return;
+            const idea=ideasState.find(a=>a.id===id);
+            if(idea && idea.col!==colId) { idea.col=colId; saveIdeas(); renderIdeasBoard(); }
+            dragIdeaId=null;
+        }
+
+        function addIdeaToCol(colId) {
+            const title=prompt('Tytuł pomysłu:');
+            if(!title||!title.trim()) return;
+            const desc=prompt('Opis:')||'';
+            const tagsRaw=prompt('Tagi (oddzielone przecinkami):')||'';
+            const priority=prompt('Priorytet (wysoki/średni/niski):')||'średni';
+            ideasState.push({ id:nextIdeaId(), col:colId, title:title.trim(), desc:desc.trim(), tags:tagsRaw.split(',').map(t=>t.trim()).filter(Boolean), priority:priority.trim(), comments:[] });
+            saveIdeas(); renderIdeasBoard();
+        }
+
+        function openIdeaDetail(id) {
+            const idea=ideasState.find(a=>a.id===id);
+            if(!idea) return;
+            let overlay=document.getElementById('ideaOverlay');
+            let popup=document.getElementById('ideaPopup');
+            if(!overlay) { overlay=document.createElement('div'); overlay.id='ideaOverlay'; overlay.style.cssText='display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99998;'; overlay.onclick=closeIdeaDetail; document.body.appendChild(overlay); }
+            if(!popup) { popup=document.createElement('div'); popup.id='ideaPopup'; popup.style.cssText='display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px 28px;width:90%;max-width:520px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.8);line-height:1.8;color:var(--text-primary);font-size:12px;'; document.body.appendChild(popup); }
+            const colDef=IDEA_COLUMNS.find(c=>c.id===idea.col);
+            const sc=colDef?colDef.color:'#6b7280';
+            const sl=colDef?colDef.label:idea.col;
+            const pColor=idea.priority==='wysoki'?'#ef4444':idea.priority==='średni'?'#f59e0b':'#6b7280';
+            const comments=idea.comments||[];
+
+            popup.innerHTML=`
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);">
+                    <div style="flex:1;">
+                        <span style="font-weight:700;font-size:15px;">${idea.title}</span>
+                        <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap;">
+                            <span style="font-size:8px;padding:2px 6px;border-radius:4px;background:${sc}22;color:${sc};font-weight:700;">${sl}</span>
+                            <span style="font-size:8px;padding:2px 6px;border-radius:4px;background:${pColor}22;color:${pColor};font-weight:700;">Priorytet: ${idea.priority}</span>
+                        </div>
+                    </div>
+                    <button onclick="closeIdeaDetail()" style="color:var(--purple-300);font-size:14px;font-weight:700;cursor:pointer;background:none;border:none;">✕</button>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:700;font-size:10px;color:#f59e0b;margin-bottom:4px;text-transform:uppercase;">Opis</div>
+                    <div contenteditable="true" onblur="ideaSaveField('${id}','desc',this.textContent)" style="font-size:12px;color:var(--text-secondary);border:1px solid transparent;border-radius:4px;padding:4px;min-height:40px;cursor:text;outline:none;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">${idea.desc}</div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:700;font-size:10px;color:#f59e0b;margin-bottom:6px;text-transform:uppercase;">Tagi</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:4px;">
+                        ${idea.tags.map(t=>'<span style="font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(139,92,246,0.1);color:#8b5cf6;">'+t+'</span>').join('')}
+                        <button onclick="addIdeaTag('${id}')" style="font-size:9px;padding:2px 8px;border-radius:4px;background:none;border:1px dashed var(--border);color:var(--text-muted);cursor:pointer;">+ tag</button>
+                    </div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:700;font-size:10px;color:#f59e0b;margin-bottom:6px;text-transform:uppercase;">Przenieś do</div>
+                    <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                        ${IDEA_COLUMNS.filter(c=>c.id!==idea.col).map(c=>`<button onclick="moveIdea('${id}','${c.id}')" style="flex:1;min-width:80px;padding:5px 0;font-size:10px;font-weight:600;border-radius:6px;border:1px solid ${c.color}44;background:${c.color}11;color:${c.color};cursor:pointer;">${c.label}</button>`).join('')}
+                    </div>
+                </div>
+                <div style="margin-bottom:16px;border-top:1px solid var(--border);padding-top:12px;">
+                    <div style="font-weight:700;font-size:10px;color:#f59e0b;margin-bottom:8px;text-transform:uppercase;">Komentarze</div>
+                    <div id="ideaComments" style="margin-bottom:8px;">
+                        ${comments.map(c=>`<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">${c.author||'Piotr'}</span><span style="font-size:9px;color:var(--text-muted);">${c.date||''}</span></div><div style="color:var(--text-secondary);margin-top:2px;">${c.text}</div></div>`).join('')}
+                        ${comments.length===0?'<div style="font-size:10px;color:var(--text-muted);">Brak komentarzy</div>':''}
+                    </div>
+                    <textarea id="ideaNewComment" placeholder="Napisz komentarz..." style="width:100%;min-height:40px;padding:6px 8px;background:var(--bg-input,#1a1a2e);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:11px;resize:vertical;font-family:inherit;outline:none;"></textarea>
+                    <button onclick="addIdeaComment('${id}')" class="btn btn-secondary" style="margin-top:4px;font-size:9px;">Zapisz komentarz</button>
+                </div>
+                <div style="display:flex;gap:6px;margin-top:12px;">
+                    <button onclick="editIdea('${id}')" style="flex:1;padding:6px 0;font-size:10px;font-weight:600;border-radius:6px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-primary);cursor:pointer;">✏️ Edytuj</button>
+                    <button onclick="deleteIdea('${id}')" style="padding:6px 16px;font-size:10px;font-weight:600;border-radius:6px;border:1px solid #ef444444;background:#ef444411;color:#ef4444;cursor:pointer;">🗑️ Usuń</button>
+                </div>
+            `;
+            overlay.style.display='block'; popup.style.display='block';
+        }
+
+        function closeIdeaDetail() { const o=document.getElementById('ideaOverlay'); const p=document.getElementById('ideaPopup'); if(o)o.style.display='none'; if(p)p.style.display='none'; }
+        function ideaSaveField(id,field,value) { const idea=ideasState.find(a=>a.id===id); if(idea){idea[field]=value.trim(); saveIdeas(); renderIdeasBoard();} }
+        function moveIdea(id,newCol) { const idea=ideasState.find(a=>a.id===id); if(idea){idea.col=newCol; saveIdeas(); renderIdeasBoard(); openIdeaDetail(id);} }
+        function addIdeaTag(id) { const t=prompt('Nowy tag:'); if(!t||!t.trim()) return; const idea=ideasState.find(a=>a.id===id); if(idea){idea.tags.push(t.trim()); saveIdeas(); renderIdeasBoard(); openIdeaDetail(id);} }
+        function addIdeaComment(id) {
+            const ta=document.getElementById('ideaNewComment'); if(!ta||!ta.value.trim()) return;
+            const idea=ideasState.find(a=>a.id===id); if(!idea) return;
+            if(!idea.comments) idea.comments=[];
+            const now=new Date();
+            idea.comments.push({author:'Piotr',text:ta.value.trim(),date:now.toLocaleDateString('pl-PL')+', '+now.toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'})});
+            saveIdeas(); openIdeaDetail(id);
+        }
+        function editIdea(id) {
+            const idea=ideasState.find(a=>a.id===id); if(!idea) return;
+            const title=prompt('Tytuł:',idea.title); if(title!==null) idea.title=title.trim()||idea.title;
+            const priority=prompt('Priorytet (wysoki/średni/niski):',idea.priority); if(priority!==null) idea.priority=priority.trim()||idea.priority;
+            saveIdeas(); renderIdeasBoard(); openIdeaDetail(id);
+        }
+        function deleteIdea(id) { if(!confirm('Usunąć pomysł?')) return; ideasState=ideasState.filter(a=>a.id!==id); saveIdeas(); renderIdeasBoard(); closeIdeaDetail(); }
+
+        document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeIdeaDetail(); });
+
+        loadIdeas();
+        renderIdeasBoard();
 
     </script>
 </body>
