@@ -1,6 +1,19 @@
 {
   "days": [
     {
+      "date": "2026-02-14",
+      "summary": "Nowy projekt: AI asystent dla Oli",
+      "entries": [
+        {
+          "time": "12:40",
+          "icon": "🤖",
+          "title": "Projekt: AI Asystent dla Oli",
+          "detail": "Zaprojektować asystenta operacyjnego dla Oli — osobowość, priorytety, setup. Ola chce kogoś kto ogarnia logistykę: deadliny, follow-upy, organizację. Inny profil niż Edi.",
+          "tag": "TODO"
+        }
+      ]
+    },
+    {
       "date": "2026-02-13",
       "summary": "Telefon Edi podpięty! OpenClaw update 2.12, BUR pipeline, Rada, finanse",
       "entries": [
@@ -417,52 +430,16 @@
   ],
   "researchItems": [
     {
-      "id": "res-001",
-      "title": "Runway 3.3 mies — minimum OK, ale bez zapasu",
-      "source": "ProcessDriven",
-      "detail": "50k / 15.3k = 3.3 miesiące. Cel: min 3 mies. Musimy budować bufor."
+      "id": "mapowanie-procesow",
+      "title": "Mapowanie procesów (ProcessDriven)",
+      "source": "NotebookLM — 4 filmy Layli",
+      "detail": "1. Runway 3.3 mies — minimum OK, ale bez zapasu\n50k / 15.3k = 3.3 miesiące. Cel: min 3 mies. Musimy budować bufor.\n\n2. Zmapować proces sprzedaży BUR\nLead → kontakt → szkolenie → rozliczenie. 4 symbole: prostokąt, diament, folder, strzałka. Mapuj stan faktyczny, nie ideał.\n\n3. Karolina = właściciel procesu BUR\nOna tworzy SOP-y i ustala częstotliwość, nie Piotr. Lider przekazuje wiedzę, nie robi sam.\n\n4. Usunąć rolę Piotra jako fixera\nJeśli właściciel ciągle naprawia błędy, nikt się nie uczy odpowiedzialności. Dashboard, voice, config = nie Twoja robota.\n\n5. 11 projektów na 2.5 osoby = za dużo\nPrawdziwy rozwój przez usuwanie, nie dodawanie. Zamrozić projekty poboczne do stabilnego BUR.\n\n6. Komunikacja async zamiast spotkań\nTrello komentarze, Telegram. Zero przerw w pracy. E-maile wewnętrzne zastąpić zadaniami.\n\n7. Standard Opieki — zdefiniować idealną realizację\nZmierz przepustowość zespołu. Wiesz kiedy zaczniesz tonąć przy nadmiarze klientów.\n\n8. Automatyzacja z głową — TYLKO sprawdzone kroki\nNie buduj na wszelki wypadek. Automatyzuj to co już działa i oszczędza czas."
     },
     {
-      "id": "res-002",
-      "title": "Zmapować proces sprzedaży BUR",
-      "source": "ProcessDriven",
-      "detail": "Lead → kontakt → szkolenie → rozliczenie. 4 symbole: prostokąt, diament, folder, strzałka. Mapuj stan faktyczny, nie ideał."
-    },
-    {
-      "id": "res-003",
-      "title": "Karolina = właściciel procesu BUR",
-      "source": "ProcessDriven",
-      "detail": "Ona tworzy SOP-y i ustala częstotliwość, nie Piotr. Lider przekazuje wiedzę, nie robi sam."
-    },
-    {
-      "id": "res-004",
-      "title": "Usunąć rolę Piotra jako fixera",
-      "source": "ProcessDriven",
-      "detail": "Jeśli właściciel ciągle naprawia błędy, nikt się nie uczy odpowiedzialności. Dashboard, voice, config = nie Twoja robota."
-    },
-    {
-      "id": "res-005",
-      "title": "11 projektów na 2.5 osoby = za dużo",
-      "source": "ProcessDriven",
-      "detail": "Prawdziwy rozwój przez usuwanie, nie dodawanie. Zamrozić projekty poboczne do stabilnego BUR."
-    },
-    {
-      "id": "res-006",
-      "title": "Komunikacja async zamiast spotkań",
-      "source": "ProcessDriven",
-      "detail": "Trello komentarze, Telegram. Zero przerw w pracy. E-maile wewnętrzne zastąpić zadaniami."
-    },
-    {
-      "id": "res-007",
-      "title": "Standard Opieki — zdefiniować idealną realizację",
-      "source": "ProcessDriven",
-      "detail": "Zmierz przepustowość zespołu. Wiesz kiedy zaczniesz tonąć przy nadmiarze klientów."
-    },
-    {
-      "id": "res-008",
-      "title": "Automatyzacja z głową — TYLKO sprawdzone kroki",
-      "source": "ProcessDriven",
-      "detail": "Nie buduj na wszelki wypadek. Automatyzuj to co już działa i oszczędza czas."
+      "id": "openclaw-revenue",
+      "title": "OpenClaw Revenue — 4 kierunki DO WDROŻENIA",
+      "source": "Research 13.02 + decyzja Piotra 14.02",
+      "detail": "WYBRANE 4 KIERUNKI (decyzja 14.02):\n\nFAZA 1 — TERAZ:\n🔧 AI Setup-as-a-Service — konfiguracja OpenClaw dla firm. $500-2K/setup + $100-300/mies. Łączy się z BUR (szkolimy → konfigurujemy).\n\nFAZA 2 — RÓWNOLEGLE:\n🎬 Video Pipeline Automation — analiza top wideo, skrypty, briefy produkcyjne. $500-2K/mies per klient. Nasze DNA.\n📱 Social Media Management — monitoring, content, scheduling z AI. $300-800/mies per klient. Addon do klientów produkcyjnych.\n\nFAZA 3 — GDY MAMY KLIENTÓW:\n🔍 Lead Gen / Competitive Intelligence — agent swarms monitorują rynek overnight. $500-1,500/raport. Addon do istniejących klientów.\n\nBenchmarki: $3,600/mies (setup), $13K MRR (swarms), $5K+ (content).\nPełny raport: projekty/1THREE/research-openclaw-revenue-ideas.md"
     }
   ]
 }
