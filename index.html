@@ -875,6 +875,7 @@
                     <span class="toggle-slider"></span>
                 </div>
             </label>
+            <button onclick="if(confirm('Zresetować tablice Agenci i Pomysły do domyślnych?')){localStorage.removeItem('ediAgentsBoard');localStorage.removeItem('ediIdeasBoard');location.reload();}" style="margin-top:6px;padding:4px 8px;font-size:8px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:4px;color:#ef4444;cursor:pointer;width:100%;">🔄 Reset tablic</button>
         </div>
         <div class="tile tile-profiles" id="tile-profiles">
             <div class="settings-title"><i data-lucide="save" class="lucide-sm muted-icon"></i> Profile widoku</div>
