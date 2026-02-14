@@ -2892,12 +2892,12 @@
             { id: 'planned', label: 'PLANOWANY', color: '#6b7280' }
         ];
         const DEFAULT_AGENTS = [
-            { id:'a1', status:'building', icon:'📞', name:'Edi Phone', subtitle:'Konsultant BUR', desc:'Odbiera telefony od klientów BUR, opowiada o szkoleniach, zbiera leady', phone:'+48 732 145 757', channels:['📞'], steps:[{text:'Voice bridge działa',done:true},{text:'Numer Twilio podpięty',done:true},{text:'Prompt sprzedażowy BUR',done:false},{text:'Baza wiedzy o szkoleniach',done:false},{text:'Auto-zapis leadów',done:false},{text:'Follow-up system',done:false}], flow:'Klient dzwoni → Edi wita → pytania o potrzeby → info o szkoleniu → zbiera dane → zapisuje lead', kpi:['Telefony/dzień','Conversion rate','Avg response time'], comments:[] },
-            { id:'a2', status:'active', icon:'📊', name:'Edi COO', subtitle:'Operacje 1three', desc:'Zarządza operacjami firmy, research, outreach, raporty', phone:'', channels:['💬','🖥️','📞'], steps:[{text:'Dashboard',done:true},{text:'Memory system',done:true},{text:'Rada Nadzorcza',done:true},{text:'Voice bridge',done:true},{text:'Cold maile BUR aktywne',done:false},{text:'HubSpot CRM sync',done:false}], flow:'Telegram/TUI/Voice → zlecenie lub proaktywne działanie → raport/deliverable', kpi:['Tasków/dzień','Deliverables','Response time'], comments:[] },
-            { id:'a3', status:'planned', icon:'🧑‍💼', name:'Asystent Osobisty', subtitle:'AI Interview & Assist', desc:'Przeprowadza wywiad z człowiekiem i staje się jego osobistym asystentem', phone:'', channels:['📞','💬','📱'], steps:[{text:'Skrypt wywiadu',done:false},{text:'System profili',done:false},{text:'Multi-tenant',done:false},{text:'Kanały (tel+TG+WA)',done:false},{text:'Onboarding flow',done:false},{text:'Pilot z Olą',done:false}], flow:'Osoba dostaje link → agent prowadzi wywiad → tworzy profil → od teraz jest asystentem', kpi:['Czas onboardingu','Retencja 7d','Zadania/dzień','NPS'], comments:[] },
-            { id:'a4', status:'planned', icon:'✍️', name:'Content Creator', subtitle:'Social Media', desc:'Tworzy i scheduluje content na social media', phone:'', channels:['📱'], steps:[{text:'Strategia content',done:false},{text:'Postiz integration',done:false},{text:'Harmonogram',done:false},{text:'Automatyczne posty',done:false}], flow:'Strategia → generowanie → review → scheduling → publikacja', kpi:['Posty/tydzień','Engagement rate','Reach'], comments:[] },
-            { id:'a5', status:'planned', icon:'🎯', name:'Lead Hunter', subtitle:'Prospecting & Lead Gen', desc:'Automatyczny prospecting i lead generation 24/7', phone:'', channels:['📧'], steps:[{text:'Źródła leadów',done:false},{text:'Scoring model',done:false},{text:'Auto-outreach',done:false},{text:'CRM integration',done:false}], flow:'Źródła → scraping → scoring → outreach → CRM', kpi:['Leadów/tydzień','Conversion rate','Cost per lead'], comments:[] },
-            { id:'a6', status:'planned', icon:'👁️', name:'Agent Prowadzący', subtitle:'Accountability & Focus Coach', desc:'AI accountability partner — pilnuje żebyś robił to co masz robić i się nie rozpraszał. Jak osobisty coach skupienia 24/7.', phone:'', channels:['📞','💬','📱'], steps:[{text:'Skrypt onboardingu (cel + plan)',done:false},{text:'System monitorowania postępów',done:false},{text:'Mechanizm przypomnień',done:false},{text:'Integracja z kalendarzem/taskami',done:false},{text:'Tryb delikatny vs stanowczy',done:false},{text:'Raport dzienny/tygodniowy',done:false}], flow:'Onboarding (cel) → plan dnia → monitoring → przypomnienia → podsumowanie', kpi:['Tasków ukończonych/dzień','Czas w fokusie','Streak dni','NPS'], comments:[] }
+            { id:'a1', status:'building', icon:'phone', name:'Edi Phone', subtitle:'Konsultant BUR', desc:'Odbiera telefony od klientów BUR, opowiada o szkoleniach, zbiera leady', phone:'+48 732 145 757', channels:['📞'], steps:[{text:'Voice bridge działa',done:true},{text:'Numer Twilio podpięty',done:true},{text:'Prompt sprzedażowy BUR',done:false},{text:'Baza wiedzy o szkoleniach',done:false},{text:'Auto-zapis leadów',done:false},{text:'Follow-up system',done:false}], flow:'Klient dzwoni → Edi wita → pytania o potrzeby → info o szkoleniu → zbiera dane → zapisuje lead', kpi:['Telefony/dzień','Conversion rate','Avg response time'], comments:[] },
+            { id:'a2', status:'active', icon:'bar-chart-3', name:'Edi COO', subtitle:'Operacje 1three', desc:'Zarządza operacjami firmy, research, outreach, raporty', phone:'', channels:['💬','🖥️','📞'], steps:[{text:'Dashboard',done:true},{text:'Memory system',done:true},{text:'Rada Nadzorcza',done:true},{text:'Voice bridge',done:true},{text:'Cold maile BUR aktywne',done:false},{text:'HubSpot CRM sync',done:false}], flow:'Telegram/TUI/Voice → zlecenie lub proaktywne działanie → raport/deliverable', kpi:['Tasków/dzień','Deliverables','Response time'], comments:[] },
+            { id:'a3', status:'planned', icon:'user-check', name:'Asystent Osobisty', subtitle:'AI Interview & Assist', desc:'Przeprowadza wywiad z człowiekiem i staje się jego osobistym asystentem', phone:'', channels:['📞','💬','📱'], steps:[{text:'Skrypt wywiadu',done:false},{text:'System profili',done:false},{text:'Multi-tenant',done:false},{text:'Kanały (tel+TG+WA)',done:false},{text:'Onboarding flow',done:false},{text:'Pilot z Olą',done:false}], flow:'Osoba dostaje link → agent prowadzi wywiad → tworzy profil → od teraz jest asystentem', kpi:['Czas onboardingu','Retencja 7d','Zadania/dzień','NPS'], comments:[] },
+            { id:'a4', status:'planned', icon:'pen-tool', name:'Content Creator', subtitle:'Social Media', desc:'Tworzy i scheduluje content na social media', phone:'', channels:['📱'], steps:[{text:'Strategia content',done:false},{text:'Postiz integration',done:false},{text:'Harmonogram',done:false},{text:'Automatyczne posty',done:false}], flow:'Strategia → generowanie → review → scheduling → publikacja', kpi:['Posty/tydzień','Engagement rate','Reach'], comments:[] },
+            { id:'a5', status:'planned', icon:'target', name:'Lead Hunter', subtitle:'Prospecting & Lead Gen', desc:'Automatyczny prospecting i lead generation 24/7', phone:'', channels:['📧'], steps:[{text:'Źródła leadów',done:false},{text:'Scoring model',done:false},{text:'Auto-outreach',done:false},{text:'CRM integration',done:false}], flow:'Źródła → scraping → scoring → outreach → CRM', kpi:['Leadów/tydzień','Conversion rate','Cost per lead'], comments:[] },
+            { id:'a6', status:'planned', icon:'eye', name:'Agent Prowadzący', subtitle:'Accountability & Focus Coach', desc:'AI accountability partner — pilnuje żebyś robił to co masz robić i się nie rozpraszał. Jak osobisty coach skupienia 24/7.', phone:'', channels:['📞','💬','📱'], steps:[{text:'Skrypt onboardingu (cel + plan)',done:false},{text:'System monitorowania postępów',done:false},{text:'Mechanizm przypomnień',done:false},{text:'Integracja z kalendarzem/taskami',done:false},{text:'Tryb delikatny vs stanowczy',done:false},{text:'Raport dzienny/tygodniowy',done:false}], flow:'Onboarding (cel) → plan dnia → monitoring → przypomnienia → podsumowanie', kpi:['Tasków ukończonych/dzień','Czas w fokusie','Streak dni','NPS'], comments:[] }
         ];
 
         let agentsState = null;
@@ -2935,7 +2935,7 @@
                 <div class="task-card" onclick="openAgentDetail('${agent.id}')" style="cursor:pointer;">
                     <div class="task-card-content">
                         <div class="task-row" style="display:flex;align-items:center;gap:6px;">
-                            <span style="font-size:14px;">${agent.icon||'🤖'}</span>
+                            <i data-lucide="${agent.icon||'bot'}" class="lucide-sm" style="color:var(--purple-300);"></i>
                             <span class="task-title">${esc(agent.name)}</span>
                             <span style="font-size:7px;padding:1px 5px;border-radius:3px;background:${st.color}22;color:${st.color};font-weight:700;margin-left:auto;">${st.label}</span>
                         </div>
@@ -2949,6 +2949,7 @@
                     </div>
                 </div>`;
             }).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function addAgent() {
@@ -2989,7 +2990,7 @@
             popup.innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);">
                     <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
-                        <span style="font-size:20px;flex-shrink:0;">${agent.icon||'🤖'}</span>
+                        <span style="flex-shrink:0;"><i data-lucide="${agent.icon||'bot'}" style="width:20px;height:20px;color:var(--purple-300);"></i></span>
                         <span contenteditable="true" onblur="agentSaveField('${id}','name',this.textContent)" style="font-weight:700;font-size:15px;border:1px solid transparent;border-radius:4px;padding:2px 4px;outline:none;flex:1;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">${esc(agent.name)}</span>
                         <span style="font-size:10px;padding:2px 8px;border-radius:4px;background:${st.color}22;color:${st.color};font-weight:700;flex-shrink:0;">${st.label}</span>
                     </div>
@@ -3058,6 +3059,7 @@
                 </div>
             `;
             overlay.style.display = 'block'; popup.style.display = 'block';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function closeAgentDetail() { const o=document.getElementById('agentOverlay'); const p=document.getElementById('agentPopup'); if(o)o.style.display='none'; if(p)p.style.display='none'; }
