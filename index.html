@@ -824,12 +824,12 @@
         <div class="tile" id="tile-agents-board" style="grid-column: span 9; grid-row: span 2; display:flex; flex-direction:column; padding:0; overflow:hidden;">
             <div class="kanban-header" style="padding:12px 16px 8px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
                 <span style="font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:var(--purple-300); display:flex; align-items:center; gap:6px;">
-                    🤖 AGENCI
+                    <i data-lucide="bot" class="lucide-sm" style="color:#a855f7;"></i> AGENCI
                     <span style="background:rgba(168,85,247,0.15); color:#a855f7; font-size:9px; padding:1px 7px; border-radius:6px; font-weight:700;" id="countAgentsTotal">0</span>
                 </span>
-                <button onclick="addAgent()" style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);border-radius:6px;color:#a855f7;font-size:9px;padding:3px 10px;cursor:pointer;font-weight:600;">+ Agent</button>
+                <span style="font-size:9px; color:var(--text-muted);">drag & drop</span>
             </div>
-            <div id="agentsList" style="padding:8px 12px 12px; flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px;"></div>
+            <div id="agentsBoardColumns" style="display:flex; gap:8px; padding:8px 12px 12px; flex:1; overflow-x:auto; min-height:0;"></div>
         </div>
 
         <!-- POMYSŁY PANEL -->
@@ -2902,6 +2902,7 @@
 
         let agentsState = null;
         let agentIdCounter = 100;
+        let dragAgentId = null;
 
         function loadAgents() {
             try {
@@ -2918,51 +2919,72 @@
         function saveAgents() { localStorage.setItem(AGENTS_LS_KEY, JSON.stringify(agentsState)); }
         function nextAgentId() { return 'a' + (++agentIdCounter); }
 
-        function renderAgentsList() {
-            const container = document.getElementById('agentsList');
-            if (!container) return;
+        function renderAgentsBoard() {
+            const wrap = document.getElementById('agentsBoardColumns');
+            if (!wrap) return;
             const total = document.getElementById('countAgentsTotal');
             if (total) total.textContent = agentsState.length;
-            const order = { 'active': 0, 'building': 1, 'planned': 2 };
-            const sorted = [...agentsState].sort((a,b) => (order[a.status]||9) - (order[b.status]||9));
             const esc = (s) => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-            container.innerHTML = sorted.map(agent => {
-                const st = AGENT_STATUSES.find(s => s.id === agent.status) || AGENT_STATUSES[2];
-                const done = (agent.steps||[]).filter(s=>s.done).length;
-                const tot = (agent.steps||[]).length;
-                const pct = tot ? Math.round(done/tot*100) : 0;
+
+            wrap.innerHTML = AGENT_STATUSES.map(col => {
+                const cards = agentsState.filter(a => a.status === col.id);
                 return `
-                <div class="task-card" onclick="openAgentDetail('${agent.id}')" style="cursor:pointer;">
-                    <div class="task-card-content">
-                        <div class="task-row" style="display:flex;align-items:center;gap:6px;">
-                            <i data-lucide="${agent.icon||'bot'}" class="lucide-sm" style="color:var(--purple-300);"></i>
-                            <span class="task-title">${esc(agent.name)}</span>
-                            <span style="font-size:7px;padding:1px 5px;border-radius:3px;background:${st.color}22;color:${st.color};font-weight:700;margin-left:auto;">${st.label}</span>
-                        </div>
-                        <div style="font-size:9px;color:var(--text-muted);margin-top:2px;">${(agent.desc||'').length>80?(agent.desc||'').slice(0,80)+'…':esc(agent.desc||'')}</div>
-                        <div style="margin-top:4px;display:flex;align-items:center;gap:6px;">
-                            <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">
-                                <div style="height:100%;width:${pct}%;background:${st.color};border-radius:2px;transition:width .3s;"></div>
-                            </div>
-                            <span style="font-size:8px;color:var(--text-muted);">${done}/${tot}</span>
-                        </div>
+                <div class="agent-col" data-col="${col.id}"
+                     ondragover="agentDragOver(event)" ondragleave="agentDragLeave(event)" ondrop="agentDrop(event,'${col.id}')"
+                     style="flex:1;min-width:180px;display:flex;flex-direction:column;background:var(--bg-input);border-radius:8px;border:1px solid var(--border);overflow:hidden;">
+                    <div style="padding:8px 10px 6px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid ${col.color};">
+                        <span style="font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:${col.color};">${col.label} <span style="opacity:0.6;">(${cards.length})</span></span>
+                        <button onclick="addAgentToCol('${col.id}')" title="Dodaj agenta" style="background:none;border:none;color:${col.color};cursor:pointer;font-size:16px;line-height:1;font-weight:700;">+</button>
+                    </div>
+                    <div class="agent-col-cards" style="flex:1;overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:4px;min-height:60px;"
+                         ondragover="agentDragOver(event)" ondragleave="agentDragLeave(event)" ondrop="agentDrop(event,'${col.id}')">
+                        ${cards.map(agent => {
+                            const done = (agent.steps||[]).filter(s=>s.done).length;
+                            const tot = (agent.steps||[]).length;
+                            const pct = tot ? Math.round(done/tot*100) : 0;
+                            return `
+                            <div class="task-card" draggable="true" data-agent-id="${agent.id}"
+                                 ondragstart="agentDragStart(event,'${agent.id}')" ondragend="agentDragEnd(event)"
+                                 onclick="openAgentDetail('${agent.id}')" style="cursor:pointer;margin:0;">
+                                <span class="task-num"><i data-lucide="${agent.icon||'bot'}" class="lucide-sm" style="color:var(--purple-300);"></i></span>
+                                <div class="task-card-content">
+                                    <div class="task-row"><span class="task-title">${esc(agent.name)}</span></div>
+                                    <div style="font-size:9px;color:var(--text-muted);margin-top:1px;">${(agent.desc||'').length>60?(agent.desc||'').slice(0,60)+'…':esc(agent.desc||'')}</div>
+                                    <div style="margin-top:4px;display:flex;align-items:center;gap:6px;">
+                                        <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">
+                                            <div style="height:100%;width:${pct}%;background:${col.color};border-radius:2px;transition:width .3s;"></div>
+                                        </div>
+                                        <span style="font-size:8px;color:var(--text-muted);">${done}/${tot}</span>
+                                    </div>
+                                </div>
+                            </div>`;
+                        }).join('')}
                     </div>
                 </div>`;
             }).join('');
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        function addAgent() {
-            const name = prompt('Nazwa agenta:');
-            if (!name || !name.trim()) return;
-            const desc = prompt('Krótki opis:') || '';
-            const icon = prompt('Emoji ikona (np. 🤖):') || '🤖';
-            agentsState.push({
-                id: nextAgentId(), status:'planned', icon: icon.trim(), name: name.trim(),
-                subtitle:'', desc: desc.trim(), phone:'', channels:[],
-                steps:[], flow:'', kpi:[], comments:[]
-            });
-            saveAgents(); renderAgentsList();
+        // Drag & Drop
+        function agentDragStart(e, id) { dragAgentId=id; e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',id); setTimeout(()=>{if(e.target)e.target.style.opacity='0.4';},0); }
+        function agentDragEnd(e) { e.target.style.opacity='1'; dragAgentId=null; }
+        function agentDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect='move'; const c=e.currentTarget.closest('.agent-col'); if(c)c.style.background='rgba(168,85,247,0.08)'; }
+        function agentDragLeave(e) { const c=e.currentTarget.closest('.agent-col'); if(c)c.style.background=''; }
+        function agentDrop(e, colId) {
+            e.preventDefault();
+            const c=e.currentTarget.closest('.agent-col'); if(c)c.style.background='';
+            const id=e.dataTransfer.getData('text/plain')||dragAgentId;
+            if(!id) return;
+            const agent=agentsState.find(a=>a.id===id);
+            if(agent && agent.status!==colId){ agent.status=colId; saveAgents(); renderAgentsBoard(); }
+            dragAgentId=null;
+        }
+
+        function addAgentToCol(colId) {
+            const name=prompt('Nazwa agenta:'); if(!name||!name.trim()) return;
+            const desc=prompt('Krótki opis:')||'';
+            agentsState.push({ id:nextAgentId(), status:colId, icon:'bot', name:name.trim(), subtitle:'', desc:desc.trim(), phone:'', channels:[], steps:[], flow:'', kpi:[], comments:[] });
+            saveAgents(); renderAgentsBoard();
         }
 
         function openAgentDetail(id) {
@@ -3063,12 +3085,12 @@
         }
 
         function closeAgentDetail() { const o=document.getElementById('agentOverlay'); const p=document.getElementById('agentPopup'); if(o)o.style.display='none'; if(p)p.style.display='none'; }
-        function agentSaveField(id, field, value) { const a=agentsState.find(x=>x.id===id); if(a){a[field]=value.trim(); saveAgents(); renderAgentsList();} }
-        function agentSetStatus(id, s) { const a=agentsState.find(x=>x.id===id); if(a){a.status=s; saveAgents(); renderAgentsList(); openAgentDetail(id);} }
-        function toggleAgentStep(id, si) { const a=agentsState.find(x=>x.id===id); if(a&&a.steps[si]){a.steps[si].done=!a.steps[si].done;} saveAgents(); renderAgentsList(); openAgentDetail(id); }
-        function agentStepRename(id, si, val) { const a=agentsState.find(x=>x.id===id); if(a&&a.steps[si]){a.steps[si].text=val.trim();} saveAgents(); renderAgentsList(); }
-        function deleteAgentStep(id, si) { const a=agentsState.find(x=>x.id===id); if(a){a.steps.splice(si,1);} saveAgents(); renderAgentsList(); openAgentDetail(id); }
-        function addAgentStep(id) { const inp=document.getElementById('agentNewStepInput'); if(!inp||!inp.value.trim()) return; const a=agentsState.find(x=>x.id===id); if(!a)return; a.steps.push({text:inp.value.trim(),done:false}); saveAgents(); renderAgentsList(); openAgentDetail(id); }
+        function agentSaveField(id, field, value) { const a=agentsState.find(x=>x.id===id); if(a){a[field]=value.trim(); saveAgents(); renderAgentsBoard();} }
+        function agentSetStatus(id, s) { const a=agentsState.find(x=>x.id===id); if(a){a.status=s; saveAgents(); renderAgentsBoard(); openAgentDetail(id);} }
+        function toggleAgentStep(id, si) { const a=agentsState.find(x=>x.id===id); if(a&&a.steps[si]){a.steps[si].done=!a.steps[si].done;} saveAgents(); renderAgentsBoard(); openAgentDetail(id); }
+        function agentStepRename(id, si, val) { const a=agentsState.find(x=>x.id===id); if(a&&a.steps[si]){a.steps[si].text=val.trim();} saveAgents(); renderAgentsBoard(); }
+        function deleteAgentStep(id, si) { const a=agentsState.find(x=>x.id===id); if(a){a.steps.splice(si,1);} saveAgents(); renderAgentsBoard(); openAgentDetail(id); }
+        function addAgentStep(id) { const inp=document.getElementById('agentNewStepInput'); if(!inp||!inp.value.trim()) return; const a=agentsState.find(x=>x.id===id); if(!a)return; a.steps.push({text:inp.value.trim(),done:false}); saveAgents(); renderAgentsBoard(); openAgentDetail(id); }
         function addAgentComment(id) {
             const ta=document.getElementById('agentCommentInput'); if(!ta||!ta.value.trim()) return;
             const a=agentsState.find(x=>x.id===id); if(!a) return;
@@ -3078,13 +3100,12 @@
             saveAgents(); openAgentDetail(id);
         }
         function deleteAgentComment(id, ci) { const a=agentsState.find(x=>x.id===id); if(a&&a.comments){a.comments.splice(ci,1);} saveAgents(); openAgentDetail(id); }
-        function deleteAgent(id) { if(!confirm('Usunąć agenta?')) return; agentsState=agentsState.filter(a=>a.id!==id); saveAgents(); renderAgentsList(); closeAgentDetail(); }
+        function deleteAgent(id) { if(!confirm('Usunąć agenta?')) return; agentsState=agentsState.filter(a=>a.id!==id); saveAgents(); renderAgentsBoard(); closeAgentDetail(); }
 
         document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeAgentDetail(); });
 
         loadAgents();
-        renderAgentsList();
-
+        renderAgentsBoard();
         // ═══════════════ POMYSŁY (prosta lista) ═══════════════
         const IDEAS_LS_KEY = 'ediIdeasBoard';
         const DEFAULT_IDEAS = [
