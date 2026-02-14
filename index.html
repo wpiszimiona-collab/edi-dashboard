@@ -820,16 +820,16 @@
             <div class="task-list" id="kubustodoTasks"></div>
         </div>
 
-        <!-- AGENCI TRELLO BOARD -->
+        <!-- AGENCI -->
         <div class="tile" id="tile-agents-board" style="grid-column: span 9; grid-row: span 2; display:flex; flex-direction:column; padding:0; overflow:hidden;">
-            <div style="padding:12px 16px 8px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+            <div class="kanban-header" style="padding:12px 16px 8px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
                 <span style="font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:1.2px; color:var(--purple-300); display:flex; align-items:center; gap:6px;">
-                    <i data-lucide="bot" class="lucide-sm" style="color:#a855f7;"></i> AGENCI
+                    🤖 AGENCI
                     <span style="background:rgba(168,85,247,0.15); color:#a855f7; font-size:9px; padding:1px 7px; border-radius:6px; font-weight:700;" id="countAgentsTotal">0</span>
                 </span>
-                <span style="font-size:9px; color:var(--text-muted);">AI Agent Ecosystem — drag & drop</span>
+                <button onclick="addAgent()" style="background:rgba(168,85,247,0.1);border:1px solid rgba(168,85,247,0.3);border-radius:6px;color:#a855f7;font-size:9px;padding:3px 10px;cursor:pointer;font-weight:600;">+ Agent</button>
             </div>
-            <div id="agentsBoardColumns" style="display:flex; gap:8px; padding:8px 12px 12px; flex:1; overflow-x:auto; min-height:0;"></div>
+            <div id="agentsList" style="padding:8px 12px 12px; flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:4px;"></div>
         </div>
 
         <!-- POMYSŁY PANEL -->
@@ -2884,20 +2884,20 @@
         }
         initLucide();
 
-        // ═══════════════ AGENCI TRELLO BOARD ═══════════════
+        // ═══════════════ AGENCI (lista jak POMYSŁY) ═══════════════
         const AGENTS_LS_KEY = 'ediAgentsBoard';
-        const AGENT_COLUMNS = [
-            { id: 'active', label: 'AKTYWNE', color: '#22c55e', statusLabel: 'AKTYWNY' },
-            { id: 'building', label: 'W BUDOWIE', color: '#eab308', statusLabel: 'W BUDOWIE' },
-            { id: 'planned', label: 'PLANOWANE', color: '#6b7280', statusLabel: 'PLANOWANY' }
+        const AGENT_STATUSES = [
+            { id: 'active', label: 'AKTYWNY', color: '#22c55e' },
+            { id: 'building', label: 'W BUDOWIE', color: '#eab308' },
+            { id: 'planned', label: 'PLANOWANY', color: '#6b7280' }
         ];
         const DEFAULT_AGENTS = [
-            { id:'a1', col:'building', icon:'📞', name:'Edi Phone', subtitle:'Konsultant BUR', desc:'Odbiera telefony od klientów BUR, opowiada o szkoleniach, zbiera leady', phone:'+48 732 145 757', channels:['📞'], steps:[{text:'Voice bridge działa',done:true},{text:'Numer Twilio podpięty',done:true},{text:'Prompt sprzedażowy BUR',done:false},{text:'Baza wiedzy o szkoleniach',done:false},{text:'Auto-zapis leadów',done:false},{text:'Follow-up system',done:false}], flow:'Klient dzwoni → Edi wita → pytania o potrzeby → info o szkoleniu → zbiera dane → zapisuje lead', kpi:['Telefony/dzień','Conversion rate','Avg response time'] },
-            { id:'a2', col:'active', icon:'📊', name:'Edi COO', subtitle:'Operacje 1three', desc:'Zarządza operacjami firmy, research, outreach, raporty', phone:'', channels:['💬','🖥️','📞'], steps:[{text:'Dashboard',done:true},{text:'Memory system',done:true},{text:'Rada Nadzorcza',done:true},{text:'Voice bridge',done:true},{text:'Cold maile BUR aktywne',done:false},{text:'HubSpot CRM sync',done:false}], flow:'Telegram/TUI/Voice → zlecenie lub proaktywne działanie → raport/deliverable', kpi:['Tasków/dzień','Deliverables','Response time'] },
-            { id:'a3', col:'planned', icon:'🧑‍💼', name:'Asystent Osobisty', subtitle:'AI Interview & Assist', desc:'Przeprowadza wywiad z człowiekiem i staje się jego osobistym asystentem', phone:'', channels:['📞','💬','📱'], steps:[{text:'Skrypt wywiadu',done:false},{text:'System profili',done:false},{text:'Multi-tenant',done:false},{text:'Kanały (tel+TG+WA)',done:false},{text:'Onboarding flow',done:false},{text:'Pilot z Olą',done:false}], flow:'Osoba dostaje link → agent prowadzi wywiad → tworzy profil → od teraz jest asystentem', kpi:['Czas onboardingu','Retencja 7d','Zadania/dzień','NPS'] },
-            { id:'a4', col:'planned', icon:'✍️', name:'Content Creator', subtitle:'Social Media', desc:'Tworzy i scheduluje content na social media', phone:'', channels:['📱'], steps:[{text:'Strategia content',done:false},{text:'Postiz integration',done:false},{text:'Harmonogram',done:false},{text:'Automatyczne posty',done:false}], flow:'Strategia → generowanie → review → scheduling → publikacja', kpi:['Posty/tydzień','Engagement rate','Reach'] },
-            { id:'a5', col:'planned', icon:'🎯', name:'Lead Hunter', subtitle:'Prospecting & Lead Gen', desc:'Automatyczny prospecting i lead generation 24/7', phone:'', channels:['📧'], steps:[{text:'Źródła leadów',done:false},{text:'Scoring model',done:false},{text:'Auto-outreach',done:false},{text:'CRM integration',done:false}], flow:'Źródła → scraping → scoring → outreach → CRM', kpi:['Leadów/tydzień','Conversion rate','Cost per lead'] },
-            { id:'a6', col:'planned', icon:'👁️', name:'Agent Prowadzący', subtitle:'Accountability & Focus Coach', desc:'AI accountability partner — pilnuje żebyś robił to co masz robić i się nie rozpraszał. Jak osobisty coach skupienia 24/7.', phone:'', channels:['📞','💬','📱'], steps:[{text:'Skrypt onboardingu (cel + plan)',done:false},{text:'System monitorowania postępów',done:false},{text:'Mechanizm przypomnień',done:false},{text:'Integracja z kalendarzem/taskami',done:false},{text:'Tryb delikatny vs stanowczy',done:false},{text:'Raport dzienny/tygodniowy',done:false}], flow:'Onboarding (cel) → plan dnia → monitoring → przypomnienia → podsumowanie', kpi:['Tasków ukończonych/dzień','Czas w fokusie','Streak dni','NPS'] }
+            { id:'a1', status:'building', icon:'📞', name:'Edi Phone', subtitle:'Konsultant BUR', desc:'Odbiera telefony od klientów BUR, opowiada o szkoleniach, zbiera leady', phone:'+48 732 145 757', channels:['📞'], steps:[{text:'Voice bridge działa',done:true},{text:'Numer Twilio podpięty',done:true},{text:'Prompt sprzedażowy BUR',done:false},{text:'Baza wiedzy o szkoleniach',done:false},{text:'Auto-zapis leadów',done:false},{text:'Follow-up system',done:false}], flow:'Klient dzwoni → Edi wita → pytania o potrzeby → info o szkoleniu → zbiera dane → zapisuje lead', kpi:['Telefony/dzień','Conversion rate','Avg response time'], comments:[] },
+            { id:'a2', status:'active', icon:'📊', name:'Edi COO', subtitle:'Operacje 1three', desc:'Zarządza operacjami firmy, research, outreach, raporty', phone:'', channels:['💬','🖥️','📞'], steps:[{text:'Dashboard',done:true},{text:'Memory system',done:true},{text:'Rada Nadzorcza',done:true},{text:'Voice bridge',done:true},{text:'Cold maile BUR aktywne',done:false},{text:'HubSpot CRM sync',done:false}], flow:'Telegram/TUI/Voice → zlecenie lub proaktywne działanie → raport/deliverable', kpi:['Tasków/dzień','Deliverables','Response time'], comments:[] },
+            { id:'a3', status:'planned', icon:'🧑‍💼', name:'Asystent Osobisty', subtitle:'AI Interview & Assist', desc:'Przeprowadza wywiad z człowiekiem i staje się jego osobistym asystentem', phone:'', channels:['📞','💬','📱'], steps:[{text:'Skrypt wywiadu',done:false},{text:'System profili',done:false},{text:'Multi-tenant',done:false},{text:'Kanały (tel+TG+WA)',done:false},{text:'Onboarding flow',done:false},{text:'Pilot z Olą',done:false}], flow:'Osoba dostaje link → agent prowadzi wywiad → tworzy profil → od teraz jest asystentem', kpi:['Czas onboardingu','Retencja 7d','Zadania/dzień','NPS'], comments:[] },
+            { id:'a4', status:'planned', icon:'✍️', name:'Content Creator', subtitle:'Social Media', desc:'Tworzy i scheduluje content na social media', phone:'', channels:['📱'], steps:[{text:'Strategia content',done:false},{text:'Postiz integration',done:false},{text:'Harmonogram',done:false},{text:'Automatyczne posty',done:false}], flow:'Strategia → generowanie → review → scheduling → publikacja', kpi:['Posty/tydzień','Engagement rate','Reach'], comments:[] },
+            { id:'a5', status:'planned', icon:'🎯', name:'Lead Hunter', subtitle:'Prospecting & Lead Gen', desc:'Automatyczny prospecting i lead generation 24/7', phone:'', channels:['📧'], steps:[{text:'Źródła leadów',done:false},{text:'Scoring model',done:false},{text:'Auto-outreach',done:false},{text:'CRM integration',done:false}], flow:'Źródła → scraping → scoring → outreach → CRM', kpi:['Leadów/tydzień','Conversion rate','Cost per lead'], comments:[] },
+            { id:'a6', status:'planned', icon:'👁️', name:'Agent Prowadzący', subtitle:'Accountability & Focus Coach', desc:'AI accountability partner — pilnuje żebyś robił to co masz robić i się nie rozpraszał. Jak osobisty coach skupienia 24/7.', phone:'', channels:['📞','💬','📱'], steps:[{text:'Skrypt onboardingu (cel + plan)',done:false},{text:'System monitorowania postępów',done:false},{text:'Mechanizm przypomnień',done:false},{text:'Integracja z kalendarzem/taskami',done:false},{text:'Tryb delikatny vs stanowczy',done:false},{text:'Raport dzienny/tygodniowy',done:false}], flow:'Onboarding (cel) → plan dnia → monitoring → przypomnienia → podsumowanie', kpi:['Tasków ukończonych/dzień','Czas w fokusie','Streak dni','NPS'], comments:[] }
         ];
 
         let agentsState = null;
@@ -2906,133 +2906,69 @@
         function loadAgents() {
             try {
                 const raw = localStorage.getItem(AGENTS_LS_KEY);
-                if (raw) { agentsState = JSON.parse(raw); return; }
+                if (raw) {
+                    agentsState = JSON.parse(raw);
+                    agentsState.forEach(a => { if(a.col && !a.status){a.status=a.col; delete a.col;} });
+                    return;
+                }
             } catch(e) {}
             agentsState = JSON.parse(JSON.stringify(DEFAULT_AGENTS));
             saveAgents();
         }
-        function saveAgents() {
-            localStorage.setItem(AGENTS_LS_KEY, JSON.stringify(agentsState));
-        }
+        function saveAgents() { localStorage.setItem(AGENTS_LS_KEY, JSON.stringify(agentsState)); }
         function nextAgentId() { return 'a' + (++agentIdCounter); }
 
-        // ---- drag state ----
-        let dragAgentId = null;
-
-        function renderAgentsBoard() {
-            const wrap = document.getElementById('agentsBoardColumns');
-            if (!wrap) return;
+        function renderAgentsList() {
+            const container = document.getElementById('agentsList');
+            if (!container) return;
             const total = document.getElementById('countAgentsTotal');
             if (total) total.textContent = agentsState.length;
-
-            wrap.innerHTML = AGENT_COLUMNS.map(col => {
-                const cards = agentsState.filter(a => a.col === col.id);
+            const order = { 'active': 0, 'building': 1, 'planned': 2 };
+            const sorted = [...agentsState].sort((a,b) => (order[a.status]||9) - (order[b.status]||9));
+            const esc = (s) => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            container.innerHTML = sorted.map(agent => {
+                const st = AGENT_STATUSES.find(s => s.id === agent.status) || AGENT_STATUSES[2];
+                const done = (agent.steps||[]).filter(s=>s.done).length;
+                const tot = (agent.steps||[]).length;
+                const pct = tot ? Math.round(done/tot*100) : 0;
                 return `
-                <div class="agent-col" data-col="${col.id}"
-                     ondragover="agentDragOver(event)" ondragleave="agentDragLeave(event)" ondrop="agentDrop(event,'${col.id}')"
-                     style="flex:1;min-width:180px;display:flex;flex-direction:column;background:var(--bg-input);border-radius:8px;border:1px solid var(--border);overflow:hidden;">
-                    <div style="padding:8px 10px 6px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid ${col.color};">
-                        <span style="font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1px;color:${col.color};">${col.label} <span style="opacity:0.6;">(${cards.length})</span></span>
-                        <button onclick="addAgentToCol('${col.id}')" title="Dodaj agenta" style="background:none;border:none;color:${col.color};cursor:pointer;font-size:16px;line-height:1;font-weight:700;">+</button>
-                    </div>
-                    <div class="agent-col-cards" data-col="${col.id}" style="flex:1;overflow-y:auto;padding:6px;display:flex;flex-direction:column;gap:4px;min-height:60px;"
-                         ondragover="agentDragOver(event)" ondragleave="agentDragLeave(event)" ondrop="agentDrop(event,'${col.id}')">
-                        ${cards.map(agent => {
-                            const done = agent.steps.filter(s=>s.done).length;
-                            const tot = agent.steps.length;
-                            const pct = tot ? Math.round(done/tot*100) : 0;
-                            const colDef = AGENT_COLUMNS.find(c=>c.id===agent.col);
-                            const sc = colDef ? colDef.color : '#6b7280';
-                            return `
-                            <div class="task-card" draggable="true" data-agent-id="${agent.id}"
-                                 ondragstart="agentDragStart(event,'${agent.id}')" ondragend="agentDragEnd(event)"
-                                 onclick="openAgentDetail('${agent.id}')" style="cursor:pointer;margin:0;">
-                                <span class="task-num">${/^[a-z]/.test(agent.icon)?'<i data-lucide="'+agent.icon+'" style="width:14px;height:14px;color:var(--purple-300);"></i>':'<span style="font-size:14px;">'+agent.icon+'</span>'}</span>
-                                <div class="task-card-content">
-                                    <div class="task-row">
-                                        <span class="task-title">${agent.name}</span>
-                                    </div>
-                                    <div style="font-size:9px;color:var(--text-muted);margin-top:1px;">${agent.desc.length>60?agent.desc.slice(0,60)+'…':agent.desc}</div>
-                                    <div style="margin-top:4px;display:flex;align-items:center;gap:6px;">
-                                        <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">
-                                            <div style="height:100%;width:${pct}%;background:${sc};border-radius:2px;transition:width .3s;"></div>
-                                        </div>
-                                        <span style="font-size:8px;color:var(--text-muted);">${done}/${tot}</span>
-                                    </div>
-                                </div>
-                            </div>`;
-                        }).join('')}
+                <div class="task-card" onclick="openAgentDetail('${agent.id}')" style="cursor:pointer;">
+                    <div class="task-card-content">
+                        <div class="task-row" style="display:flex;align-items:center;gap:6px;">
+                            <span style="font-size:14px;">${agent.icon||'🤖'}</span>
+                            <span class="task-title">${esc(agent.name)}</span>
+                            <span style="font-size:7px;padding:1px 5px;border-radius:3px;background:${st.color}22;color:${st.color};font-weight:700;margin-left:auto;">${st.label}</span>
+                        </div>
+                        <div style="font-size:9px;color:var(--text-muted);margin-top:2px;">${(agent.desc||'').length>80?(agent.desc||'').slice(0,80)+'…':esc(agent.desc||'')}</div>
+                        <div style="margin-top:4px;display:flex;align-items:center;gap:6px;">
+                            <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">
+                                <div style="height:100%;width:${pct}%;background:${st.color};border-radius:2px;transition:width .3s;"></div>
+                            </div>
+                            <span style="font-size:8px;color:var(--text-muted);">${done}/${tot}</span>
+                        </div>
                     </div>
                 </div>`;
             }).join('');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        // ---- Drag & Drop ----
-        function agentDragStart(e, id) {
-            dragAgentId = id;
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', id);
-            setTimeout(() => { if(e.target) e.target.style.opacity='0.4'; }, 0);
-        }
-        function agentDragEnd(e) { e.target.style.opacity='1'; dragAgentId=null; }
-        function agentDragOver(e) {
-            e.preventDefault(); e.dataTransfer.dropEffect='move';
-            const col = e.currentTarget.closest('.agent-col');
-            if(col) col.style.background='rgba(168,85,247,0.08)';
-        }
-        function agentDragLeave(e) {
-            const col = e.currentTarget.closest('.agent-col');
-            if(col) col.style.background='';
-        }
-        function agentDrop(e, colId) {
-            e.preventDefault();
-            const col = e.currentTarget.closest('.agent-col');
-            if(col) col.style.background='';
-            const id = e.dataTransfer.getData('text/plain') || dragAgentId;
-            if (!id) return;
-            const agent = agentsState.find(a => a.id === id);
-            if (agent && agent.col !== colId) {
-                agent.col = colId;
-                saveAgents(); renderAgentsBoard();
-            }
-            dragAgentId = null;
-        }
-
-        // ---- Add agent ----
-        function addAgentToCol(colId) {
+        function addAgent() {
             const name = prompt('Nazwa agenta:');
             if (!name || !name.trim()) return;
             const desc = prompt('Krótki opis:') || '';
             const icon = prompt('Emoji ikona (np. 🤖):') || '🤖';
             agentsState.push({
-                id: nextAgentId(), col: colId, icon: icon.trim(), name: name.trim(),
-                subtitle: '', desc: desc.trim(), phone: '', channels: [],
-                steps: [], flow: '', kpi: []
+                id: nextAgentId(), status:'planned', icon: icon.trim(), name: name.trim(),
+                subtitle:'', desc: desc.trim(), phone:'', channels:[],
+                steps:[], flow:'', kpi:[], comments:[]
             });
-            saveAgents(); renderAgentsBoard();
+            saveAgents(); renderAgentsList();
         }
-
-        // ---- Detail popup ----
-        // editable field helper — inline contenteditable with blur-save
-        const _ceStyle = 'outline:none;border-radius:4px;padding:2px 4px;transition:background .2s;cursor:text;';
-        const _ceFocus = 'background:var(--bg-input);box-shadow:0 0 0 1px rgba(168,85,247,0.3);';
-        function _ce(tag, val, onSave, extra='') {
-            return `<${tag} contenteditable="true" spellcheck="false"
-                style="${_ceStyle}${extra}"
-                onfocus="this.style.cssText=this.style.cssText+'${_ceFocus}'"
-                onblur="this.style.background='';this.style.boxShadow='';(${onSave})(this.innerText)"
-                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();this.blur();}"
-            >${val}</${tag}>`;
-        }
-
-        let _openAgentId = null;
 
         function openAgentDetail(id) {
             const agent = agentsState.find(a => a.id === id);
             if (!agent) return;
-            _openAgentId = id;
             if (!agent.comments) agent.comments = [];
+            const esc = (s) => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
             let overlay = document.getElementById('agentOverlay');
             let popup = document.getElementById('agentPopup');
             if (!overlay) {
@@ -3045,216 +2981,107 @@
                 popup.style.cssText = 'display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px 28px;width:90%;max-width:560px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.8);line-height:1.8;color:var(--text-primary);font-size:12px;';
                 document.body.appendChild(popup);
             }
-            const colDef = AGENT_COLUMNS.find(c => c.id === agent.col);
-            const sc = colDef ? colDef.color : '#6b7280';
-            const sl = colDef ? colDef.statusLabel : agent.col;
-            const done = agent.steps.filter(s=>s.done).length;
-            const tot = agent.steps.length;
+            const st = AGENT_STATUSES.find(s => s.id === agent.status) || AGENT_STATUSES[2];
+            const done = (agent.steps||[]).filter(s=>s.done).length;
+            const tot = (agent.steps||[]).length;
             const pct = tot ? Math.round(done/tot*100) : 0;
 
-            const esc = (s) => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-
             popup.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);">
-                    <div style="display:flex;align-items:center;gap:6px;flex:1;min-width:0;">
-                        <span style="flex-shrink:0;">${/^[a-z]/.test(agent.icon)?'<i data-lucide="'+agent.icon+'" style="width:18px;height:18px;color:var(--purple-300);"></i>':'<span style="font-size:18px;">'+agent.icon+'</span>'}</span>
-                        ${_ce('span', esc(agent.name), "function(v){agentFieldSave('"+id+"','name',v)}", 'font-weight:700;font-size:16px;flex:1;min-width:0;')}
-                        <span style="font-size:10px;padding:2px 8px;border-radius:4px;background:${sc}22;color:${sc};font-weight:700;flex-shrink:0;">${sl}</span>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);">
+                    <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;">
+                        <span style="font-size:20px;flex-shrink:0;">${agent.icon||'🤖'}</span>
+                        <span contenteditable="true" onblur="agentSaveField('${id}','name',this.textContent)" style="font-weight:700;font-size:15px;border:1px solid transparent;border-radius:4px;padding:2px 4px;outline:none;flex:1;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">${esc(agent.name)}</span>
+                        <span style="font-size:10px;padding:2px 8px;border-radius:4px;background:${st.color}22;color:${st.color};font-weight:700;flex-shrink:0;">${st.label}</span>
                     </div>
-                    <button onclick="closeAgentDetail()" style="color:var(--purple-300);font-size:14px;font-weight:700;cursor:pointer;background:none;border:none;margin-left:8px;">✕</button>
+                    <button onclick="closeAgentDetail()" style="color:var(--purple-300);font-size:14px;font-weight:700;cursor:pointer;background:none;border:none;">✕</button>
                 </div>
-
-                <!-- Subtitle -->
-                <div style="font-weight:700;font-size:9px;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Podtytuł</div>
-                ${_ce('div', esc(agent.subtitle)||'<span style=color:var(--text-muted)>kliknij aby edytować...</span>', "function(v){agentFieldSave('"+id+"','subtitle',v)}", 'font-size:11px;color:var(--text-muted);margin-bottom:12px;')}
-
-                <!-- Opis -->
-                <div style="font-weight:700;font-size:9px;color:#a855f7;text-transform:uppercase;margin-bottom:4px;">Opis</div>
-                ${_ce('div', esc(agent.desc)||'<span style=color:var(--text-muted)>kliknij aby dodać opis...</span>', "function(v){agentFieldSave('"+id+"','desc',v)}", 'font-size:12px;color:var(--text-secondary);margin-bottom:16px;min-height:20px;')}
-
+                <div style="margin-bottom:12px;">
+                    <div style="font-weight:700;font-size:10px;color:#a855f7;margin-bottom:6px;text-transform:uppercase;">Status</div>
+                    <div style="display:flex;gap:4px;">
+                        ${AGENT_STATUSES.map(s => `<button onclick="agentSetStatus('${id}','${s.id}')" style="padding:4px 12px;font-size:10px;font-weight:600;border-radius:6px;border:1px solid ${s.color}44;background:${agent.status===s.id?s.color:s.color+'11'};color:${agent.status===s.id?'#fff':s.color};cursor:pointer;">${s.label}</button>`).join('')}
+                    </div>
+                </div>
+                <div style="margin-bottom:12px;">
+                    <div style="font-weight:700;font-size:10px;color:#a855f7;margin-bottom:4px;text-transform:uppercase;">Podtytuł</div>
+                    <div contenteditable="true" onblur="agentSaveField('${id}','subtitle',this.textContent)" style="font-size:11px;color:var(--text-muted);border:1px solid transparent;border-radius:4px;padding:2px 4px;outline:none;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">${esc(agent.subtitle)||'kliknij aby edytować...'}</div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                        <span style="font-weight:700;font-size:10px;color:#a855f7;text-transform:uppercase;">Opis</span>
+                        <span style="font-size:9px;color:var(--text-muted);">kliknij żeby edytować</span>
+                    </div>
+                    <div contenteditable="true" onblur="agentSaveField('${id}','desc',this.textContent)" style="font-size:12px;color:var(--text-secondary);border:1px solid transparent;border-radius:4px;padding:4px;min-height:40px;cursor:text;outline:none;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">${esc(agent.desc)}</div>
+                </div>
                 ${agent.phone ? '<div style="font-size:11px;margin-bottom:12px;">📞 <span style="color:#a855f7;font-weight:600;">'+esc(agent.phone)+'</span></div>' : ''}
-                ${agent.channels.length ? '<div style="margin-bottom:14px;"><div style="font-weight:700;font-size:9px;color:#a855f7;margin-bottom:4px;text-transform:uppercase;">Kanały</div><div style="font-size:14px;letter-spacing:4px;">'+agent.channels.join(' ')+'</div></div>' : ''}
-
-                <!-- Flow -->
-                <div style="font-weight:700;font-size:9px;color:#a855f7;text-transform:uppercase;margin-bottom:4px;">Jak działa</div>
-                ${_ce('div', esc(agent.flow)||'<span style=color:var(--text-muted)>kliknij aby opisać flow...</span>', "function(v){agentFieldSave('"+id+"','flow',v)}", 'font-size:11px;color:var(--text-secondary);line-height:1.8;margin-bottom:16px;min-height:20px;')}
-
-                <!-- Checklist -->
+                ${(agent.channels||[]).length ? '<div style="margin-bottom:14px;"><div style="font-weight:700;font-size:9px;color:#a855f7;margin-bottom:4px;text-transform:uppercase;">Kanały</div><div style="font-size:14px;letter-spacing:4px;">'+agent.channels.join(' ')+'</div></div>' : ''}
+                <div style="margin-bottom:16px;">
+                    <div style="font-weight:700;font-size:10px;color:#a855f7;text-transform:uppercase;margin-bottom:4px;">Jak działa</div>
+                    <div contenteditable="true" onblur="agentSaveField('${id}','flow',this.textContent)" style="font-size:11px;color:var(--text-secondary);border:1px solid transparent;border-radius:4px;padding:4px;min-height:20px;outline:none;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">${esc(agent.flow)||'kliknij aby opisać flow...'}</div>
+                </div>
                 <div style="margin-bottom:16px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
                         <span style="font-weight:700;font-size:10px;color:#a855f7;text-transform:uppercase;">Etapy wdrożenia</span>
-                        <span style="font-size:10px;color:var(--text-muted);" id="agentStepCount">${done}/${tot} (${pct}%)</span>
+                        <span style="font-size:10px;color:var(--text-muted);">${done}/${tot} (${pct}%)</span>
                     </div>
-                    <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:10px;" id="agentProgressWrap">
-                        <div id="agentProgressBar" style="height:100%;width:${pct}%;background:${sc};border-radius:2px;transition:width .3s;"></div>
+                    <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:10px;">
+                        <div style="height:100%;width:${pct}%;background:${st.color};border-radius:2px;transition:width .3s;"></div>
                     </div>
-                    <div id="agentStepsList">
-                    ${agent.steps.map((s, si) => `
-                        <div style="display:flex;align-items:center;gap:6px;padding:3px 0;group" data-si="${si}">
-                            <input type="checkbox" ${s.done?'checked':''} onchange="toggleAgentStep('${id}',${si})" style="accent-color:${sc};cursor:pointer;flex-shrink:0;">
-                            ${_ce('span', esc(s.text), "function(v){agentStepRename('"+id+"',"+si+",v)}", 'flex:1;font-size:11px;color:'+(s.done?'var(--text-muted)':'var(--text-primary)')+(s.done?';text-decoration:line-through;':''))}
+                    <div>
+                    ${(agent.steps||[]).map((s, si) => `
+                        <div style="display:flex;align-items:center;gap:6px;padding:3px 0;">
+                            <input type="checkbox" ${s.done?'checked':''} onchange="toggleAgentStep('${id}',${si})" style="accent-color:${st.color};cursor:pointer;flex-shrink:0;">
+                            <span contenteditable="true" onblur="agentStepRename('${id}',${si},this.textContent)" style="flex:1;font-size:11px;color:${s.done?'var(--text-muted)':'var(--text-primary)'};${s.done?'text-decoration:line-through;':''}outline:none;border:1px solid transparent;border-radius:3px;padding:1px 3px;" onmouseover="this.style.borderColor='var(--border)'" onmouseout="this.style.borderColor='transparent'">${esc(s.text)}</span>
                             <button onclick="deleteAgentStep('${id}',${si})" title="Usuń" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:11px;opacity:0.4;padding:0 2px;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.4'">✕</button>
                         </div>
                     `).join('')}
                     </div>
-                    <div style="margin-top:8px;display:flex;gap:4px;" id="agentAddStepRow">
-                        <input type="text" id="agentNewStepInput" placeholder="Dodaj element..." onkeydown="if(event.key==='Enter'){addAgentStepInline('${id}');}"
+                    <div style="margin-top:8px;display:flex;gap:4px;">
+                        <input type="text" id="agentNewStepInput" placeholder="Dodaj element..." onkeydown="if(event.key==='Enter'){addAgentStep('${id}');}"
                             style="flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:10px;color:var(--text-primary);outline:none;"
                             onfocus="this.style.borderColor='rgba(168,85,247,0.4)'" onblur="this.style.borderColor='var(--border)'">
-                        <button onclick="addAgentStepInline('${id}')" style="background:#a855f722;border:1px solid #a855f744;border-radius:4px;color:#a855f7;font-size:10px;padding:4px 10px;cursor:pointer;font-weight:600;">+</button>
+                        <button onclick="addAgentStep('${id}')" style="background:#a855f722;border:1px solid #a855f744;border-radius:4px;color:#a855f7;font-size:10px;padding:4px 10px;cursor:pointer;font-weight:600;">+</button>
                     </div>
                 </div>
-
-                ${agent.kpi.length ? '<div style="margin-bottom:16px;"><div style="font-weight:700;font-size:9px;color:#a855f7;margin-bottom:4px;text-transform:uppercase;">KPI</div><div style="display:flex;flex-wrap:wrap;gap:4px;">'+agent.kpi.map(k=>'<span style="font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(168,85,247,0.1);color:#a855f7;">'+esc(k)+'</span>').join('')+'</div></div>' : ''}
-
-                <!-- Przenieś -->
-                <div style="margin-bottom:14px;">
-                    <div style="font-weight:700;font-size:9px;color:#a855f7;margin-bottom:6px;text-transform:uppercase;">Przenieś do</div>
-                    <div style="display:flex;gap:4px;">
-                        ${AGENT_COLUMNS.filter(c=>c.id!==agent.col).map(c => `<button onclick="moveAgent('${id}','${c.id}')" style="flex:1;padding:5px 0;font-size:10px;font-weight:600;border-radius:6px;border:1px solid ${c.color}44;background:${c.color}11;color:${c.color};cursor:pointer;">${c.label}</button>`).join('')}
+                ${(agent.kpi||[]).length ? '<div style="margin-bottom:16px;"><div style="font-weight:700;font-size:9px;color:#a855f7;margin-bottom:4px;text-transform:uppercase;">KPI</div><div style="display:flex;flex-wrap:wrap;gap:4px;">'+(agent.kpi||[]).map(k=>'<span style="font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(168,85,247,0.1);color:#a855f7;">'+esc(k)+'</span>').join('')+'</div></div>' : ''}
+                <div style="margin-bottom:16px;border-top:1px solid var(--border);padding-top:12px;">
+                    <div style="font-weight:700;font-size:10px;color:#a855f7;margin-bottom:8px;text-transform:uppercase;">Komentarze</div>
+                    <div id="agentComments" style="margin-bottom:8px;">
+                        ${(agent.comments||[]).map((c,ci) => '<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:11px;position:relative;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">'+(c.author||'Piotr')+'</span><span style="font-size:9px;color:var(--text-muted);">'+(c.date||'')+'</span></div><div style="color:var(--text-secondary);margin-top:2px;">'+esc(c.text)+'</div><button onclick="deleteAgentComment(\''+id+'\','+ci+')" style="position:absolute;top:6px;right:0;background:none;border:none;color:#ef4444;cursor:pointer;font-size:10px;opacity:0.3;" onmouseenter="this.style.opacity=\'1\'" onmouseleave="this.style.opacity=\'0.3\'">✕</button></div>').join('')}
+                        ${(agent.comments||[]).length === 0 ? '<div style="font-size:10px;color:var(--text-muted);">Brak komentarzy</div>' : ''}
                     </div>
+                    <textarea id="agentCommentInput" placeholder="Napisz komentarz..." style="width:100%;min-height:40px;padding:6px 8px;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:11px;resize:vertical;font-family:inherit;outline:none;"></textarea>
+                    <button onclick="addAgentComment('${id}')" class="btn btn-secondary" style="margin-top:4px;font-size:9px;">Zapisz</button>
                 </div>
-
-                <!-- Komentarze -->
-                <div style="margin-bottom:14px;">
-                    <div style="font-weight:700;font-size:9px;color:#a855f7;margin-bottom:8px;text-transform:uppercase;">Komentarze</div>
-                    <div id="agentCommentsList">
-                        ${(agent.comments||[]).map((c,ci) => `
-                        <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-bottom:6px;position:relative;">
-                            <div style="font-size:9px;color:var(--text-muted);margin-bottom:3px;">${c.date || ''}</div>
-                            <div style="font-size:11px;color:var(--text-secondary);white-space:pre-wrap;">${esc(c.text)}</div>
-                            <button onclick="deleteAgentComment('${id}',${ci})" style="position:absolute;top:6px;right:8px;background:none;border:none;color:#ef4444;cursor:pointer;font-size:10px;opacity:0.3;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.3'">✕</button>
-                        </div>
-                        `).join('')}
-                    </div>
-                    <div style="display:flex;gap:4px;">
-                        <textarea id="agentCommentInput" rows="2" placeholder="Dodaj komentarz..."
-                            style="flex:1;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--text-primary);resize:vertical;outline:none;font-family:inherit;line-height:1.5;"
-                            onfocus="this.style.borderColor='rgba(168,85,247,0.4)'" onblur="this.style.borderColor='var(--border)'"
-                            onkeydown="if(event.key==='Enter'&&event.ctrlKey){addAgentComment('${id}');}"></textarea>
-                        <button onclick="addAgentComment('${id}')" style="align-self:flex-end;background:#a855f722;border:1px solid #a855f744;border-radius:6px;color:#a855f7;font-size:10px;padding:6px 12px;cursor:pointer;font-weight:600;">Zapisz</button>
-                    </div>
-                    <div style="font-size:8px;color:var(--text-muted);margin-top:2px;">Ctrl+Enter aby zapisać</div>
-                </div>
-
-                <!-- Akcje -->
-                <div style="display:flex;gap:6px;margin-top:8px;">
-                    <button onclick="closeAgentDetail()" style="flex:1;padding:6px 0;font-size:10px;font-weight:600;border-radius:6px;border:1px solid var(--border);background:var(--bg-input);color:var(--text-primary);cursor:pointer;">Zamknij</button>
-                    <button onclick="deleteAgent('${id}')" style="padding:6px 16px;font-size:10px;font-weight:600;border-radius:6px;border:1px solid #ef444444;background:#ef444411;color:#ef4444;cursor:pointer;">🗑️ Usuń</button>
+                <div style="display:flex;gap:6px;margin-top:12px;">
+                    <button onclick="deleteAgent('${id}')" style="flex:1;padding:6px 0;font-size:10px;font-weight:600;border-radius:6px;border:1px solid #ef444444;background:#ef444411;color:#ef4444;cursor:pointer;">🗑️ Usuń agenta</button>
+                    <button onclick="closeAgentDetail()" class="btn btn-secondary" style="flex:1;">Zamknij</button>
                 </div>
             `;
-            0
-            if (typeof lucide !== "undefined") lucide.createIcons();
+            overlay.style.display = 'block'; popup.style.display = 'block';
         }
 
-        function closeAgentDetail() {
-            _openAgentId = null;
-            const o = document.getElementById('agentOverlay');
-            const p = document.getElementById('agentPopup');
-            if (o) o.style.display = 'none';
-            if (p) p.style.display = 'none';
-        }
-
-        function agentFieldSave(id, field, val) {
-            const agent = agentsState.find(a => a.id === id);
-            if (!agent) return;
-            const cleaned = val.replace(/<[^>]*>/g,'').trim();
-            // don't save placeholder text
-            if (cleaned === 'kliknij aby edytować...' || cleaned === 'kliknij aby dodać opis...' || cleaned === 'kliknij aby opisać flow...') return;
-            agent[field] = cleaned;
-            saveAgents(); renderAgentsBoard();
-        }
-
-        function toggleAgentStep(id, si) {
-            const agent = agentsState.find(a => a.id === id);
-            if (!agent || !agent.steps[si]) return;
-            agent.steps[si].done = !agent.steps[si].done;
-            saveAgents(); renderAgentsBoard(); openAgentDetail(id);
-        }
-
-        function agentStepRename(id, si, val) {
-            const agent = agentsState.find(a => a.id === id);
-            if (!agent || !agent.steps[si]) return;
-            const cleaned = val.replace(/<[^>]*>/g,'').trim();
-            if (cleaned) agent.steps[si].text = cleaned;
-            saveAgents(); renderAgentsBoard();
-        }
-
-        function deleteAgentStep(id, si) {
-            const agent = agentsState.find(a => a.id === id);
-            if (!agent) return;
-            agent.steps.splice(si, 1);
-            saveAgents(); renderAgentsBoard(); openAgentDetail(id);
-        }
-
-        function addAgentStepInline(id) {
-            const input = document.getElementById('agentNewStepInput');
-            if (!input) return;
-            const text = input.value.trim();
-            if (!text) return;
-            const agent = agentsState.find(a => a.id === id);
-            if (!agent) return;
-            agent.steps.push({ text: text, done: false });
-            input.value = '';
-            saveAgents(); renderAgentsBoard(); openAgentDetail(id);
-            // re-focus input after re-render
-            setTimeout(() => { const el = document.getElementById('agentNewStepInput'); if(el) el.focus(); }, 50);
-        }
-
-        function addAgentStep(id) {
-            const text = prompt('Nazwa etapu:');
-            if (!text || !text.trim()) return;
-            const agent = agentsState.find(a => a.id === id);
-            if (!agent) return;
-            agent.steps.push({ text: text.trim(), done: false });
-            saveAgents(); renderAgentsBoard(); openAgentDetail(id);
-        }
-
-        function moveAgent(id, newCol) {
-            const agent = agentsState.find(a => a.id === id);
-            if (!agent) return;
-            agent.col = newCol;
-            saveAgents(); renderAgentsBoard(); openAgentDetail(id);
-        }
-
-        function editAgent(id) {
-            // legacy — now inline; just re-open
-            openAgentDetail(id);
-        }
-
-        function deleteAgent(id) {
-            if (!confirm('Na pewno usunąć tego agenta?')) return;
-            agentsState = agentsState.filter(a => a.id !== id);
-            saveAgents(); renderAgentsBoard(); closeAgentDetail();
-        }
-
+        function closeAgentDetail() { const o=document.getElementById('agentOverlay'); const p=document.getElementById('agentPopup'); if(o)o.style.display='none'; if(p)p.style.display='none'; }
+        function agentSaveField(id, field, value) { const a=agentsState.find(x=>x.id===id); if(a){a[field]=value.trim(); saveAgents(); renderAgentsList();} }
+        function agentSetStatus(id, s) { const a=agentsState.find(x=>x.id===id); if(a){a.status=s; saveAgents(); renderAgentsList(); openAgentDetail(id);} }
+        function toggleAgentStep(id, si) { const a=agentsState.find(x=>x.id===id); if(a&&a.steps[si]){a.steps[si].done=!a.steps[si].done;} saveAgents(); renderAgentsList(); openAgentDetail(id); }
+        function agentStepRename(id, si, val) { const a=agentsState.find(x=>x.id===id); if(a&&a.steps[si]){a.steps[si].text=val.trim();} saveAgents(); renderAgentsList(); }
+        function deleteAgentStep(id, si) { const a=agentsState.find(x=>x.id===id); if(a){a.steps.splice(si,1);} saveAgents(); renderAgentsList(); openAgentDetail(id); }
+        function addAgentStep(id) { const inp=document.getElementById('agentNewStepInput'); if(!inp||!inp.value.trim()) return; const a=agentsState.find(x=>x.id===id); if(!a)return; a.steps.push({text:inp.value.trim(),done:false}); saveAgents(); renderAgentsList(); openAgentDetail(id); }
         function addAgentComment(id) {
-            const ta = document.getElementById('agentCommentInput');
-            if (!ta) return;
-            const text = ta.value.trim();
-            if (!text) return;
-            const agent = agentsState.find(a => a.id === id);
-            if (!agent) return;
-            if (!agent.comments) agent.comments = [];
-            const now = new Date();
-            agent.comments.push({ text: text, date: now.toLocaleString('pl-PL') });
-            ta.value = '';
+            const ta=document.getElementById('agentCommentInput'); if(!ta||!ta.value.trim()) return;
+            const a=agentsState.find(x=>x.id===id); if(!a) return;
+            if(!a.comments) a.comments=[];
+            const now=new Date();
+            a.comments.push({author:'Piotr', text:ta.value.trim(), date:now.toLocaleDateString('pl-PL')+', '+now.toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'})});
             saveAgents(); openAgentDetail(id);
         }
+        function deleteAgentComment(id, ci) { const a=agentsState.find(x=>x.id===id); if(a&&a.comments){a.comments.splice(ci,1);} saveAgents(); openAgentDetail(id); }
+        function deleteAgent(id) { if(!confirm('Usunąć agenta?')) return; agentsState=agentsState.filter(a=>a.id!==id); saveAgents(); renderAgentsList(); closeAgentDetail(); }
 
-        function deleteAgentComment(id, ci) {
-            const agent = agentsState.find(a => a.id === id);
-            if (!agent || !agent.comments) return;
-            agent.comments.splice(ci, 1);
-            saveAgents(); openAgentDetail(id);
-        }
-
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeAgentDetail();
-        });
+        document.addEventListener('keydown', function(e) { if(e.key==='Escape') closeAgentDetail(); });
 
         loadAgents();
-        renderAgentsBoard();
+        renderAgentsList();
 
         // ═══════════════ POMYSŁY (prosta lista) ═══════════════
         const IDEAS_LS_KEY = 'ediIdeasBoard';
