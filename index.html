@@ -931,8 +931,14 @@
 
         <!-- EDI LOG TILE -->
         <div class="tile tile-edilog" id="tile-edilog">
-            <div class="tile-section-title"><i data-lucide="scroll-text" class="lucide-sm purple-icon"></i> Edi Log</div>
-            <div class="tile-section-subtitle">Co robiłem i kiedy</div>
+            <div class="tile-section-title" style="display:flex;justify-content:space-between;align-items:center;">
+                <span><i data-lucide="activity" class="lucide-sm purple-icon"></i> LIVE FEED</span>
+                <span style="font-size:8px;color:var(--text-secondary);font-weight:400;" id="liveFeedStatus">● ONLINE</span>
+            </div>
+            <div class="tile-section-subtitle" style="display:flex;justify-content:space-between;align-items:center;">
+                <span>Real-time activity log</span>
+                <button onclick="broadcastToAgents()" style="background:linear-gradient(135deg,#8b5cf6,#3b82f6);color:white;border:none;border-radius:6px;padding:3px 8px;font-size:8px;font-weight:700;cursor:pointer;letter-spacing:0.05em;">📡 BROADCAST</button>
+            </div>
             <div class="edilog-scroll" id="edilogContent"></div>
         </div>
 
@@ -1730,18 +1736,21 @@
                 const isToday = day.date === today;
                 const collapsed = !isToday;
                 const label = isToday ? '📍 Dzisiaj' : day.date === getYesterday() ? '🕐 Wczoraj' : day.date;
+                const typeColors = {task:'#10b981',research:'#3b82f6',deploy:'#8b5cf6',fix:'#f59e0b',alert:'#ef4444',meeting:'#ec4899',idea:'#06b6d4'};
                 return `<div class="edilog-day">
                     <div class="edilog-day-header" onclick="toggleLogDay(${i})">
                         <span>${label}${day.summary && !isToday ? '<span class=edilog-day-summary>' + day.summary + '</span>' : ''}</span>
                         <span class="arrow ${collapsed ? 'collapsed' : ''}" id="logArrow${i}">▼</span>
                     </div>
                     <div class="edilog-entries ${collapsed ? 'collapsed' : ''}" id="logEntries${i}">
-                        ${day.entries.map(e => `<div class="edilog-entry">
+                        ${day.entries.map(e => {
+                            const dotColor = typeColors[e.tag] || '#a78bfa';
+                            return `<div class="edilog-entry" style="border-left:2px solid ${dotColor};padding-left:8px;margin-left:4px;">
                             <span class="edilog-time">${e.time}</span>
-                            <span class="edilog-icon">${e.icon || '📌'}</span>
+                            <span class="edilog-icon">${e.icon || '●'}</span>
                             <span class="edilog-text">${e.title}${e.detail ? '<br><span class=detail>' + e.detail + '</span>' : ''}</span>
-                            ${e.tag ? '<span class=edilog-tag>' + e.tag + '</span>' : ''}
-                        </div>`).join('')}
+                            ${e.tag ? '<span class=edilog-tag style="background:'+dotColor+'20;color:'+dotColor+';">' + e.tag + '</span>' : ''}
+                        </div>`}).join('')}
                     </div>
                 </div>`;
             }).join('');
@@ -1755,6 +1764,18 @@
         function getYesterday() {
             const d = new Date(); d.setDate(d.getDate() - 1);
             return d.toISOString().slice(0,10);
+        }
+
+        function broadcastToAgents() {
+            const msg = prompt('📡 Broadcast do wszystkich agentów:');
+            if (!msg) return;
+            const entry = { time: new Date().toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'}), icon: '📡', title: 'BROADCAST: ' + msg, tag: 'alert' };
+            if (edilogData && edilogData.days && edilogData.days.length > 0) {
+                edilogData.days[0].entries.unshift(entry);
+                renderEdiLogTile();
+                saveToCloud();
+            }
+            alert('Broadcast wysłany! (W pełnej wersji trafi do wszystkich aktywnych agentów)');
         }
 
         function renderDocuments() {
@@ -1959,7 +1980,7 @@
                 'tile-calendar': '📅 Kalendarz',
                 'tile-progress': '📈 Progress',
                 'tile-notes': '📝 Notes',
-                'tile-edilog': '📋 Edi Log',
+                'tile-edilog': '📡 LIVE FEED',
                 'tile-clock': '🕐 Zegar',
                 'tile-weather': '🌤️ Pogoda',
                 'tile-tokens': '🔥 Tokeny',
