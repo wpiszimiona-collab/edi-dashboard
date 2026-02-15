@@ -1039,7 +1039,16 @@
                         <button type="button" class="btn btn-small" onclick="addAttachment()">+</button>
                     </div>
                 </div>
-                <div class="modal-actions">
+                <div id="reviewFeedbackSection" style="display:none;margin-bottom:12px;">
+                    <label style="font-size:11px;color:var(--text-secondary);margin-bottom:4px;display:block;">💬 Feedback dla Ediego</label>
+                    <textarea id="reviewFeedback" placeholder="Co poprawić..." style="width:100%;min-height:60px;background:var(--surface);border:1px solid rgba(245,158,11,0.4);border-radius:6px;color:var(--text-primary);padding:8px;font-size:12px;resize:vertical;"></textarea>
+                </div>
+                <div id="reviewActions" style="display:none;gap:8px;margin-bottom:8px;">
+                    <button type="button" class="btn" style="flex:1;background:var(--green);color:#000;font-weight:600;" onclick="reviewAction('done')">✅ DONE</button>
+                    <button type="button" class="btn" style="flex:1;background:#f59e0b;color:#000;font-weight:600;" onclick="reviewAction('feedback')">💬 FEEDBACK</button>
+                    <button type="button" class="btn" style="flex:1;background:var(--red);color:#fff;font-weight:600;" onclick="reviewAction('takeover')">🔴 ZROBIĘ SAM</button>
+                </div>
+                <div class="modal-actions" id="normalActions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Anuluj</button>
                     <button type="button" class="btn btn-danger" id="deleteBtn" onclick="deleteTask()" style="display:none;">Usuń</button>
                     <button type="submit" class="btn btn-primary">Zapisz</button>
@@ -1634,6 +1643,10 @@
                 const task = tasks.find(t => t.id === taskId);
                 if (task) { title.textContent = 'Edytuj task'; document.getElementById('taskId').value = task.id; document.getElementById('taskTitle').value = task.title; document.getElementById('taskProject').value = task.project; document.getElementById('taskDeadline').value = task.deadline; document.getElementById('taskNotes').value = task.notes || ''; document.getElementById('taskColumn').value = task.column; document.getElementById('taskTime').value = task.estimatedTime || ''; document.getElementById('taskCalendar').value = task.calendarSlot || ''; currentAttachments = task.attachments || []; renderAttachments(); deleteBtn.style.display = 'block'; }
             } else { title.textContent = 'Nowy task'; document.getElementById('taskId').value = ''; document.getElementById('taskTime').value = ''; document.getElementById('taskCalendar').value = ''; currentAttachments = []; renderAttachments(); deleteBtn.style.display = 'none'; }
+            const isReview = (taskId && tasks.find(t => t.id === taskId)?.column === 'review');
+            document.getElementById('reviewActions').style.display = isReview ? 'flex' : 'none';
+            document.getElementById('reviewFeedbackSection').style.display = 'none';
+            document.getElementById('normalActions').style.display = isReview ? 'none' : 'flex';
             modal.classList.add('active'); document.getElementById('taskTitle').focus();
         }
         function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
@@ -1649,6 +1662,30 @@
             setTimeout(() => renderTasks(), 0);
         });
 
+        function reviewAction(action) {
+            const id = parseInt(document.getElementById('taskId').value);
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+            if (action === 'done') {
+                task.column = 'done'; task.done = true;
+                saveTasks(); renderTasks(); closeModal();
+            } else if (action === 'feedback') {
+                const fbSection = document.getElementById('reviewFeedbackSection');
+                if (fbSection.style.display === 'none') {
+                    fbSection.style.display = 'block';
+                    document.getElementById('reviewFeedback').focus();
+                } else {
+                    const fb = document.getElementById('reviewFeedback').value.trim();
+                    if (fb) { task.notes = (task.notes || '') + '\n📝 FEEDBACK: ' + fb; }
+                    task.column = 'todo';
+                    saveTasks(); renderTasks(); closeModal();
+                }
+            } else if (action === 'takeover') {
+                task.notes = (task.notes || '') + '\n🔴 Piotr przejmuje';
+                task.column = 'todo';
+                saveTasks(); renderTasks(); closeModal();
+            }
+        }
         function deleteTask() { const id = document.getElementById('taskId').value; if (id && confirm('Na pewno usunąć ten task?')) { tasks = tasks.filter(t => t.id !== parseInt(id)); saveTasks(); renderTasks(); closeModal(); } }
         function saveTasks() { localStorage.setItem('ediTasks', JSON.stringify(tasks)); localStorage.setItem('_lastLocalSave', Date.now().toString()); saveToCloud(); }
         document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
