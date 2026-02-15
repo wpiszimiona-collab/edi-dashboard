@@ -1256,6 +1256,7 @@
                                     <span class="task-title">${task.title}${task.estimatedTime ? '<span class="task-time-badge">⏱️ '+task.estimatedTime+'</span>' : ''}${task.calendarSlot ? '<span class="task-time-badge">📅</span>' : ''}</span>
                                     <span class="task-project ${task.project}">${getProjectLabel(task.project)}</span>
                                 </div>
+                                ${task.driveLink ? `<div class="task-attachments"><a class="task-attachment-link" href="${task.driveLink}" target="_blank" onclick="event.stopPropagation()" style="color:#3b82f6;font-weight:600;">📁 Drive</a></div>` : ''}
                                 ${task.attachments && task.attachments.length > 0 ? `<div class="task-attachments">${task.attachments.map(att => `<a class="task-attachment-link" href="file://${att.path}" target="_blank" onclick="event.stopPropagation()">📎 ${att.name}</a>`).join('')}</div>` : ''}
                             </div>
                             <span class="task-status-circle ${col}"></span>
@@ -1628,10 +1629,16 @@
         function getDeadlineLabel(deadline) { const labels = { now: '🔥 Teraz!', today: 'Dziś', week: 'Ten tydzień', later: 'Później' }; return labels[deadline] || deadline; }
 
         let currentAttachments = [];
+        let currentDriveLink = '';
         function renderAttachments() {
             const container = document.getElementById('attachmentsList');
-            if (currentAttachments.length === 0) { container.innerHTML = '<div style="color:var(--text-secondary);font-size:9px;padding:4px 0">Brak załączników</div>'; return; }
-            container.innerHTML = currentAttachments.map((att, idx) => `<div class="attachment-item"><span>📎</span><a href="file://${att.path}" target="_blank">${att.name}</a><span class="attachment-remove" onclick="removeAttachment(${idx})">✕</span></div>`).join('');
+            let html = '';
+            if (currentDriveLink) {
+                html += `<div class="attachment-item" style="background:linear-gradient(135deg,rgba(59,130,246,0.15),rgba(16,185,129,0.15));border:1px solid rgba(59,130,246,0.3);border-radius:8px;padding:6px 10px;margin-bottom:6px;"><span>📁</span><a href="${currentDriveLink}" target="_blank" style="color:#3b82f6;font-weight:600;">Dokumenty na Google Drive</a></div>`;
+            }
+            if (currentAttachments.length === 0 && !currentDriveLink) { container.innerHTML = '<div style="color:var(--text-secondary);font-size:9px;padding:4px 0">Brak załączników</div>'; return; }
+            html += currentAttachments.map((att, idx) => `<div class="attachment-item"><span>📎</span><a href="file://${att.path}" target="_blank">${att.name}</a><span class="attachment-remove" onclick="removeAttachment(${idx})">✕</span></div>`).join('');
+            container.innerHTML = html;
         }
         function addAttachment() { const name = document.getElementById('newAttachmentName').value.trim(); const path = document.getElementById('newAttachmentPath').value.trim(); if (!name || !path) return; currentAttachments.push({ name, path }); document.getElementById('newAttachmentName').value = ''; document.getElementById('newAttachmentPath').value = ''; renderAttachments(); }
         function removeAttachment(idx) { currentAttachments.splice(idx, 1); renderAttachments(); }
@@ -1641,8 +1648,8 @@
             form.reset(); document.getElementById('taskColumn').value = column;
             if (taskId) {
                 const task = tasks.find(t => t.id === taskId);
-                if (task) { title.textContent = 'Edytuj task'; document.getElementById('taskId').value = task.id; document.getElementById('taskTitle').value = task.title; document.getElementById('taskProject').value = task.project; document.getElementById('taskDeadline').value = task.deadline; document.getElementById('taskNotes').value = task.notes || ''; document.getElementById('taskColumn').value = task.column; document.getElementById('taskTime').value = task.estimatedTime || ''; document.getElementById('taskCalendar').value = task.calendarSlot || ''; currentAttachments = task.attachments || []; renderAttachments(); deleteBtn.style.display = 'block'; }
-            } else { title.textContent = 'Nowy task'; document.getElementById('taskId').value = ''; document.getElementById('taskTime').value = ''; document.getElementById('taskCalendar').value = ''; currentAttachments = []; renderAttachments(); deleteBtn.style.display = 'none'; }
+                if (task) { title.textContent = 'Edytuj task'; document.getElementById('taskId').value = task.id; document.getElementById('taskTitle').value = task.title; document.getElementById('taskProject').value = task.project; document.getElementById('taskDeadline').value = task.deadline; document.getElementById('taskNotes').value = task.notes || ''; document.getElementById('taskColumn').value = task.column; document.getElementById('taskTime').value = task.estimatedTime || ''; document.getElementById('taskCalendar').value = task.calendarSlot || ''; currentAttachments = task.attachments || []; currentDriveLink = task.driveLink || ''; renderAttachments(); deleteBtn.style.display = 'block'; }
+            } else { title.textContent = 'Nowy task'; document.getElementById('taskId').value = ''; document.getElementById('taskTime').value = ''; document.getElementById('taskCalendar').value = ''; currentAttachments = []; currentDriveLink = ''; renderAttachments(); deleteBtn.style.display = 'none'; }
             const isReview = (taskId && tasks.find(t => t.id === taskId)?.column === 'review');
             document.getElementById('reviewActions').style.display = isReview ? 'flex' : 'none';
             document.getElementById('reviewFeedbackSection').style.display = 'none';
