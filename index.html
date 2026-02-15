@@ -208,6 +208,7 @@
         .kanban-count.urgent { background: rgba(239,68,68,0.15); color: var(--red); }
         .kanban-count.todo { background: rgba(124,58,237,0.15); color: var(--purple-300); }
         .kanban-count.waiting { background: rgba(245,158,11,0.15); color: var(--yellow); }
+        .kanban-count.review { background: rgba(59,130,246,0.15); color: var(--blue); }
         .kanban-count.done { background: rgba(16,185,129,0.15); color: var(--green); }
 
         .add-task-btn {
@@ -255,6 +256,7 @@
         .task-status-circle { width: 10px; height: 10px; border-radius: 50%; border: 2px solid; flex-shrink: 0; }
         .task-status-circle.urgent { border-color: var(--red); }
         .task-status-circle.todo { border-color: var(--purple-500); }
+        .task-status-circle.review { border-color: var(--blue); }
         .task-status-circle.waiting { border-color: var(--yellow); }
         .task-status-circle.done { border-color: var(--green); background: var(--green); }
         .task-status-circle.onhold { border-color: #6b7280; }
@@ -734,6 +736,7 @@
             <div class="statsbar-sep"></div>
             <div class="statsbar-item"><span class="statsbar-dot purple"></span><span class="statsbar-num" id="statTodo">0</span><span class="statsbar-label">Do zrobienia</span></div>
             <div class="statsbar-sep"></div>
+            <div class="statsbar-item"><span class="statsbar-dot" style="background:var(--blue);"></span><span class="statsbar-num" id="statReview">0</span><span class="statsbar-label">Review</span></div>
             <div class="statsbar-item"><span class="statsbar-dot yellow"></span><span class="statsbar-num" id="statWaiting">0</span><span class="statsbar-label">Czekam</span></div>
             <div class="statsbar-sep"></div>
             <div class="statsbar-item"><span class="statsbar-dot green"></span><span class="statsbar-num" id="statDone">0</span><span class="statsbar-label">Zrobione</span></div>
@@ -761,6 +764,13 @@
                 <button class="add-task-btn" onclick="openModal('todo')">+</button>
             </div>
             <div class="task-list" id="todoTasks"></div>
+        </div>
+        <div class="tile tile-kanban" id="tile-kanban-review" data-column="review" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'review')">
+            <div class="kanban-header" style="border-bottom-color: var(--blue);">
+                <div><span class="kanban-title"><i data-lucide="eye" class="lucide-sm blue-icon"></i> REVIEW <span class="kanban-count review" id="countReview">0</span></span><div class="kanban-subtitle">Do zatwierdzenia przez Piotra</div></div>
+                <button class="add-task-btn" onclick="openModal('review')">+</button>
+            </div>
+            <div class="task-list" id="reviewTasks"></div>
         </div>
         <div class="tile tile-kanban" id="tile-kanban-waiting" data-column="waiting" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'waiting')">
             <div class="kanban-header waiting">
@@ -1220,7 +1230,7 @@
         }
 
         function renderTasks() {
-            const columns = ['urgent', 'todo', 'waiting', 'done', 'onhold', 'backup', 'domtodo', 'kubustodo'];
+            const columns = ['urgent', 'todo', 'review', 'waiting', 'done', 'onhold', 'backup', 'domtodo', 'kubustodo'];
             const stats = { urgent: 0, todo: 0, waiting: 0, done: 0, onhold: 0, backup: 0 };
             columns.forEach(col => {
                 const container = document.getElementById(col + 'Tasks');
@@ -1246,10 +1256,12 @@
             });
             document.getElementById('statUrgent').textContent = stats.urgent;
             document.getElementById('statTodo').textContent = stats.todo;
+            document.getElementById('statReview').textContent = stats.review || 0;
             document.getElementById('statWaiting').textContent = stats.waiting;
             document.getElementById('statDone').textContent = stats.done;
             document.getElementById('countUrgent').textContent = stats.urgent;
             document.getElementById('countTodo').textContent = stats.todo;
+            document.getElementById('countReview').textContent = stats.review || 0;
             document.getElementById('countWaiting').textContent = stats.waiting;
             document.getElementById('countDone').textContent = stats.done;
             document.getElementById('countOnhold').textContent = stats.onhold;
@@ -1891,6 +1903,7 @@
                 'tile-statsbar': '📊 Stats',
                 'tile-kanban-urgent': '🔴 Pilne',
                 'tile-kanban-todo': '📋 TODO',
+                'tile-kanban-review': '👁️ Review',
                 'tile-kanban-waiting': '⏳ Czekam',
                 'tile-kanban-done': '✅ Done',
                 'tile-kanban-onhold': '⏸️ On Hold',

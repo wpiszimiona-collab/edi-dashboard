@@ -1,6 +1,47 @@
 {
   "days": [
     {
+      "date": "2026-02-15",
+      "summary": "OpenClaw 2.14 update, config naprawiony, deliverable BUR + Ola + aipracuje",
+      "entries": [
+        {
+          "time": "09:00",
+          "icon": "⬆️",
+          "title": "OpenClaw 2026.2.13 → 2026.2.14",
+          "detail": "Update + naprawiony config (subagents model, fallbacks). Stabilny.",
+          "tag": "SYSTEM"
+        },
+        {
+          "time": "09:30",
+          "icon": "📧",
+          "title": "Cold mail BUR v2 — gotowy",
+          "detail": "Szablon ~140 słów, strategia 'szkolenie otwiera drzwi → produkcja'. projekty/1THREE/cold-mail-bur-v2.md",
+          "tag": "1THREE"
+        },
+        {
+          "time": "09:30",
+          "icon": "🚀",
+          "title": "Deploy checklist aipracuje.pl",
+          "detail": "Landing prawie gotowy, brakuje: backend formularza, domena, RODO. ~2h do deploy. projekty/AIPRACUJE/deploy-checklist.md",
+          "tag": "AIPRACUJE"
+        },
+        {
+          "time": "09:30",
+          "icon": "🤖",
+          "title": "SOUL.md draft asystentki Oli",
+          "detail": "Profil operacyjny, ciepła ale konkretna. projekty/OLA-ASYSTENT/SOUL-draft.md",
+          "tag": "TODO"
+        },
+        {
+          "time": "12:00",
+          "icon": "🎓",
+          "title": "Opis szkolenia BUR — GOTOWY!",
+          "detail": "AI Creative Pipeline, 8h, 7 modułów, pełna spec pod BUR. projekty/1THREE/szkolenie-bur-opis.md. Czeka na review Piotra.",
+          "tag": "1THREE"
+        }
+      ]
+    },
+    {
       "date": "2026-02-14",
       "summary": "Nowy projekt: AI asystent dla Oli",
       "entries": [
