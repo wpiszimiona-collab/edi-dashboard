@@ -2992,6 +2992,22 @@
                 if (raw) {
                     agentsState = JSON.parse(raw);
                     agentsState.forEach(a => { if(a.col && !a.status){a.status=a.col; delete a.col;} });
+                    // Auto-patch: uzupełnij agentów z pustymi polami danymi z DEFAULT_AGENTS (po nazwie)
+                    agentsState.forEach(a => {
+                        if (a.steps && a.steps.length === 0 && a.name) {
+                            const def = DEFAULT_AGENTS.find(d => a.name.toLowerCase().includes(d.name.toLowerCase().split(' ')[0]));
+                            if (def) {
+                                if (!a.subtitle) a.subtitle = def.subtitle;
+                                if (!a.desc) a.desc = def.desc;
+                                if (!a.flow) a.flow = def.flow;
+                                if (!a.steps || a.steps.length === 0) a.steps = JSON.parse(JSON.stringify(def.steps));
+                                if (!a.kpi || a.kpi.length === 0) a.kpi = [...def.kpi];
+                                if (!a.channels || a.channels.length === 0) a.channels = [...def.channels];
+                                if (def.icon) a.icon = def.icon;
+                            }
+                        }
+                    });
+                    saveAgents();
                     return;
                 }
             } catch(e) {}
